@@ -1,0 +1,133 @@
+##########################################################################################
+#                          ~ Ultra Hardcore - Configuration file ~
+#
+# ---
+# How to activate this plugin?
+#   Go down to 'Plugin' and replace 'false' => 'true'
+#
+# ---
+# If you want to have solo mode? Go to 'GameMode.TeamMode' and type 'false', for team mode type 'true'
+#
+# ---
+# Minecraft Color Code:
+#   &0  &1  &2  &3  &4      |      Black        Dark_Blue  Dark_Green  Dark_Aqua       Dark_Red
+#   &5  &6  &7  &8  &9      |      Dark_Purple  Gold       Gray        Dark_Gray       Blue
+#   &a  &b  &c  &d  &e      |      Green        Aqua       Red         Light_Purple    Yellow
+#   &f  &k  &l  &m  &n      |      White        Magic      Bold        Strikethrough   Underline
+#   &o  &r                  |      Italic       Reset
+#
+
+# --- Plugin Mode ---
+Plugin: false
+
+# --- Player List Header & Footer ---
+TabList:
+  Enabled: false
+  Header: '&c&lUltra Hardcore 1.8&r'
+  Footer: ''
+
+# --- ChunkLoader ---
+#
+#    ~ WARNING ~
+# Lower tick rate will maybe crash your server or lag out.
+# Higher task rate will maybe crash your server or lag out.
+#
+#    ~ Exemple ~
+# ChunkLoader will load 20 chunk in every 8 tick.
+#
+ChunkLoader:
+  ShowHiddenDetail: false
+  DelayTick: 8
+  Task: 20
+  ArenaBorder: 500
+
+# --- Custom Book ---
+#
+#  New Line	  =>	$[N]
+#
+Book:
+  Enabled: false
+  ShowSettings: false
+  InventorySlot: 7
+  Name: '&eUltra Hardcore'
+  Lord:
+  - ''
+  - '&6- &7Info'
+  - '&6- &7Rules'
+  Pages:
+  - 'Welcome to &4&lUHC&0.$[N]$[N]This game you can only regenerate health by$[N] &8- &1Golden Apple.&r$[N] &8- &1Potions.&r$[N]$[N]I wish you &5Good Luck&r$[N]and may the best player / team win.'
+  - '&l&n    UHC - Rules     &r$[N]$[N]&11.&r Branch Mining$[N]&8 You can not branch$[N] mining but if you$[N] hear a sound,$[N] you can dig to it.&r$[N]$[N]&12. Staircases&r$[N]&8 You can only dig$[N] staircases if you$[N] want to find a cave.&r'
+
+# --- World Options ---
+#
+#    ~ Difficulty ~
+# 1: Easy, 2: Normal, 3: Hard
+#
+WorldOptions:
+  Difficulty: 2
+  ArenaSize: 1000
+  SunTime: 0
+  
+# --- Gamerule ---
+Gamerules:
+  doDaylightCycle: true
+  doEntityDrops: true
+  doFireTick: true
+  doMobLoot: true
+  doMobSpawning: true
+  doTileDrops: true
+  mobGriefing: true
+  randomTickSpeed: 3
+  reducedDebugInfo: false
+
+# --- Worldborder ---
+Worldborder:
+  StartPos: 2500
+  EndPos: 300
+  Time: 10800
+
+# --- Freeze Ingame Starting Player ---
+FreezePlayer:
+  Enabled: true
+  Size: 10
+
+# --- Marker Options ---
+#
+#  Time 	  =>	$[T]
+#  Episode 	=>	$[E]
+#
+Marker:
+  Message: '&cUHC&8 |&r YOU ARE NOW IN &a$[T]&r MIN IN'
+  TimeDelay: 20
+  
+# --- Game Mode Options ---
+GameMode:
+  TeamMode: false
+  MaxTeamPlayer: 3
+  SelectTeamInvSlot: 1
+  Options:
+    FriendlyFire: true
+    SeeFriendlyInvisibles: false
+
+# --- Damage Logger ---
+DamagerLogger: false
+
+# --- Offline Kicker for ingame player ---
+#
+#  Player 	  =>	$[P]
+#
+OfflineKicker:
+  Timeout: 5
+  Message: '$[P] was killed by Offline Timer'
+
+# --- Global Chat Format ---
+#
+#  Player 	  =>	$[P]
+#  Message	  =>	$[M]
+#
+GlobalChat:
+  Default: '<$[P]> $[M]'
+  Spectator: '<&7&o$[P]&r> $[M]'
+  Teams:
+    Default: '<&o$[P]&r> $[M]'
+    Team: '<$[P]> $[M]'
