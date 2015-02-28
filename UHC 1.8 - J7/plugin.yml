@@ -1,0 +1,31 @@
+name: UHC
+version: 1.0.4
+author: Thomaz2Fast
+
+main: com.thomaztwofast.uhc.Main
+
+commands:
+  autoteam:
+    description: Set all players to random teams.
+    usage: /autoteam
+    permission: com.thomaztwofast.uhc.commands.autoteam
+  chunkloader:
+    description: Load all the chunk in the arena.
+    usage: /chunkloader <start>
+    permission: com.thomaztwofast.uhc.commands.chunkloader
+  selectteam:
+    usage: /selectteam
+    description: Player can select what team they want.
+    permission: com.thomaztwofast.uhc.commands.selectteam
+  start:
+    description: Start Ultra Hardcore.
+    usage: /start <uhc>
+    permission: com.thomaztwofast.uhc.commands.start
+  uhc:
+    description: Help center for Ultra Hardcore.
+    usage: /uhc <settings | status>
+    permission: com.thomaztwofast.uhc.commands.uhc
+
+permissions:
+  com.thomaztwofast.uhc.commands.*:
+    default: op
