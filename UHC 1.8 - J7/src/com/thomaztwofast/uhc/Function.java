@@ -25,20 +25,20 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Random;
 import java.util.UUID;
 
-import net.minecraft.server.v1_8_R1.ChatSerializer;
-import net.minecraft.server.v1_8_R1.EnumDifficulty;
-import net.minecraft.server.v1_8_R1.EnumTitleAction;
-import net.minecraft.server.v1_8_R1.EnumWorldBorderAction;
-import net.minecraft.server.v1_8_R1.IChatBaseComponent;
-import net.minecraft.server.v1_8_R1.PacketPlayOutChat;
-import net.minecraft.server.v1_8_R1.PacketPlayOutEntityStatus;
-import net.minecraft.server.v1_8_R1.PacketPlayOutPlayerListHeaderFooter;
-import net.minecraft.server.v1_8_R1.PacketPlayOutServerDifficulty;
-import net.minecraft.server.v1_8_R1.PacketPlayOutTitle;
-import net.minecraft.server.v1_8_R1.PacketPlayOutWorldBorder;
-import net.minecraft.server.v1_8_R1.WorldBorder;
+import net.minecraft.server.v1_8_R3.EnumDifficulty;
+import net.minecraft.server.v1_8_R3.IChatBaseComponent;
+import net.minecraft.server.v1_8_R3.PacketPlayOutChat;
+import net.minecraft.server.v1_8_R3.PacketPlayOutEntityStatus;
+import net.minecraft.server.v1_8_R3.PacketPlayOutPlayerListHeaderFooter;
+import net.minecraft.server.v1_8_R3.PacketPlayOutServerDifficulty;
+import net.minecraft.server.v1_8_R3.PacketPlayOutTitle;
+import net.minecraft.server.v1_8_R3.PacketPlayOutTitle.EnumTitleAction;
+import net.minecraft.server.v1_8_R3.PacketPlayOutWorldBorder;
+import net.minecraft.server.v1_8_R3.PacketPlayOutWorldBorder.EnumWorldBorderAction;
+import net.minecraft.server.v1_8_R3.WorldBorder;
 
 import org.apache.commons.io.FileUtils;
 import org.bukkit.Achievement;
@@ -51,7 +51,7 @@ import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.craftbukkit.v1_8_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.PigZombie;
@@ -77,7 +77,7 @@ import org.bukkit.scoreboard.Team;
 public class Function {
 
 	/**
-	 * ~ Load Config Variabler To Memoory ~
+	 * ~ Load Variable From Config To Memory ~
 	 * 
 	 * @param pl = Main Plugin
 	 * @param c = FileConfiguration <i>(Config.yml file)</i>
@@ -87,6 +87,59 @@ public class Function {
 			pl.plMode = c.getBoolean("Plugin");
 		} else {
 			pl.getLogger().warning("Config> Cold not load 'Plugin'");
+		}
+		if (c.isConfigurationSection("ServerMode")) {
+			if (c.isBoolean("ServerMode.Enabled")) {
+				pl.sm = c.getBoolean("ServerMode.Enabled");
+			} else {
+				pl.getLogger().warning("Config> Cold not load 'ServerMode.Enabled'");
+			}
+			if (c.isInt("ServerMode.ServerID")) {
+				if (integerData(c.getInt("ServerMode.ServerID"), 1, 9999)) {
+					pl.smSID = c.getInt("ServerMode.ServerID");
+				} else {
+					pl.getLogger().warning("Config> Error at 'ServerMode.ServerID', Only be (1 - 9999)");
+				}
+			} else {
+				pl.getLogger().warning("Config> Cold not load 'ServerMode.ServerID'");
+			}
+			if (c.isInt("ServerMode.MinPlayerToStart")) {
+				if (integerData(c.getInt("ServerMode.MinPlayerToStart"), 2, 100)) {
+					pl.smMps = c.getInt("ServerMode.MinPlayerToStart");
+				} else {
+					pl.getLogger().warning("Config> Error at 'ServerMode.MinPlayerToStart', Only be (2 - 100)");
+				}
+			} else {
+				pl.getLogger().warning("Config> Cold not load 'ServerMode.MinPlayerToStart'");
+			}
+			if (c.isInt("ServerMode.MinTeamToStart")) {
+				if (integerData(c.getInt("ServerMode.MinTeamToStart"), 2, 16)) {
+					pl.smMts = c.getInt("ServerMode.MinTeamToStart");
+				} else {
+					pl.getLogger().warning("Config> Error at 'ServerMode.MinTeamToStart', Only be (2 - 16)");
+				}
+			} else {
+				pl.getLogger().warning("Config> Cold not load 'ServerMode.MinTeamToStart'");
+			}
+			if (c.isInt("ServerMode.Countdown")) {
+				if (integerData(c.getInt("ServerMode.Countdown"), 10, 20000)) {
+					pl.smCn = c.getInt("ServerMode.Countdown");
+				} else {
+					pl.getLogger().warning("Config> Error at 'ServerMode.Countdown', Only be (10 - 20000)");
+				}
+			} else {
+				pl.getLogger().warning("Config> Cold not load 'ServerMode.Countdown'");
+			}
+			if (c.isString("ServerMode.Motd")) {
+				pl.smMotd = minecraftColor(c.getString("ServerMode.Motd"));
+				if (pl.smMotd.isEmpty()) {
+					pl.getLogger().info("Config> Server Motd => Is empty, show as default.");
+				}
+			} else {
+				pl.getLogger().warning("Config> Cold not load 'ServerMode.Motd'");
+			}
+		} else {
+			pl.getLogger().warning("Config> Cold not load 'ServerMode'");
 		}
 		if (c.isConfigurationSection("TabList")) {
 			if (c.isBoolean("TabList.Enabled")) {
@@ -107,43 +160,41 @@ public class Function {
 		} else {
 			pl.getLogger().warning("Config> Cold not load 'TabList'");
 		}
-		if (!pl.plMode) {
-			if (c.isConfigurationSection("ChunkLoader")) {
-				if (c.isBoolean("ChunkLoader.ShowHiddenDetail")) {
-					pl.clShd = c.getBoolean("ChunkLoader.ShowHiddenDetail");
+		if (c.isConfigurationSection("ChunkLoader")) {
+			if (c.isBoolean("ChunkLoader.ShowHiddenDetail")) {
+				pl.clShd = c.getBoolean("ChunkLoader.ShowHiddenDetail");
+			} else {
+				pl.getLogger().warning("Config> Cold not load 'ChunkLoader.ShowHiddenDetail'");
+			}
+			if (c.isInt("ChunkLoader.DelayTick")) {
+				if (integerData(c.getInt("ChunkLoader.DelayTick"), 0, 20000)) {
+					pl.clTick = c.getInt("ChunkLoader.DelayTick");
 				} else {
-					pl.getLogger().warning("Config> Cold not load 'ChunkLoader.ShowHiddenDetail'");
-				}
-				if (c.isInt("ChunkLoader.DelayTick")) {
-					if (integerData(c.getInt("ChunkLoader.DelayTick"), 0, 20000)) {
-						pl.clTick = c.getInt("ChunkLoader.DelayTick");
-					} else {
-						pl.getLogger().warning("Config> Error at 'ChunkLoader.DelayTick', Only be (0 - 20000)");
-					}
-				} else {
-					pl.getLogger().warning("Config> Cold not load 'ChunkLoader.DelayTick'");
-				}
-				if (c.isInt("ChunkLoader.Task")) {
-					if (integerData(c.getInt("ChunkLoader.Task"), 0, 20000)) {
-						pl.clTask = c.getInt("ChunkLoader.Task");
-					} else {
-						pl.getLogger().warning("Config> Error at 'ChunkLoader.Task', Only be (0 - 20000)");
-					}
-				} else {
-					pl.getLogger().warning("Config> Cold not load 'ChunkLoader.Task'");
-				}
-				if (c.isInt("ChunkLoader.ArenaBorder")) {
-					if (integerData(c.getInt("ChunkLoader.ArenaBorder"), 0, 20000)) {
-						pl.clBorder = c.getInt("ChunkLoader.ArenaBorder");
-					} else {
-						pl.getLogger().warning("Config> Error at 'ChunkLoader.ArenaBorder', Only be (0 - 20000)");
-					}
-				} else {
-					pl.getLogger().warning("Config> Cold not load 'ChunkLoader.ArenaBorder'");
+					pl.getLogger().warning("Config> Error at 'ChunkLoader.DelayTick', Only be (0 - 20000)");
 				}
 			} else {
-				pl.getLogger().warning("Config> Cold not load 'ChunkLoader'");
+				pl.getLogger().warning("Config> Cold not load 'ChunkLoader.DelayTick'");
 			}
+			if (c.isInt("ChunkLoader.Task")) {
+				if (integerData(c.getInt("ChunkLoader.Task"), 0, 20000)) {
+					pl.clTask = c.getInt("ChunkLoader.Task");
+				} else {
+					pl.getLogger().warning("Config> Error at 'ChunkLoader.Task', Only be (0 - 20000)");
+				}
+			} else {
+				pl.getLogger().warning("Config> Cold not load 'ChunkLoader.Task'");
+			}
+			if (c.isInt("ChunkLoader.ArenaBorder")) {
+				if (integerData(c.getInt("ChunkLoader.ArenaBorder"), 0, 20000)) {
+					pl.clBorder = c.getInt("ChunkLoader.ArenaBorder");
+				} else {
+					pl.getLogger().warning("Config> Error at 'ChunkLoader.ArenaBorder', Only be (0 - 20000)");
+				}
+			} else {
+				pl.getLogger().warning("Config> Cold not load 'ChunkLoader.ArenaBorder'");
+			}
+		} else {
+			pl.getLogger().warning("Config> Cold not load 'ChunkLoader'");
 		}
 		if (pl.plMode) {
 			if (c.isConfigurationSection("Book")) {
@@ -483,6 +534,14 @@ public class Function {
 						} else {
 							pl.getLogger().warning("Config> Cold not load 'GlobalChat.Teams.Team'");
 						}
+						if (c.isString("GlobalChat.Teams.PrivateChat")) {
+							pl.chatTPC = minecraftColor(c.getString("GlobalChat.Teams.PrivateChat"));
+							if (pl.chatTPC.isEmpty()) {
+								pl.getLogger().info("Config> Private team chat is disabled.");
+							}
+						} else {
+							pl.getLogger().warning("Config> Cold not load 'GlobalChat.Teams.PrivateChat'");
+						}
 					} else {
 						pl.getLogger().warning("Config> Cold not load 'GlobalChat.Teams'");
 					}
@@ -504,7 +563,7 @@ public class Function {
 	 */
 	public static void sendActionBarPlayerMessages(Player p, String msg) {
 		CraftPlayer cp = (CraftPlayer) p;
-		PacketPlayOutChat ppoc = new PacketPlayOutChat(ChatSerializer.a("{\"text\": \"" + msg + "\"}"), (byte) 2);
+		PacketPlayOutChat ppoc = new PacketPlayOutChat(IChatBaseComponent.ChatSerializer.a("{\"text\": \"" + msg + "\"}"), (byte) 2);
 		cp.getHandle().playerConnection.sendPacket(ppoc);
 	}
 
@@ -521,8 +580,8 @@ public class Function {
 	 */
 	public static void sendTitlePlayerMessages(Player p, String msg, int td, int fd) {
 		CraftPlayer cp = (CraftPlayer) p;
-		IChatBaseComponent t = ChatSerializer.a("{\"text\": \" \"}");
-		IChatBaseComponent s = ChatSerializer.a("{\"text\": \"" + msg + "\"}");
+		IChatBaseComponent t = IChatBaseComponent.ChatSerializer.a("{\"text\": \" \"}");
+		IChatBaseComponent s = IChatBaseComponent.ChatSerializer.a("{\"text\": \"" + msg + "\"}");
 		cp.getHandle().playerConnection.sendPacket(new PacketPlayOutTitle(EnumTitleAction.TIMES, null, 0, td, fd));
 		cp.getHandle().playerConnection.sendPacket(new PacketPlayOutTitle(EnumTitleAction.SUBTITLE, s));
 		cp.getHandle().playerConnection.sendPacket(new PacketPlayOutTitle(EnumTitleAction.TITLE, t));
@@ -557,14 +616,14 @@ public class Function {
 			a.setAccessible(true);
 			b.setAccessible(true);
 			if (h.isEmpty()) {
-				a.set(d, ChatSerializer.a("{translate: ''}"));
+				a.set(d, IChatBaseComponent.ChatSerializer.a("{translate: ''}"));
 			} else {
-				a.set(d, ChatSerializer.a("{'text': '" + h + "'}"));
+				a.set(d, IChatBaseComponent.ChatSerializer.a("{'text': '" + h + "'}"));
 			}
 			if (f.isEmpty()) {
-				b.set(d, ChatSerializer.a("{translate: ''}"));
+				b.set(d, IChatBaseComponent.ChatSerializer.a("{translate: ''}"));
 			} else {
-				b.set(d, ChatSerializer.a("{'text': '" + f + "'}"));
+				b.set(d, IChatBaseComponent.ChatSerializer.a("{'text': '" + f + "'}"));
 			}
 			cp.getHandle().playerConnection.sendPacket(d);
 		} catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
@@ -575,10 +634,10 @@ public class Function {
 	/**
 	 * ~ Update Difficulty On Client Side ~
 	 * <p>
-	 * Update difficulty on client side to target player
+	 * Update difficulty on client side to selected player.
 	 * </p>
 	 * 
-	 * @param p = player
+	 * @param p = Player
 	 * @param df = EnumDifficulty <i>Difficulty</i>
 	 */
 	public static void updateDifficultyLvlOnClient(Player p, EnumDifficulty df) {
@@ -599,9 +658,9 @@ public class Function {
 	public static void customWorldBorder(Player p, Location l, int size) {
 		CraftPlayer cp = (CraftPlayer) p;
 		WorldBorder wb = new WorldBorder();
-		wb.c(l.getBlockX(), l.getZ());
+		wb.setCenter(l.getBlockX(), l.getZ());
 		cp.getHandle().playerConnection.sendPacket(new PacketPlayOutWorldBorder(wb, EnumWorldBorderAction.SET_CENTER));
-		wb.a(size, size, 0);
+		wb.setSize(size);
 		cp.getHandle().playerConnection.sendPacket(new PacketPlayOutWorldBorder(wb, EnumWorldBorderAction.SET_SIZE));
 	}
 
@@ -775,7 +834,7 @@ public class Function {
 	 * 
 	 * @param pl = Main Plugin
 	 */
-	public static void uchRemove(Main pl) {
+	public static void uhcRemove(Main pl) {
 		Scoreboard sb = pl.getServer().getScoreboardManager().getMainScoreboard();
 		if (sb.getObjective("hp") != null) {
 			sb.getObjective("hp").unregister();
@@ -904,6 +963,7 @@ public class Function {
 	 * @param team = String <i>(Scoreboard Team Name)</i>
 	 * @param i = boolean <i>(True = AutoTeam | False = SelectedTeam)</i>
 	 */
+	@SuppressWarnings("deprecation")
 	public static void joiningTeam(Main pl, Player p, String t, boolean i) {
 		Scoreboard sb = pl.getServer().getScoreboardManager().getMainScoreboard();
 		if (i) {
@@ -919,6 +979,11 @@ public class Function {
 						sb.getTeam(t).addPlayer(p);
 						p.sendMessage("§9Team>§7 You joined team" + sb.getTeam(t).getPrefix() + "§l " + t.replace("_", " ") + "§7.");
 						updateTeamInventory(pl);
+						if (pl.sm) {
+							if (ServerMode.enoughTeamToStart() >= pl.smMts) {
+								ServerMode.onTeamStart();
+							}
+						}
 					} else {
 						p.playSound(p.getLocation(), Sound.NOTE_BASS, 5, 0f);
 					}
@@ -941,10 +1006,10 @@ public class Function {
 	 * @param p = Player
 	 */
 	public static void removeTeam(Main pl, Player p) {
-		if (p.getScoreboard().getPlayerTeam(p) != null) {
-			p.getScoreboard().getPlayerTeam(p).removePlayer(p);
+		if (p.getScoreboard().getEntryTeam(p.getName()) != null) {
+			p.getScoreboard().getEntryTeam(p.getName()).removeEntry(p.getName());
 			p.playSound(p.getLocation(), Sound.ORB_PICKUP, 5, 1f);
-			p.sendMessage("§9Team>§7 You are now in no team.");
+			p.sendMessage("§9Team>§7 You are no longer in team.");
 			updateTeamInventory(pl);
 		} else {
 			p.playSound(p.getLocation(), Sound.NOTE_BASS, 5, 0f);
@@ -1207,7 +1272,7 @@ public class Function {
 		}
 		if (pl.tmMode) {
 			for (Player p : pl.getServer().getOnlinePlayers()) {
-				if (p.getScoreboard().getPlayerTeam(p) == null) {
+				if (p.getScoreboard().getEntryTeam(p.getName()) == null) {
 					p.setGameMode(GameMode.SPECTATOR);
 					p.sendMessage("§9Spectator>§7 You have been move to spectator mode.");
 				}
@@ -1234,15 +1299,15 @@ public class Function {
 				public void run() {
 					for (Player p : pl.getServer().getOnlinePlayers()) {
 						if (pl.tmMode) {
-							Team t = pl.getServer().getScoreboardManager().getMainScoreboard().getPlayerTeam(off);
+							Team t = pl.getServer().getScoreboardManager().getMainScoreboard().getEntryTeam(off.getName());
 							p.sendMessage(pl.okMsg.replace("$[P]", t.getPrefix() + off.getName() + "§r"));
 						} else {
 							p.sendMessage(pl.okMsg.replace("$[P]", off.getName()));
 						}
 					}
 					if (pl.tmMode) {
-						Team t = pl.getServer().getScoreboardManager().getMainScoreboard().getPlayerTeam(off);
-						t.removePlayer(off);
+						Team t = pl.getServer().getScoreboardManager().getMainScoreboard().getEntryTeam(off.getName());
+						t.removeEntry(off.getName());
 						if (t.getSize() == 0) {
 							pl.igTms.remove(t.getName());
 						}
@@ -1334,6 +1399,122 @@ public class Function {
 		default:
 			return gr;
 		}
+	}
+
+	/**
+	 * ~ Kick all players ~
+	 * 
+	 * @param pl = Main Plugin
+	 */
+	public static void kickAllPlayers(Main pl) {
+		for (Player p : pl.getServer().getOnlinePlayers()) {
+			p.kickPlayer("§c§lUltra Hardcore 1.8 - Update/Reload");
+		}
+	}
+
+	/**
+	 * ~ Get Spawn location for player / team ~
+	 * 
+	 * @param pl = <i>Main Plugin<i>
+	 * @param i = <i>(int)</i> Total player / team
+	 * @return ArrayList<Location> = Spawn location of player / team.
+	 */
+	public static ArrayList<Location> getSpawnList(Main pl, int i) {
+		ArrayList<Location> l = new ArrayList<Location>();
+		World w = pl.getServer().getWorlds().get(0);
+		int sz = pl.woArenaSize - 10;
+		int d = getDistance(pl.woArenaSize, i);
+		Random r = new Random();
+		if (d == 0) {
+			for (int a = 0; a < i; a++) {
+				l.add(new Location(w, (-sz + r.nextInt(sz * 2)), 64, (-sz + r.nextInt(sz * 2))));
+			}
+			return l;
+		} else {
+			int a = 1;
+			int b;
+			int e = 0;
+			while (a <= i) {
+				b = 1;
+				Location la = new Location(w, (-sz + r.nextInt(sz * 2)), 64, (-sz + r.nextInt(sz * 2)));
+				if (l.size() != 0) {
+					for (Location lb : l) {
+						if (la.distance(lb) <= d) {
+							b = 0;
+							e++;
+							break;
+						}
+					}
+				}
+				if (b == 1) {
+					Location c = new Location(la.getWorld(), la.getX(), la.getWorld().getHighestBlockYAt(la), la.getZ());
+					if (c.add(0, -1, 0).getBlock().getType().equals(Material.STATIONARY_WATER)) {
+						e++;
+					} else {
+						l.add(la);
+						e = 0;
+						a++;
+					}
+				}
+				if (e >= 500) {
+					l.add(la);
+					e = 0;
+					a++;
+				}
+			}
+			return l;
+		}
+	}
+
+	/**
+	 * ~ Set max distance for each player / team ~
+	 * 
+	 * @param sz = (int) = Arena size
+	 * @param i = <i>(int)</i> Total player / team
+	 * @return int = Max distance.
+	 */
+	private static int getDistance(int sz, int i) {
+		int[] d = { 400, 300, 200, 100, 50 };
+		int a = 0;
+		for (int di : d) {
+			double max = (Math.pow((sz * 2), 2) / (di * i));
+			if (a == 4) {
+				if (max > 159.9) {
+					return 50;
+				} else {
+					return 0;
+				}
+			}
+			if (a == 3) {
+				if (max > 266) {
+					return 100;
+				} else {
+					a++;
+				}
+			}
+			if (a == 2) {
+				if (max > 399) {
+					return 200;
+				} else {
+					a++;
+				}
+			}
+			if (a == 1) {
+				if (max > 444) {
+					return 300;
+				} else {
+					a++;
+				}
+			}
+			if (a == 0) {
+				if (max > 624) {
+					return 400;
+				} else {
+					a++;
+				}
+			}
+		}
+		return 0;
 	}
 
 	/**
@@ -1445,7 +1626,7 @@ public class Function {
 	}
 
 	/**
-	 * ~ Damager Logger | Get Entity Name ~ Get entity name
+	 * ~ Damager Logger | Get Entity Name ~
 	 * 
 	 * @param e = Entity
 	 * @return String
@@ -1631,6 +1812,7 @@ public class Function {
 	 * 
 	 * @param pl = Main Plugin
 	 */
+	@SuppressWarnings("deprecation")
 	public static void updateTeamInventory(Main pl) {
 		Scoreboard sb = pl.getServer().getScoreboardManager().getMainScoreboard();
 		for (ItemStack is : pl.invStore.get("selectteam").getContents()) {
@@ -1678,6 +1860,7 @@ public class Function {
 	 */
 	private static void gameEndReport(final Main pl) {
 		pl.getServer().getScheduler().scheduleSyncDelayedTask(pl, new Runnable() {
+			@SuppressWarnings("deprecation")
 			@Override
 			public void run() {
 				StringBuilder sb = new StringBuilder();
@@ -1720,7 +1903,41 @@ public class Function {
 				for (UUID off : pl.igOffPs.keySet()) {
 					pl.getServer().getScheduler().cancelTask(pl.igOffPs.get(off));
 				}
+				if (pl.sm) {
+					onServerRestart(pl);
+				}
 			}
 		}, 20);
+	}
+
+	/**
+	 * ~ Server Restart ~
+	 * 
+	 * @param pl = Main Plugin
+	 */
+	private static void onServerRestart(final Main pl) {
+		pl.getServer().getScheduler().scheduleSyncDelayedTask(pl, new Runnable() {
+
+			@Override
+			public void run() {
+				pl.getServer().broadcastMessage("§9Server>§7 Server is about to restart in ca 60 seconds.");
+			}
+		}, 20 * 5);
+		pl.getServer().getScheduler().scheduleSyncDelayedTask(pl, new Runnable() {
+
+			@Override
+			public void run() {
+				for (Player p : pl.getServer().getOnlinePlayers()) {
+					p.kickPlayer("§c§lUltra Hardcore 1.8§r\n§cServer Restart§r\n§aThanks for playing.");
+				}
+			}
+		}, 20 * 55);
+		pl.getServer().getScheduler().scheduleSyncDelayedTask(pl, new Runnable() {
+
+			@Override
+			public void run() {
+				pl.getServer().shutdown();
+			}
+		}, 20 * 60);
 	}
 }

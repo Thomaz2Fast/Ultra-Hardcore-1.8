@@ -23,12 +23,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
-import net.minecraft.server.v1_8_R1.PacketPlayOutEntityStatus;
+import net.minecraft.server.v1_8_R3.PacketPlayOutEntityStatus;
 
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_8_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.Inventory;
@@ -881,27 +881,29 @@ public class Gui {
 			}
 		} else if (id.equals("gamerule")) {
 			for (World w : pl.getServer().getWorlds()) {
-				if (pl.grList != null) {
-					if (pl.grList.size() != 0) {
-						for (String gamerule : pl.grList) {
-							String[] gr = gamerule.split("\\|");
-							w.setGameRuleValue(gr[0], gr[1]);
+				if (!w.getName().equalsIgnoreCase("uhc_lobby")) {
+					if (pl.grList != null) {
+						if (pl.grList.size() != 0) {
+							for (String gamerule : pl.grList) {
+								String[] gr = gamerule.split("\\|");
+								w.setGameRuleValue(gr[0], gr[1]);
+							}
+							w.setGameRuleValue("doDaylightCycle", "false");
+							w.setGameRuleValue("naturalRegeneration", "true");
+							w.setGameRuleValue("keepInventory", "true");
 						}
-						w.setGameRuleValue("doDaylightCycle", "false");
-						w.setGameRuleValue("naturalRegeneration", "true");
-						w.setGameRuleValue("keepInventory", "true");
 					}
-				}
-				w.setTime(pl.woSunTime);
-				if (pl.grList.contains("reducedDebugInfo|true")) {
-					for (Player p : pl.getServer().getOnlinePlayers()) {
-						CraftPlayer cp = (CraftPlayer) p;
-						cp.getHandle().playerConnection.sendPacket(new PacketPlayOutEntityStatus(cp.getHandle().playerInteractManager.player, (byte) 22));
-					}
-				} else {
-					for (Player p : pl.getServer().getOnlinePlayers()) {
-						CraftPlayer cp = (CraftPlayer) p;
-						cp.getHandle().playerConnection.sendPacket(new PacketPlayOutEntityStatus(cp.getHandle().playerInteractManager.player, (byte) 23));
+					w.setTime(pl.woSunTime);
+					if (pl.grList.contains("reducedDebugInfo|true")) {
+						for (Player p : pl.getServer().getOnlinePlayers()) {
+							CraftPlayer cp = (CraftPlayer) p;
+							cp.getHandle().playerConnection.sendPacket(new PacketPlayOutEntityStatus(cp.getHandle().playerInteractManager.player, (byte) 22));
+						}
+					} else {
+						for (Player p : pl.getServer().getOnlinePlayers()) {
+							CraftPlayer cp = (CraftPlayer) p;
+							cp.getHandle().playerConnection.sendPacket(new PacketPlayOutEntityStatus(cp.getHandle().playerInteractManager.player, (byte) 23));
+						}
 					}
 				}
 			}

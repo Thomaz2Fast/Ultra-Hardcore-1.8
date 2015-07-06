@@ -21,15 +21,13 @@ package com.thomaztwofast.uhc.commands;
 import java.util.ArrayList;
 import java.util.Random;
 
-import net.minecraft.server.v1_8_R1.ChatSerializer;
-import net.minecraft.server.v1_8_R1.IChatBaseComponent;
-import net.minecraft.server.v1_8_R1.PacketPlayOutChat;
+import net.minecraft.server.v1_8_R3.IChatBaseComponent;
+import net.minecraft.server.v1_8_R3.PacketPlayOutChat;
 
-import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.craftbukkit.v1_8_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
@@ -64,7 +62,7 @@ public class CommandAutoTeam implements CommandExecutor {
 			pl.getLogger().info("Only ingame player can use this command.");
 			return true;
 		} else {
-			if (pl.gmStat == EnumGame.WAITHING && pl.tmMode) {
+			if (pl.gmStat == EnumGame.WAITHING && pl.tmMode && !pl.sm) {
 				Scoreboard sb = pl.getServer().getScoreboardManager().getMainScoreboard();
 				ArrayList<Player> ps = new ArrayList<Player>();
 				ArrayList<Team> atm = new ArrayList<Team>();
@@ -82,9 +80,9 @@ public class CommandAutoTeam implements CommandExecutor {
 					ps.add(p);
 				}
 				for (Team t : sb.getTeams()) {
-					if (t.getPlayers().size() != 0) {
-						for (OfflinePlayer off : t.getPlayers()) {
-							t.removePlayer(off);
+					if (t.getSize() != 0) {
+						for (String off : t.getEntries()) {
+							t.removeEntry(off);
 						}
 					}
 					atm.add(t);
@@ -110,7 +108,7 @@ public class CommandAutoTeam implements CommandExecutor {
 				return true;
 			} else {
 				CraftPlayer cp = (CraftPlayer) sender;
-				IChatBaseComponent icbc = ChatSerializer.a("[{text: '§9AutoTeam>'},{text: '§7 Disabled!', hoverEvent: {action: 'show_text', value: {text: '', extra: [{text: '§9§lHelp?\n\n§7How to enable this command?\n§7Open §econfig.yml§7 file to this plugin\n§7and change the \"Plugin Mode\" => \"true\"\n§7and \"Team Mode\" => \"true\"'}]}}}]");
+				IChatBaseComponent icbc = IChatBaseComponent.ChatSerializer.a("[{text: '§9AutoTeam>'},{text: '§7 Disabled!', hoverEvent: {action: 'show_text', value: {text: '', extra: [{text: '§9§lHelp?\n\n§7How to enable this command?\n§7Open §econfig.yml§7 file to this plugin\n§7and change the \"Plugin Mode\" => \"true\"\n§7and \"Team Mode\" => \"true\"'}]}}}]");
 				cp.getHandle().playerConnection.sendPacket(new PacketPlayOutChat(icbc));
 				return true;
 			}

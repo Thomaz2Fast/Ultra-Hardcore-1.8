@@ -18,11 +18,10 @@
 
 package com.thomaztwofast.uhc.events;
 
-import net.minecraft.server.v1_8_R1.ChatSerializer;
-import net.minecraft.server.v1_8_R1.IChatBaseComponent;
-import net.minecraft.server.v1_8_R1.PacketPlayOutChat;
+import net.minecraft.server.v1_8_R3.IChatBaseComponent;
+import net.minecraft.server.v1_8_R3.PacketPlayOutChat;
 
-import org.bukkit.craftbukkit.v1_8_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -53,7 +52,7 @@ public class UhcDisabledEvent implements Listener {
 		}
 		if (e.getPlayer().isOp()) {
 			CraftPlayer cp = (CraftPlayer) e.getPlayer();
-			IChatBaseComponent icbc = ChatSerializer.a("[{text: '§9UHC>'},{text: '§7 Ultra Hardcore is disabled.', hoverEvent: {action: 'show_text', value: {text: '', extra: [{text: '§9§lHelp?\n\n§7How to enable this plugin?\n§7Open §econfig.yml§7 file to this plugin\n§7and change the \"Plugin Mode\" => \"true\"'}]}}}]");
+			IChatBaseComponent icbc = IChatBaseComponent.ChatSerializer.a("[{text: '§9UHC>'},{text: '§7 Ultra Hardcore is disabled.', hoverEvent: {action: 'show_text', value: {text: '', extra: [{text: '§9§lHelp?\n\n§7How to enable this plugin?\n§7Open §econfig.yml§7 file to this plugin\n§7and change the \"Plugin Mode\" => \"true\"'}]}}}]");
 			cp.getHandle().playerConnection.sendPacket(new PacketPlayOutChat(icbc));
 		}
 	}

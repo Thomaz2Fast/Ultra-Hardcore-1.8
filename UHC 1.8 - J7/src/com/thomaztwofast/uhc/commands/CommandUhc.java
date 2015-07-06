@@ -21,15 +21,14 @@ package com.thomaztwofast.uhc.commands;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.server.v1_8_R1.ChatSerializer;
-import net.minecraft.server.v1_8_R1.IChatBaseComponent;
-import net.minecraft.server.v1_8_R1.PacketPlayOutChat;
+import net.minecraft.server.v1_8_R3.IChatBaseComponent;
+import net.minecraft.server.v1_8_R3.PacketPlayOutChat;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
-import org.bukkit.craftbukkit.v1_8_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.util.StringUtil;
 
@@ -48,12 +47,12 @@ public class CommandUhc implements CommandExecutor, TabCompleter {
 	}
 
 	/**
-	 * Command: Uhc
+	 * <b>~ Command: /uhc ~</b>
 	 * 
-	 * @param sender = CommandSender
-	 * @param cmd = Command
-	 * @param label = CommandText
-	 * @param args = Args
+	 * @param sender = Get the player how trigger the command.
+	 * @param cmd = Get the command that player type in.
+	 * @param label = Get the command in string format.
+	 * @param args = Get all argument that player type in the command.
 	 */
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
@@ -93,7 +92,7 @@ public class CommandUhc implements CommandExecutor, TabCompleter {
 						}
 					} else {
 						CraftPlayer cp = (CraftPlayer) sender;
-						IChatBaseComponent icbc = ChatSerializer.a("[{text: '§9Menu>'},{text: '§7 Disabled!', hoverEvent: {action: 'show_text', value: {text: '', extra: [{text: '§9§lHelp?\n\n§7How to enable this command?\n§7Open §econfig.yml§7 file to this plugin\n§7and change the \"Plugin Mode\" => \"true\"'}]}}}]");
+						IChatBaseComponent icbc = IChatBaseComponent.ChatSerializer.a("[{text: '§9Menu>'},{text: '§7 Disabled!', hoverEvent: {action: 'show_text', value: {text: '', extra: [{text: '§9§lHelp?\n\n§7How to enable this command?\n§7Open §econfig.yml§7 file to this plugin\n§7and change the \"Plugin Mode\" => \"true\"'}]}}}]");
 						cp.getHandle().playerConnection.sendPacket(new PacketPlayOutChat(icbc));
 						return true;
 					}
@@ -131,9 +130,9 @@ public class CommandUhc implements CommandExecutor, TabCompleter {
 	}
 
 	/**
-	 * Show info about Uhc help center / plugin info. (Only Console)
+	 * <b>~ Show info about Uhc help center / plugin info. (Only Console) ~</b>
 	 * 
-	 * @return Text
+	 * @return String
 	 */
 	private String uhcConsole() {
 		StringBuilder sb = new StringBuilder();
@@ -141,7 +140,7 @@ public class CommandUhc implements CommandExecutor, TabCompleter {
 		sb.append("\n §lULTRA HARDCORE§r\n \n");
 		sb.append(" §6Commands:§r\n");
 		if (pl.plMode) {
-			if (pl.tmMode) {
+			if (pl.tmMode && !pl.sm) {
 				sb.append(" §a/AutoTeam:§7 " + pl.getCommand("autoteam").getDescription() + "\n");
 				sb.append(" §a/SelectTeam:§7 " + pl.getCommand("selectteam").getDescription() + "\n");
 			}
@@ -157,7 +156,7 @@ public class CommandUhc implements CommandExecutor, TabCompleter {
 	}
 
 	/**
-	 * Show info about Uhc help center / plugin info. (Only for ingame player)
+	 * <b>~ Show info about Uhc help center / plugin info. (Only for ingame player) ~</b>
 	 * 
 	 * If player type /uhc
 	 * 
@@ -168,7 +167,7 @@ public class CommandUhc implements CommandExecutor, TabCompleter {
 		StringBuilder sb = new StringBuilder();
 		sb.append("[{text: '§8§m--------------------------------------------\n§l ULTRA HARDCORE\n\n §6Commands:\n");
 		if (pl.plMode) {
-			if (pl.tmMode) {
+			if (pl.tmMode && !pl.sm) {
 				sb.append(" §a/AutoTeam:§7 " + pl.getCommand("autoteam").getDescription() + "\n");
 				sb.append(" §a/SelectTeam:§7 " + pl.getCommand("selectteam").getDescription() + "\n");
 			}
@@ -180,15 +179,15 @@ public class CommandUhc implements CommandExecutor, TabCompleter {
 		sb.append(" §aVersion:§e " + pl.getDescription().getVersion() + "\n");
 		sb.append(" §aAuthor: '},{text: '§e" + authorList() + "', hoverEvent: {action: 'show_text', value: {text: '', extra:[{text: '§8§oPN7913.P6WP9M'}]}}},");
 		sb.append("{text: '\n§8§m--------------------------------------------'}]");
-		cp.getHandle().playerConnection.sendPacket(new PacketPlayOutChat(ChatSerializer.a(sb.toString())));
+		cp.getHandle().playerConnection.sendPacket(new PacketPlayOutChat(IChatBaseComponent.ChatSerializer.a(sb.toString())));
 	}
 
 	/**
-	 * Get info about settings of the game.
+	 * <b>~ Get info about settings of the game. ~</b>
 	 * 
-	 * @param i = (1 = Console | 0 = Player)
-	 * @param args
-	 * @return Text
+	 * @param i = (int) (1 = Console | 0 = Player)
+	 * @param ii = (String) Page Number.
+	 * @return String
 	 */
 	private String uhcSettings(int i, String ii) {
 		StringBuilder sb = new StringBuilder();
@@ -317,10 +316,10 @@ public class CommandUhc implements CommandExecutor, TabCompleter {
 	}
 
 	/**
-	 * Get status about this plugin / Ultra Hardcore game.
+	 * <b>~ Get status about this plugin / Ultra Hardcore game. ~</b>
 	 * 
 	 * @param i = (1 = Console | 0 = Player)
-	 * @return Text
+	 * @return String
 	 */
 	private String uhcStatus(int i) {
 		StringBuilder sb = new StringBuilder();
@@ -328,6 +327,10 @@ public class CommandUhc implements CommandExecutor, TabCompleter {
 		sb.append("\n §lULTRA HARDCORE - STATUS§r\n \n");
 		sb.append(" §aPlugin:§7 " + ((pl.plMode) ? "Enabled" : "Disabled") + "§r\n");
 		if (pl.plMode) {
+			sb.append(" §aServer Mode:§7 " + (pl.sm ? "Enabled" : "Disabled") + "§r\n");
+			if (pl.sm) {
+				sb.append(" §aServer ID: §7" + pl.smSID + "§r\n");
+			}
 			sb.append(" §aGame Status:§7 " + pl.gmStat.getGameStatusName() + "§r\n");
 			sb.append(" §aGame Mode:§7 " + ((pl.tmMode) ? "Team" : "Solo") + " Mode§r\n");
 		}
@@ -347,9 +350,9 @@ public class CommandUhc implements CommandExecutor, TabCompleter {
 	}
 
 	/**
-	 * Get Author list from the plugin.
+	 * <b>~ Get Author list from the plugin. ~</b>
 	 * 
-	 * @return Author (Text)
+	 * @return Author (String)
 	 */
 	private String authorList() {
 		String as = "";

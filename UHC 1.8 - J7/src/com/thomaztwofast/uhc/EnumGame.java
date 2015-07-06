@@ -19,7 +19,7 @@
 package com.thomaztwofast.uhc;
 
 public enum EnumGame {
-	DISABLED("Disabled"), FAILED("Failed"), WAITHING("Waithing"), STARTING("Starting"), INGAME("InGame"), FINISH("Finish");
+	DISABLED("Disabled"), LOADING("Loading"), FAILED("Failed"), WAITHING("Waiting"), STARTING("Starting"), INGAME("InGame"), FINISH("Finish");
 
 	private final String s;
 

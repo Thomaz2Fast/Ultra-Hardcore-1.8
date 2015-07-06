@@ -20,14 +20,13 @@ package com.thomaztwofast.uhc.commands;
 
 import java.util.HashMap;
 
-import net.minecraft.server.v1_8_R1.ChatSerializer;
-import net.minecraft.server.v1_8_R1.IChatBaseComponent;
-import net.minecraft.server.v1_8_R1.PacketPlayOutChat;
+import net.minecraft.server.v1_8_R3.IChatBaseComponent;
+import net.minecraft.server.v1_8_R3.PacketPlayOutChat;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.craftbukkit.v1_8_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -59,7 +58,7 @@ public class CommandSelectTeam implements CommandExecutor {
 			pl.getLogger().info("Only ingame player can use this command.");
 			return true;
 		} else {
-			if (pl.gmStat == EnumGame.WAITHING && pl.tmMode) {
+			if (pl.gmStat == EnumGame.WAITHING && pl.tmMode && !pl.sm) {
 				pl.tmsST = true;
 				HashMap<ItemStack, Integer> item = pl.itemStore.get("selectteam");
 				for (Player p : pl.getServer().getOnlinePlayers()) {
@@ -69,7 +68,7 @@ public class CommandSelectTeam implements CommandExecutor {
 				return true;
 			} else {
 				CraftPlayer cp = (CraftPlayer) sender;
-				IChatBaseComponent icbc = ChatSerializer.a("[{text: '§9SelectTeam>'},{text: '§7 Disabled!', hoverEvent: {action: 'show_text', value: {text: '', extra: [{text: '§9§lHelp?\n\n§7How to enable this command?\n§7Open §econfig.yml§7 file to this plugin\n§7and change the \"Plugin Mode\" => \"true\"\n§7and \"Team Mode\" => \"true\"'}]}}}]");
+				IChatBaseComponent icbc = IChatBaseComponent.ChatSerializer.a("[{text: '§9SelectTeam>'},{text: '§7 Disabled!', hoverEvent: {action: 'show_text', value: {text: '', extra: [{text: '§9§lHelp?\n\n§7How to enable this command?\n§7Open §econfig.yml§7 file to this plugin\n§7and change the \"Plugin Mode\" => \"true\"\n§7and \"Team Mode\" => \"true\"'}]}}}]");
 				cp.getHandle().playerConnection.sendPacket(new PacketPlayOutChat(icbc));
 				return true;
 			}

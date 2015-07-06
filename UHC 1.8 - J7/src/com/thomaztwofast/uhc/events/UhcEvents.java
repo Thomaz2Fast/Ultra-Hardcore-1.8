@@ -18,13 +18,15 @@
 
 package com.thomaztwofast.uhc.events;
 
-import net.minecraft.server.v1_8_R1.EnumDifficulty;
-import net.minecraft.server.v1_8_R1.Item;
+import net.minecraft.server.v1_8_R3.EnumDifficulty;
+import net.minecraft.server.v1_8_R3.Item;
 
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_8_R1.entity.CraftPlayer;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.Sound;
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -67,10 +69,11 @@ public class UhcEvents implements Listener {
 	 * 
 	 * @param e = AsyncPlayerChatEvent (Player, Chat message)
 	 */
+	@SuppressWarnings("deprecation")
 	@EventHandler
 	public void playerChat(AsyncPlayerChatEvent e) {
 		Player p = e.getPlayer();
-		Team t = p.getScoreboard().getPlayerTeam(p);
+		Team t = p.getScoreboard().getEntryTeam(p.getName());
 		if (p.getGameMode().equals(GameMode.SPECTATOR)) {
 			if (pl.chatS.isEmpty()) {
 				p.sendMessage("§9Chat>§7 Disabled!");
@@ -83,7 +86,20 @@ public class UhcEvents implements Listener {
 					p.sendMessage("§9Chat>§7 Disabled!");
 					e.setCancelled(true);
 				}
-				e.setFormat(pl.chatTT.replace("$[P]", t.getPrefix() + p.getName() + t.getSuffix()).replace("$[M]", e.getMessage()));
+				if (!pl.chatTPC.isEmpty() && e.getMessage().startsWith("@")) {
+					for (OfflinePlayer op : t.getPlayers()) {
+						if (op.isOnline()) {
+							Player tp = (Player) op;
+							tp.sendMessage(pl.chatTPC.replace("$[P]", t.getPrefix() + p.getName() + t.getSuffix()).replace("$[M]", e.getMessage().replaceFirst("@", "")));
+							if (!tp.equals(p)) {
+								tp.playSound(tp.getLocation(), Sound.NOTE_PIANO, 5f, 1.7f);
+							}
+						}
+					}
+					e.setCancelled(true);
+				} else {
+					e.setFormat(pl.chatTT.replace("$[P]", t.getPrefix() + p.getName() + t.getSuffix()).replace("$[M]", e.getMessage()));
+				}
 			} else {
 				if (pl.tmMode) {
 					if (pl.chatTD.isEmpty()) {
@@ -127,7 +143,7 @@ public class UhcEvents implements Listener {
 						if (pl.offPs.contains(e.getPlayer().getUniqueId())) {
 							Location l;
 							if (pl.tmMode) {
-								l = pl.igTms.get(e.getPlayer().getScoreboard().getPlayerTeam(e.getPlayer()).getName());
+								l = pl.igTms.get(e.getPlayer().getScoreboard().getEntryTeam(e.getPlayer().getName()).getName());
 								l = new Location(l.getWorld(), l.getBlockX() + .5, l.getWorld().getHighestBlockYAt(l) + 2, l.getBlockZ() + .5);
 							} else {
 								l = pl.igPsl.get(e.getPlayer().getUniqueId());
@@ -151,7 +167,7 @@ public class UhcEvents implements Listener {
 								@Override
 								public void run() {
 									if (pl.tmMode) {
-										Function.customWorldBorder(e.getPlayer(), pl.igTms.get(e.getPlayer().getScoreboard().getPlayerTeam(e.getPlayer()).getName()), pl.fzSize);
+										Function.customWorldBorder(e.getPlayer(), pl.igTms.get(e.getPlayer().getScoreboard().getEntryTeam(e.getPlayer().getName()).getName()), pl.fzSize);
 									} else {
 										Function.customWorldBorder(e.getPlayer(), pl.igPsl.get(e.getPlayer().getUniqueId()), pl.fzSize);
 									}
@@ -315,7 +331,7 @@ public class UhcEvents implements Listener {
 						ItemStack is = e.getPlayer().getInventory().getItem(4);
 						if (is != null) {
 							if (is.getType() == Material.WRITTEN_BOOK) {
-								net.minecraft.server.v1_8_R1.ItemStack is_ms = new net.minecraft.server.v1_8_R1.ItemStack(Item.d("minecraft:written_book"));
+								net.minecraft.server.v1_8_R3.ItemStack is_ms = new net.minecraft.server.v1_8_R3.ItemStack(Item.d("minecraft:written_book"));
 								CraftPlayer cp = (CraftPlayer) e.getPlayer();
 								cp.getInventory().setHeldItemSlot(4);
 								cp.getHandle().openBook(is_ms);
@@ -375,8 +391,8 @@ public class UhcEvents implements Listener {
 					pl.igPs.remove(e.getEntity().getUniqueId());
 					pl.igPsl.remove(e.getEntity().getUniqueId());
 					if (pl.tmMode) {
-						Team t = e.getEntity().getScoreboard().getPlayerTeam(e.getEntity());
-						t.removePlayer(e.getEntity());
+						Team t = e.getEntity().getScoreboard().getEntryTeam(e.getEntity().getName());
+						t.removeEntry(e.getEntity().getName());
 						if (t.getSize() == 0) {
 							pl.igTms.remove(t.getName());
 						}
@@ -420,7 +436,7 @@ public class UhcEvents implements Listener {
 			if (pl.gmStat == EnumGame.STARTING || pl.gmStat == EnumGame.INGAME || pl.gmStat == EnumGame.FINISH) {
 				if (pl.igPs.containsKey(e.getPlayer().getUniqueId())) {
 					if (pl.tmMode) {
-						e.setRespawnLocation(pl.igTms.get(e.getPlayer().getScoreboard().getPlayerTeam(e.getPlayer()).getName()).add(0.5, 0, 0.5));
+						e.setRespawnLocation(pl.igTms.get(e.getPlayer().getScoreboard().getEntryTeam(e.getPlayer().getName()).getName()).add(0.5, 0, 0.5));
 					} else {
 						e.setRespawnLocation(pl.igPsl.get(e.getPlayer().getUniqueId()).add(0.5, 0, 0.5));
 					}

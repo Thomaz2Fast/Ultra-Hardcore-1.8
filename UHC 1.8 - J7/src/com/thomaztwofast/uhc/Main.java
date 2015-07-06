@@ -36,10 +36,12 @@ import com.thomaztwofast.uhc.commands.CommandStart;
 import com.thomaztwofast.uhc.commands.CommandUhc;
 import com.thomaztwofast.uhc.events.UhcDisabledEvent;
 import com.thomaztwofast.uhc.events.UhcEvents;
+import com.thomaztwofast.uhc.events.UhcServerEvents;
 
 public class Main extends JavaPlugin {
 	public EnumGame gmStat = EnumGame.DISABLED;
 	public boolean plMode = false;
+	public boolean sm = false;
 	public boolean clShd = false;
 	public boolean uhcBook = false;
 	public boolean uhcBookConf = false;
@@ -78,6 +80,10 @@ public class Main extends JavaPlugin {
 	public int okMaxTime = 5;
 	public int sysTimeStart;
 	public int sysTimeGame;
+	public int smMps = 8;
+	public int smMts = 4;
+	public int smCn = 30;
+	public int smSID = 1;
 	public String tlh = "§cUltra Hardcore";
 	public String tlf = "";
 	public String ubName = "§eUltra Hardcore";
@@ -86,7 +92,9 @@ public class Main extends JavaPlugin {
 	public String chatD = "<$[P]> $[M]";
 	public String chatTD = "<§o$[P]§r> $[M]";
 	public String chatTT = "<$[P]> $[M]";
+	public String chatTPC = "§7§lTEAM§r <$[P]> §5$[M]";
 	public String chatS = "<§7§o$[P]§r> $[M]";
+	public String smMotd = "$[S]|$[OP]|$[IP]";
 	private PluginManager pm;
 
 	/**
@@ -100,13 +108,17 @@ public class Main extends JavaPlugin {
 			Function.updateTabListHeaderFooterAllPlayers(getServer().getOnlinePlayers(), "", "");
 		}
 		if (plMode) {
-			Function.uchRemove(this);
+			if (sm) {
+				ServerMode.onDisable();
+			} else {
+				Function.uhcRemove(this);
+			}
 		}
 	}
 
 	/**
-	 * Trigger when server loading plugins.<br>
-	 * Save default config & load config to memory.
+	 * Trigger when server loading this plugin.<br>
+	 * Save the default config if the file exist and load the config to memory.
 	 */
 	@Override
 	public void onLoad() {
@@ -116,8 +128,8 @@ public class Main extends JavaPlugin {
 	}
 
 	/**
-	 * Trigger when server is finish loading plugins.<br>
-	 * Command | Tablist Header & footer | events | uhc setup
+	 * Trigger when server is enabled this plugin.<br>
+	 * Command | Tablist Header & Footer | Events | Private/Friend Mode | Server Mode
 	 */
 	@Override
 	public void onEnable() {
@@ -133,8 +145,14 @@ public class Main extends JavaPlugin {
 			Function.updateTabListHeaderFooterAllPlayers(getServer().getOnlinePlayers(), tlh, tlf);
 		}
 		if (plMode) {
-			pm.registerEvents(new UhcEvents(this), this);
-			Function.uhcSetup(this);
+			if (sm) {
+				gmStat = EnumGame.LOADING;
+				pm.registerEvents(new UhcServerEvents(this), this);
+				ServerMode.onLoad(this);
+			} else {
+				pm.registerEvents(new UhcEvents(this), this);
+				Function.uhcSetup(this);
+			}
 		} else {
 			pm.registerEvents(new UhcDisabledEvent(this), this);
 		}

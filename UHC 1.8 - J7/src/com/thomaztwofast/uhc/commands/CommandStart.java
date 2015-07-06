@@ -20,24 +20,21 @@ package com.thomaztwofast.uhc.commands;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.UUID;
 
-import net.minecraft.server.v1_8_R1.ChatSerializer;
-import net.minecraft.server.v1_8_R1.EnumDifficulty;
-import net.minecraft.server.v1_8_R1.IChatBaseComponent;
-import net.minecraft.server.v1_8_R1.PacketPlayOutChat;
+import net.minecraft.server.v1_8_R3.EnumDifficulty;
+import net.minecraft.server.v1_8_R3.IChatBaseComponent;
+import net.minecraft.server.v1_8_R3.PacketPlayOutChat;
 
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
-import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
-import org.bukkit.craftbukkit.v1_8_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -49,11 +46,11 @@ import com.google.common.collect.ImmutableList;
 import com.thomaztwofast.uhc.EnumGame;
 import com.thomaztwofast.uhc.Function;
 import com.thomaztwofast.uhc.Main;
+import com.thomaztwofast.uhc.ServerMode;
 
 public class CommandStart implements CommandExecutor, TabCompleter {
 	private List<String> tab = ImmutableList.of("uhc");
 	private Main pl;
-	private Random r = new Random();
 	private ArrayList<UUID> sysOP = new ArrayList<UUID>();
 	int sysCountdown = 30;
 	int sysTpCoolDown = 60;
@@ -94,8 +91,14 @@ public class CommandStart implements CommandExecutor, TabCompleter {
 							gameRaport(sender);
 							return true;
 						} else {
-							gamePreparing(Integer.parseInt(data[0]));
-							return true;
+							if (pl.sm) {
+								ServerMode.onStart(sender.getName(), ((Player) sender).getUniqueId());
+								sysOP.remove(((Player) sender).getUniqueId());
+								return true;
+							} else {
+								gamePreparing(Integer.parseInt(data[0]));
+								return true;
+							}
 						}
 					} else {
 						gameRaport(sender);
@@ -104,7 +107,7 @@ public class CommandStart implements CommandExecutor, TabCompleter {
 				}
 			} else {
 				CraftPlayer cp = (CraftPlayer) sender;
-				IChatBaseComponent icbc = ChatSerializer.a("[{text: '§9Start>'},{text: '§7 Disabled!', hoverEvent: {action: 'show_text', value: {text: '', extra: [{text: '§9§lHelp?\n\n§7How to enable this command?\n§7Open §econfig.yml§7 file to this plugin\n§7and change the \"Plugin Mode\" => \"true\"'}]}}}]");
+				IChatBaseComponent icbc = IChatBaseComponent.ChatSerializer.a("[{text: '§9Start>'},{text: '§7 Disabled!', hoverEvent: {action: 'show_text', value: {text: '', extra: [{text: '§9§lHelp?\n\n§7How to enable this command?\n§7Open §econfig.yml§7 file to this plugin\n§7and change the \"Plugin Mode\" => \"true\"'}]}}}]");
 				cp.getHandle().playerConnection.sendPacket(new PacketPlayOutChat(icbc));
 				return true;
 			}
@@ -130,7 +133,7 @@ public class CommandStart implements CommandExecutor, TabCompleter {
 	}
 
 	/**
-	 * <b>~ Befor Start report ~</b>
+	 * <b>~ Befor Start - Info ~</b>
 	 * 
 	 * @param sender = Get player how trigger the command.
 	 */
@@ -167,7 +170,7 @@ public class CommandStart implements CommandExecutor, TabCompleter {
 	}
 
 	/**
-	 * <b>~ Solo Game Mode Raport ~</b>
+	 * <b>~ Solo Game Mode - Info ~</b>
 	 * 
 	 * @return String[]
 	 */
@@ -178,7 +181,7 @@ public class CommandStart implements CommandExecutor, TabCompleter {
 	}
 
 	/**
-	 * <b>~ Team Game Mode Raport ~</b>
+	 * <b>~ Team Game Mode - Info ~</b>
 	 * 
 	 * @return String[]
 	 */
@@ -194,7 +197,7 @@ public class CommandStart implements CommandExecutor, TabCompleter {
 			}
 		}
 		for (Player p : pl.getServer().getOnlinePlayers()) {
-			if (sb.getPlayerTeam(p) == null) {
+			if (sb.getEntryTeam(p.getName()) == null) {
 				if (!noneTeamPlayer.isEmpty()) {
 					noneTeamPlayer += "§7, ";
 				}
@@ -213,10 +216,11 @@ public class CommandStart implements CommandExecutor, TabCompleter {
 	 * 
 	 * @param i = <i>(int)</i> Total player / team.
 	 */
+	@SuppressWarnings("deprecation")
 	private void gamePreparing(int i) {
 		pl.gmStat = EnumGame.STARTING;
 		Function.gamePreparingToStartSetup(pl);
-		ArrayList<Location> sl = getSpawnList(i);
+		ArrayList<Location> sl = Function.getSpawnList(pl, i);
 		int a = 0;
 		if (pl.tmMode) {
 			ArrayList<Team> tl = getTeamList();
@@ -309,96 +313,6 @@ public class CommandStart implements CommandExecutor, TabCompleter {
 	}
 
 	/**
-	 * <b>~ Get Spawn location for player / team ~</b>
-	 * 
-	 * @param i = <i>(int)</i> Total player / team
-	 * @return ArrayList<Location> = Spawn location of player / team.
-	 */
-	private ArrayList<Location> getSpawnList(int i) {
-		ArrayList<Location> l = new ArrayList<Location>();
-		World w = pl.getServer().getWorlds().get(0);
-		int sz = pl.woArenaSize - 10;
-		int d = getDistance(pl.woArenaSize, i);
-		if (d == 0) {
-			for (int a = 0; a < i; a++) {
-				l.add(new Location(w, (-sz + r.nextInt(sz * 2)), 64, (-sz + r.nextInt(sz * 2))));
-			}
-			return l;
-		} else {
-			int a = 1;
-			int b;
-			while (a <= i) {
-				b = 1;
-				Location la = new Location(w, (-sz + r.nextInt(sz * 2)), 64, (-sz + r.nextInt(sz * 2)));
-				if (l.size() != 0) {
-					for (Location lb : l) {
-						if (la.distance(lb) <= d) {
-							b = 0;
-							break;
-						}
-					}
-				}
-				if (b == 1) {
-					l.add(la);
-					a++;
-				}
-			}
-			return l;
-		}
-	}
-
-	/**
-	 * <b>~ Set max distance for each player / team ~</b>
-	 * 
-	 * @param sz = (int) = Arena size
-	 * @param i = <i>(int)</i> Total player / team
-	 * @return int = Max distance.
-	 */
-	private int getDistance(int sz, int i) {
-		int[] d = { 400, 300, 200, 100, 50 };
-		int a = 0;
-		for (int di : d) {
-			double max = (Math.pow((sz * 2), 2) / (di * i));
-			if (a == 4) {
-				if (max > 159.9) {
-					return 50;
-				} else {
-					return 0;
-				}
-			}
-			if (a == 3) {
-				if (max > 266) {
-					return 100;
-				} else {
-					a++;
-				}
-			}
-			if (a == 2) {
-				if (max > 399) {
-					return 200;
-				} else {
-					a++;
-				}
-			}
-			if (a == 1) {
-				if (max > 444) {
-					return 300;
-				} else {
-					a++;
-				}
-			}
-			if (a == 0) {
-				if (max > 624) {
-					return 400;
-				} else {
-					a++;
-				}
-			}
-		}
-		return 0;
-	}
-
-	/**
 	 * <b>~ Get teams ~</b>
 	 * 
 	 * @return ArrayList<Team>
@@ -466,6 +380,16 @@ public class CommandStart implements CommandExecutor, TabCompleter {
 								} else {
 									Function.sendActionBarPlayerMessages(p, "§7" + sysCountdown);
 								}
+							}
+						}
+					}
+				}
+				if (sysCountdown == 30) {
+					for (UUID u : pl.igPs.keySet()) {
+						if (pl.igPs.get(u) != null) {
+							Player p = pl.igPs.get(u);
+							if (p.isOnline()) {
+								p.teleport(p.getLocation().add(0, 0.5, 0));
 							}
 						}
 					}

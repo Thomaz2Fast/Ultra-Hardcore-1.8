@@ -20,6 +20,22 @@
 # --- Plugin Mode ---
 Plugin: false
 
+# --- Server Mode ---
+#
+#    ~ Motd ~
+#  Server ID        =>    $[ID]
+#  Game Status      =>    $[S]
+#  Online Player    =>    $[OP]
+#  InGame Player    =>    $[IP]
+#
+ServerMode:
+  Enabled: false
+  ServerID: 1
+  MinPlayerToStart: 8
+  MinTeamToStart: 4
+  Countdown: 30
+  Motd: '$[ID]|$[S]|$[OP]|$[IP]'
+
 # --- Player List Header & Footer ---
 TabList:
   Enabled: false
@@ -131,3 +147,4 @@ GlobalChat:
   Teams:
     Default: '<&o$[P]&r> $[M]'
     Team: '<$[P]> $[M]'
+    PrivateChat: '&7&lTeam&r <$[P]> &7$[M]'

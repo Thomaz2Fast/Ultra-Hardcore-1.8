@@ -23,9 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import net.minecraft.server.v1_8_R1.ChatSerializer;
-import net.minecraft.server.v1_8_R1.IChatBaseComponent;
-import net.minecraft.server.v1_8_R1.PacketPlayOutChat;
+import net.minecraft.server.v1_8_R3.IChatBaseComponent;
+import net.minecraft.server.v1_8_R3.PacketPlayOutChat;
 
 import org.bukkit.Location;
 import org.bukkit.Sound;
@@ -35,7 +34,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
-import org.bukkit.craftbukkit.v1_8_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
@@ -91,7 +90,7 @@ public class CommandChunkloader implements CommandExecutor, TabCompleter {
 		} else {
 			if (pl.plMode) {
 				CraftPlayer cp = (CraftPlayer) sender;
-				IChatBaseComponent icbc = ChatSerializer.a("[{text: '§9ChunkLoader>'},{text: '§7 Disabled!', hoverEvent: {action: 'show_text', value: {text: '', extra: [{text: '§9§lHelp?\n\n§7How to enable this command?\n§7Open §econfig.yml§7 file to this plugin\n§7and change the \"Plugin Mode\" => \"false\"'}]}}}]");
+				IChatBaseComponent icbc = IChatBaseComponent.ChatSerializer.a("[{text: '§9ChunkLoader>'},{text: '§7 Disabled!', hoverEvent: {action: 'show_text', value: {text: '', extra: [{text: '§9§lHelp?\n\n§7How to enable this command?\n§7Open §econfig.yml§7 file to this plugin\n§7and change the \"Plugin Mode\" => \"false\"'}]}}}]");
 				cp.getHandle().playerConnection.sendPacket(new PacketPlayOutChat(icbc));
 				return true;
 			} else {
@@ -330,10 +329,10 @@ public class CommandChunkloader implements CommandExecutor, TabCompleter {
 	/**
 	 * <b>~ ChunkLoader Progress Scoreboard ~</b>
 	 * <p>
-	 * Update ChunkLoader scoreboard progress and display to target player.
+	 * Update ChunkLoader scoreboard progress and display to selected player.
 	 * </p>
 	 * 
-	 * @param p = Targed player
+	 * @param p = Selected player
 	 */
 	private void chunkloaderBoard(Player p) {
 		if (sb.getObjective("c") != null) {
