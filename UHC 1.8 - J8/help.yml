@@ -1,0 +1,22 @@
+Index:
+  Title: " §lUHC - HELP CENTER §8§l[§a§l%1 - %2§8§l]\n \n"
+  Pages:
+    "1":
+    - "How to enable this plugin?|0"
+    - "How to enable command /ChunkLoader?|1"
+    - "How to enable Auto/Select Team commands?|2"
+    - "How to enable Server Mode?|3"
+
+HelpInfo:
+  "0":
+    Title: "How to enable this plugin?"
+    Description: " §61:§7 Open the config file.\n §62:§7 Find '§ePlugin.Enabled§7'.\n §63:§7 Change the value from '§efalse§7' -> '§etrue§7'.\n §64:§7 Save the config file and restart your server."
+  "1":
+    Title: "How to enable command /ChunkLoader?"
+    Description: " §61:§7 Open the config file.\n §62:§7 Find '§ePlugin.Enabled§7'.\n §63:§7 Change the value from '§etrue§7' -> '§efalse§7'.\n §64:§7 Save the config file and restart your server."
+  "2":
+    Title: "How to enable Auto/Select Team commands?"
+    Description: " §61:§7 Open the config file.\n §62:§7 Find '§ePlugin.Enabled§7'.\n §63:§7 Change the value from '§efalse§7' -> '§etrue§7'.\n §64:§7 Make sure the server mode is disabled.\n §65:§7 Find '§eGame.TeamMode§7'.\n §66:§7 Change the value from '§efalse§7' -> '§etrue§7'.\n §67:§7 Save the config file and restart your server."
+  "3":
+    Title: "How to enable Server Mode?"
+    Description: " §61:§7 Open the config file.\n §62:§7 Find '§ePlugin.Enabled§7'.\n §62:§7 Change the value from '§efalse§7' -> '§etrue§7'.\n §63:§7 Find '§eServerMode.Enabled§7'.\n §64:§7 Change the value from '§efalse§7' -> '§etrue§7'.\n §65:§7 Save the config file and restart your server."

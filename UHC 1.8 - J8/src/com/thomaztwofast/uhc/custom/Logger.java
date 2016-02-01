@@ -1,6 +1,6 @@
 /*
  * Ultra Hardcore 1.8, a Minecraft survival game mode.
- * Copyright (C) <2015> Thomaz2Fast
+ * Copyright (C) <2016> Thomaz2Fast
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,23 +16,35 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.thomaztwofast.uhc;
+package com.thomaztwofast.uhc.custom;
 
-public enum EnumGame {
-	DISABLED("Disabled"), LOADING("Loading"), FAILED("Failed"), WAITHING("Waiting"), STARTING("Starting"), INGAME("InGame"), FINISH("Finish");
+import com.thomaztwofast.uhc.Main;
 
-	private final String s;
+public class Logger {
+	private String px;
 
-	EnumGame(String GameStatus) {
-		this.s = GameStatus;
+	public Logger(Main main) {
+		px = "[" + main.getDescription().getName() + "] ";
 	}
 
 	/**
-	 * ~ Getting Game Status ~
-	 * 
-	 * @return <b>[String]</b> Get GameStatus in string format.
+	 * Log > Info
 	 */
-	public String getGameStatusName() {
-		return s;
+	public void info(String m) {
+		System.out.println(px + m);
+	}
+
+	/**
+	 * Log > Error
+	 */
+	public void warn(String m) {
+		System.err.println("\u001B[31m" + px + m + "\u001B[0m");
+	}
+
+	/**
+	 * Log > Debug
+	 */
+	public void debug(String m) {
+		System.out.println("\u001B[35m" + px + "[DEBUG] " + m + "\u001B[0m");
 	}
 }
