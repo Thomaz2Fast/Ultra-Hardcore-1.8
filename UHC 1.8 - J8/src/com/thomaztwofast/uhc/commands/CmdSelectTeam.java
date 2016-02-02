@@ -36,11 +36,11 @@ public class CmdSelectTeam implements CommandExecutor {
 	}
 
 	/**
-	 * Command 				>	SelectTeam
+	 * Command 			>	SelectTeam
 	 * Enabled Console		>	No
-	 * Default Permission 	>	Everyone
-	 * Special Permission	>	OP / Permission node.
-	 * 							[com.thomaztwofast.uhc.commands.selectteam.admin]
+	 * Default Permission 		>	Everyone
+	 * Special Permission		>	OP / Permission node.
+	 * 					[com.thomaztwofast.uhc.commands.selectteam.admin]
 	 * 
 	 * Description			>	All registered players will get a item to the inventories.
 	 */
@@ -64,7 +64,7 @@ public class CmdSelectTeam implements CommandExecutor {
 			JChat ic = new JChat();
 			ic.add("SelectTeam> ", null, 9, null, null);
 			if (pl.getPlFun().hasPermission(p.cp, Perm.UHC)) {
-				ic.add("Disabled!", null, 7, "2|/uhc help page 2", "§6§lHelp Information\n§7Click here to find out how to\n§7enable this command?");
+				ic.add("Disabled!", null, 7, "2|/uhc help page 2", "Â§6Â§lHelp Information\nÂ§7Click here to find out how to\nÂ§7enable this command?");
 			} else {
 				ic.add("Disabled!", null, 7, null, null);
 			}
