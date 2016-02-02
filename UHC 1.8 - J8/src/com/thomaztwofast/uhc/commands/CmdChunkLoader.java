@@ -52,9 +52,9 @@ public class CmdChunkLoader implements CommandExecutor, TabCompleter {
 	}
 
 	/**
-	 * Command				>	ChunkLoader
+	 * Command			>	ChunkLoader
 	 * Enabled Console		>	No
-	 * Default Permission	>	OP
+	 * Default Permission		>	OP
 	 * 
 	 * Description			>	Load/Generate chunk in the UHC arena by specific size.
 	 */
@@ -66,18 +66,18 @@ public class CmdChunkLoader implements CommandExecutor, TabCompleter {
 				JChat ic = new JChat();
 				ic.add("ChunkLoader> ", null, 9, null, null);
 				if (pl.getPlFun().hasPermission(p.cp, Perm.UHC)) {
-					ic.add("Disabled!", null, 7, "2|/uhc help page 1", "§6§lHelp Information\n§7Click here to find out how to\n§7enable this command?");
+					ic.add("Disabled!", null, 7, "2|/uhc help page 1", "Â§6Â§lHelp Information\nÂ§7Click here to find out how to\nÂ§7enable this command?");
 				} else {
 					ic.add("Disabled!", null, 7, null, null);
 				}
 				p.sendRawICMessage(ic.a());
 				return true;
 			} else if (cl.isRunning()) {
-				p.sendMessage("ChunkLoader", "In progress from§e " + cl.getPlayerName() + "§7.");
+				p.sendMessage("ChunkLoader", "In progress fromÂ§e " + cl.getPlayerName() + "Â§7.");
 				p.sendMessage("ChunkLoader", cl.getProgress() + "% Completed.");
 				return true;
 			} else if (arg.length == 0) {
-				p.sendActionMessage("§7Loading...");
+				p.sendActionMessage("Â§7Loading...");
 				p.sendRawICMessage(getChunkLoaderDisplay(p.cp.getUniqueId()));
 				p.sendActionMessage("");
 				return true;
@@ -87,7 +87,7 @@ public class CmdChunkLoader implements CommandExecutor, TabCompleter {
 				uid.clear();
 				return true;
 			}
-			p.sendActionMessage("§7Loading ChunkLoader...");
+			p.sendActionMessage("Â§7Loading ChunkLoader...");
 			p.sendRawICMessage(getChunkLoaderDisplay(p.cp.getUniqueId()));
 			p.sendActionMessage("");
 			return true;
@@ -173,7 +173,7 @@ public class CmdChunkLoader implements CommandExecutor, TabCompleter {
 			}
 
 			ic.add(" If everything is okay?\n Type the command below to start.\n", null, 7, null, null);
-			ic.add(" /ChunkLoader Start\n", null, 8, "2|/chunkloader start", "§e§l>§r §a/ChunkLoader Start§r");
+			ic.add(" /ChunkLoader Start\n", null, 8, "2|/chunkloader start", "Â§eÂ§l>Â§r Â§a/ChunkLoader StartÂ§r");
 			if (!uid.contains(u)) {
 				uid.add(u);
 			}
