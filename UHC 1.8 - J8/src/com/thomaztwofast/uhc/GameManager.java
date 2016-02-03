@@ -972,7 +972,7 @@ public class GameManager {
 							} else {
 								if (sysCountdown <= 5) {
 									if (sysCountdown == 1) {
-										p.sendTitleMessage("", "§6Starting in §c§l" + sysCountdown + "§r§6 secund", 0, 21, 5);
+										p.sendTitleMessage("", "§6Starting in §c§l" + sysCountdown + "§r§6 second", 0, 21, 5);
 										p.playLocalSound(Sound.NOTE_PLING, 1f);
 									} else if (sysCountdown == 0) {
 										p.sendTitleMessage("", "§a§lBEGIN!", 0, 21, 10);
@@ -983,7 +983,7 @@ public class GameManager {
 										p.cp.setNoDamageTicks(0);
 										p.cp.setGameMode(GameMode.SURVIVAL);
 									} else {
-										p.sendTitleMessage("", "§6Starting in §c§l" + sysCountdown + "§r§6 secunds", 0, 21, 5);
+										p.sendTitleMessage("", "§6Starting in §c§l" + sysCountdown + "§r§6 seconds", 0, 21, 5);
 										p.playLocalSound(Sound.NOTE_PLING, 1f);
 									}
 								} else {

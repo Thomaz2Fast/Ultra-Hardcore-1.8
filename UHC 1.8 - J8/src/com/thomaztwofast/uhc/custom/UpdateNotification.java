@@ -98,7 +98,7 @@ public class UpdateNotification {
 		for (String l : s.split("\n")) {
 			if (l.equals("Requirements")) {
 				break;
-			} else if (i == 10) {
+			} else if (i == 9) {
 				o += "\n §7Read more about this update? Click the link below.\n \n";
 				break;
 			}

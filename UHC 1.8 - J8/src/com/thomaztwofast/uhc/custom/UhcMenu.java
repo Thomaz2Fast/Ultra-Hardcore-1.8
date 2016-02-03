@@ -48,7 +48,7 @@ public class UhcMenu {
 		f = main.getPlFun();
 		menu = f.createItem(Material.WATCH, 0, "§cUltra Hardcore 1.8 - Menu", null);
 		Inventory iv = pl.getServer().createInventory(null, (c.g_teamMode() ? 18 : 9), "§8UHC>§r Menu");
-		iv.setItem(3, f.createItem(Material.PAPER, 0, "§6§lGame Settings", new String[] { "1|0|§7Want to change some UHC {N} §7settings without reloading {N} §7the server?" }));
+		iv.setItem(3, f.createItem(Material.PAPER, 0, "§6§lGame Settings", new String[] { "1|0|§7Want to change some UHC {N} §7settings?" }));
 		iv.setItem(5, f.createItem(Material.PAPER, 0, "§6§lGamerule", new String[] { "1|0|§7Want to change some {N} §7gamerule?" }));
 		if (c.g_teamMode()) {
 			iv.setItem(13, f.createItem(Material.PAPER, 0, "§6§lTeam Options", new String[] { "1|0|§7Want to change some {N} §7team settings?" }));

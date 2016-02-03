@@ -162,13 +162,13 @@ public class CmdChunkLoader implements CommandExecutor, TabCompleter {
 						ic.add("  " + i + ": ", null, 6, null, null);
 						ic.add("World '", null, 7, null, null);
 						ic.add(w.getName(), null, 14, null, null);
-						ic.add("', Chunk '", null, 7, null, null);
+						ic.add("', Chunks '", null, 7, null, null);
 						ic.add(cl.size() + "", null, 14, null, null);
 						ic.add("'\n", null, 7, null, null);
 						i++;
 					}
 				}
-				ic.add("  Total Chunk: ", null, 6, null, null);
+				ic.add("  Total Chunks: ", null, 6, null, null);
 				ic.add((cl.size() * wl.size()) + "\n \n", null, 12, null, null);
 			}
 
