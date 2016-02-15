@@ -120,7 +120,11 @@ public class UhcServer {
 				gm.getTeam().updateInventory();
 			}
 		}
-		updateWaitingScoreboard(new int[] { 2 });
+		pl.getServer().getScheduler().runTaskLater(pl, new Runnable() {
+			public void run() {
+				updateWaitingScoreboard(new int[] { 2 });
+			}
+		}, 0);
 	}
 
 	/**

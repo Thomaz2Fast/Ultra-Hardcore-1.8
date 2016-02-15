@@ -135,7 +135,7 @@ public class PlayerData {
 		cp.setBedSpawnLocation(null);
 		cp.setFallDistance(0);
 		cp.setNoDamageTicks(200);
-		cp.setHealth(20d);
+		cp.setHealth(cp.getMaxHealth());
 		cp.setFoodLevel(20);
 		cp.setSaturation(20f);
 		cp.setLevel(0);

@@ -60,7 +60,13 @@ public class HelpCenterData {
 		case "page":
 			if (fc.isConfigurationSection("HelpInfo." + arg[2])) {
 				ic.add(" " + fc.getString("HelpInfo." + arg[2] + ".Title") + "\n \n", new int[] { 0 }, 15, null, null);
-				ic.add(fc.getString("HelpInfo." + arg[2] + ".Description") + "\n", null, 7, null, null);
+				int i = 1;
+				for (String h : fc.getStringList("HelpInfo." + arg[2] + ".Description")) {
+					h = h.replaceFirst("\\++", "'§e");
+					h = h.replaceFirst("\\++", "§7'");
+					ic.add(" §6" + i + ":§7 " + h + "\n", null, 7, null, null);
+					i++;
+				}
 				ic.add(" \n <<", new int[] { 0 }, 14, "2|/uhc help", "§aBack to UHC Help");
 				break;
 			}
@@ -71,7 +77,7 @@ public class HelpCenterData {
 					ic.add(fc.getString("Index.Title").replace("%1", arg[2]).replace("%2", mxPg + ""), null, 15, null, null);
 					for (String list : fc.getStringList("Index.Pages." + arg[2])) {
 						String[] hlObj = list.split("\\|");
-						ic.add(" " + hlObj[0] + "\n", null, 10, "2|/uhc help page " + hlObj[1], "§6§lOpen§r\n§a" + hlObj[0]);
+						ic.add(" " + hlObj[1] + "\n", null, 10, "2|/uhc help page " + hlObj[0], "§6§lOpen§r\n§a" + hlObj[1]);
 					}
 					int np = Integer.parseInt(arg[2]);
 					if (mxPg != 1) {

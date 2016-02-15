@@ -40,24 +40,24 @@ public class JChat {
 	/**
 	 * JChat > Format
 	 * 
-	 * @param text 			> 	Plain text.
-	 * @param textStyle		>	Text Style. [0-4]
-	 * 				-	0	=	Bold
-	 * 				-	1	=	Italic
-	 * 				-	2	=	Underlined
-	 * 				-	3	=	Strikethrough
-	 * 				-	4	=	Obfuscated
+	 * @param 	text 		> 	Plain text.
+	 * @param 	textStyle	>	Text Style. [0-4]
+	 * 						-	0	=	Bold
+	 * 						-	1	=	Italic
+	 * 						-	2	=	Underlined
+	 * 						-	3	=	Strikethrough
+	 * 						-	4	=	Obfuscated
 	 * 
 	 * @param color			>	Controls the color of the text. [0-15]
-	 * 				-	0  -> 9		=	0 -> 9
-	 * 				-	10 -> 15	=	a -> f
+	 * 						-	0  -> 9		=	0 -> 9
+	 * 						-	10 -> 15	=	a -> f
 	 * 
 	 * @param clickEvent	>	Executes the action once the text is clicked. [0-3]
-	 * 				|	Format: Event|Action
-	 * 				-	0	=	open_url
-	 * 				-	1	=	open_file
-	 * 				-	2	=	run_command
-	 * 				-	3	=	suggest_command
+	 * 						|	Format: Event|Action
+	 * 						-	0	=	open_url
+	 * 						-	1	=	open_file
+	 * 						-	2	=	run_command
+	 * 						-	3	=	suggest_command
 	 * 
 	 * @param hoverText		>	Displays the action upon hovering over the text.
 	 */

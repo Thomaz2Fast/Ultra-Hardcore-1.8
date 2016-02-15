@@ -18,6 +18,8 @@
 
 package com.thomaztwofast.uhc.events;
 
+import java.util.HashMap;
+
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -42,11 +44,15 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerLoginEvent.Result;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.server.ServerListPingEvent;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scoreboard.Team;
+import org.bukkit.util.Vector;
 
 import com.thomaztwofast.uhc.GameManager;
 import com.thomaztwofast.uhc.Main;
@@ -59,6 +65,7 @@ public class EvGame implements Listener {
 	private Main pl;
 	private Config c;
 	private GameManager gm;
+	private HashMap<String, Integer> wbWarn = new HashMap<>();
 
 	public EvGame(Main main) {
 		pl = main;
@@ -411,6 +418,7 @@ public class EvGame implements Listener {
 				if (e.getEntity() instanceof Player) {
 					if (e.getCause().equals(DamageCause.VOID)) {
 						e.getEntity().teleport(e.getEntity().getWorld().getSpawnLocation().add(0.5, 0, 0.5));
+						e.getEntity().setFallDistance(0);
 					}
 					e.setCancelled(true);
 					return;
@@ -501,6 +509,33 @@ public class EvGame implements Listener {
 		}
 	}
 
+	/**
+	 * Event > Player Move
+	 */
+	@EventHandler
+	public void playerMove(PlayerMoveEvent e) {
+		if (gm.getStatus().getStat().getLvl() > 5) {
+			if (e.getPlayer().getGameMode().equals(GameMode.SPECTATOR)) {
+				Player p = e.getPlayer();
+				Location c = p.getWorld().getWorldBorder().getCenter();
+				double s = p.getWorld().getWorldBorder().getSize() / 2;
+				if (p.getLocation().getX() > (c.getX() + s)) {
+					p.setVelocity(new Vector(-1, 0, 0));
+					warnPlayer(p);
+				} else if (p.getLocation().getX() < (c.getX() - s)) {
+					p.setVelocity(new Vector(1, 0, 0));
+					warnPlayer(p);
+				} else if (p.getLocation().getZ() > (c.getZ() + s)) {
+					p.setVelocity(new Vector(0, 0, -1));
+					warnPlayer(p);
+				} else if (p.getLocation().getZ() < (c.getZ() - s)) {
+					p.setVelocity(new Vector(0, 0, 1));
+					warnPlayer(p);
+				}
+			}
+		}
+	}
+
 	// :: PRIVATE :: //
 
 	/**
@@ -532,5 +567,20 @@ public class EvGame implements Listener {
 			}
 		}
 		return false;
+	}
+
+	private void warnPlayer(Player p) {
+		if (wbWarn.containsKey(p.getName())) {
+			if (wbWarn.get(p.getName()) > 4) {
+				p.teleport(new Location(pl.getServer().getWorlds().get(0), 0, 120, 0));
+				p.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 25, 1));
+				p.sendMessage("§9§l>§r§7 You have been teleported back to 0,0");
+				wbWarn.remove(p.getName());
+				return;
+			}
+			wbWarn.put(p.getName(), wbWarn.get(p.getName()) + 1);
+			return;
+		}
+		wbWarn.put(p.getName(), 1);
 	}
 }

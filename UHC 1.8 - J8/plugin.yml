@@ -1,5 +1,5 @@
 name: UHC
-version: 1.2.1
+version: 1.2.2
 author: Thomaz2Fast
 
 main: com.thomaztwofast.uhc.Main
@@ -23,7 +23,7 @@ commands:
     permission: com.thomaztwofast.uhc.commands.start
   uhc:
     description: Ultra Hardcore 1.8 plugin info.
-    usage: /uhc
+    usage: /uhc <menu | settings | status>
     permission: com.thomaztwofast.uhc.commands.uhc
 
 permissions:

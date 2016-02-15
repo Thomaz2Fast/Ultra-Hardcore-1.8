@@ -36,11 +36,11 @@ public class CmdAutoTeam implements CommandExecutor {
 	}
 
 	/**
-	 * Command			>	AutoTeam
-	 * Enabled Console		>	No
-	 * Default Permission		>	OP
+	 * Command              >   AutoTeam
+	 * Enabled Console      >   No
+	 * Default Permission   >   OP
 	 * 
-	 * Description			>	Set all registered players to a random team selection.
+	 * Description          >   Set all registered players to a random team selection.
 	 */
 	@Override
 	public boolean onCommand(CommandSender send, Command cmd, String lab, String[] arg) {
@@ -56,7 +56,7 @@ public class CmdAutoTeam implements CommandExecutor {
 			JChat ic = new JChat();
 			ic.add("AutoTeam> ", null, 9, null, null);
 			if (pl.getPlFun().hasPermission(p.cp, Perm.UHC)) {
-				ic.add("Disabled!", null, 7, "2|/uhc help page 2", "Â§6Â§lHelp Information\nÂ§7Click here to find out how to\nÂ§7enable this command?");
+				ic.add("Disabled!", null, 7, "2|/uhc help page 2", "§6§lHelp Information\n§7Click here to find out how to\n§7enable this command?");
 			} else {
 				ic.add("Disabled!", null, 7, null, null);
 			}

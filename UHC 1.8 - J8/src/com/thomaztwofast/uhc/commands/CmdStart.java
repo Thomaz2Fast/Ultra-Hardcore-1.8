@@ -48,14 +48,14 @@ public class CmdStart implements CommandExecutor, TabCompleter {
 	}
 
 	/**
-	 * Command 			>	Start
-	 * Enabled Console		>	No
-	 * Default Permission 		>	OP
-	 * Args				-	NAME			TAB			CONSOLE
-	 * 					uhc		|	Show		|	No
-	 * 					notify-player	|	Hidden		|	No
+	 * Command              >   Start
+	 * Enabled Console      >   No
+	 * Default Permission   >   OP
+	 * Args                 -   NAME                TAB             CONSOLE
+	 *                          uhc             |   Show        |   No
+	 *                          notify-player   |   Hidden      |   No
 	 * 
-	 * Description			>	Start the Ultra Hardcore game.
+	 * Description          >   Start the Ultra Hardcore game.
 	 */
 	@Override
 	public boolean onCommand(CommandSender send, Command cmd, String lab, String[] arg) {
@@ -74,7 +74,7 @@ public class CmdStart implements CommandExecutor, TabCompleter {
 									if (UUID.fromString(arg[1]) != null) {
 										if (pl.getRegPlayer(UUID.fromString(arg[1])) != null) {
 											PlayerData np = pl.getRegPlayer(UUID.fromString(arg[1]));
-											p.sendActionMessage("Â§7Send notification to Â§e" + np.cp.getName());
+											p.sendActionMessage("§7Send notification to §e" + np.cp.getName());
 											np.sendMessage("Notification", "The game is about to start. please select a team if you want to join the UHC or else you will be spectating the game.");
 											float[] f = { 0.8f, 0.8f };
 											int i = 0;
@@ -116,7 +116,7 @@ public class CmdStart implements CommandExecutor, TabCompleter {
 			JChat ic = new JChat();
 			ic.add("Start> ", null, 9, null, null);
 			if (pl.getPlFun().hasPermission(p.cp, Perm.UHC)) {
-				ic.add("Disabled!", null, 7, "2|/uhc help page 0", "Â§6Â§lHelp Information\nÂ§7Click here to find out how to\nÂ§7enable this command?");
+				ic.add("Disabled!", null, 7, "2|/uhc help page 0", "§6§lHelp Information\n§7Click here to find out how to\n§7enable this command?");
 			} else {
 				ic.add("Disabled!", null, 7, null, null);
 			}
@@ -165,7 +165,7 @@ public class CmdStart implements CommandExecutor, TabCompleter {
 						ic.add(", ", null, 7, null, null);
 					}
 					String[] us = data.get((i + 2)).split("\\|");
-					ic.add(us[1], null, 14, "2|/start notify-player " + us[0], "Â§7Send notification?");
+					ic.add(us[1], null, 14, "2|/start notify-player " + us[0], "§7Send notification?");
 				}
 				ic.add(" \n \n For those who have not in the team yet, will be move to spectator mode.\n", new int[] { 1 }, 8, null, null);
 			}
@@ -182,7 +182,7 @@ public class CmdStart implements CommandExecutor, TabCompleter {
 		} else {
 			ic.add(" \n If everyone is ready to start?\n", null, 7, null, null);
 			ic.add(" Type the command below to start the game.\n", null, 7, null, null);
-			ic.add(" /start uhc\n", null, 8, "2|/start uhc", "Â§eÂ§l>Â§r Â§a/start uhc");
+			ic.add(" /start uhc\n", null, 8, "2|/start uhc", "§e§l>§r §a/start uhc");
 			if (!sOp.contains(u)) {
 				sOp.add(u);
 			}

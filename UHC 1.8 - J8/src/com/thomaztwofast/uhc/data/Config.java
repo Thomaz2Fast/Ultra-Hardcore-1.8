@@ -740,7 +740,7 @@ public class Config {
 			break;
 
 		default:
-			m = "Cold not load '" + s + "'";
+			m = "Could not load '" + s + "'";
 			break;
 		}
 		l.warn("[CONFIG] " + m);
