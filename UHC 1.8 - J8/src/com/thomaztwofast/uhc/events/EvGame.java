@@ -84,7 +84,8 @@ public class EvGame implements Listener {
 				p.sendMessage("Chat", "Disabled!");
 				e.setCancelled(true);
 			} else {
-				e.setFormat(c.gc_Spectator().replaceFirst("\\{0}", p.cp.getName()).replaceFirst("\\{1}", e.getMessage()));
+				e.setFormat(
+						c.gc_Spectator().replaceFirst("\\{0}", p.cp.getName()).replaceFirst("\\{1}", e.getMessage()));
 			}
 			return;
 		}
@@ -100,7 +101,9 @@ public class EvGame implements Listener {
 							for (String ep : t.getEntries()) {
 								if (pl.getRegPlayerByName(ep) != null) {
 									PlayerData pd = pl.getRegPlayerByName(ep);
-									pd.cp.sendMessage(c.gc_TeamPrivate().replaceFirst("\\{0}", t.getPrefix() + p.cp.getName() + t.getSuffix()).replaceFirst("\\{1}", e.getMessage().substring(1)));
+									pd.cp.sendMessage(c.gc_TeamPrivate()
+											.replaceFirst("\\{0}", t.getPrefix() + p.cp.getName() + t.getSuffix())
+											.replaceFirst("\\{1}", e.getMessage().substring(1)));
 									if (!p.equals(pd)) {
 										pd.playLocalSound(Sound.NOTE_PIANO, 1.7f);
 									}
@@ -110,14 +113,16 @@ public class EvGame implements Listener {
 							return;
 						}
 					}
-					e.setFormat(c.gc_TeamTeam().replaceFirst("\\{0}", t.getPrefix() + p.cp.getName() + t.getSuffix()).replaceFirst("\\{1}", e.getMessage()));
+					e.setFormat(c.gc_TeamTeam().replaceFirst("\\{0}", t.getPrefix() + p.cp.getName() + t.getSuffix())
+							.replaceFirst("\\{1}", e.getMessage()));
 				}
 			} else {
 				if (c.gc_TeamDefault().length() == 0) {
 					p.sendMessage("Chat", "Disabled!");
 					e.setCancelled(true);
 				} else {
-					e.setFormat(c.gc_TeamDefault().replaceFirst("\\{0}", p.cp.getName()).replaceFirst("\\{1}", e.getMessage()));
+					e.setFormat(c.gc_TeamDefault().replaceFirst("\\{0}", p.cp.getName()).replaceFirst("\\{1}",
+							e.getMessage()));
 				}
 			}
 			return;
@@ -292,7 +297,8 @@ public class EvGame implements Listener {
 		} else if (gm.getStatus().getStat().equals(Stat.FINISHED)) {
 			if (c.server() & c.server_BungeeCord()) {
 				if (gm.isAlive(e.getPlayer().getUniqueId())) {
-					if (e.getAction().equals(Action.RIGHT_CLICK_AIR) || e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
+					if (e.getAction().equals(Action.RIGHT_CLICK_AIR)
+							|| e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
 						if (e.hasItem()) {
 							if (e.getItem().equals(gm.getHubItem())) {
 								PlayerData p = pl.getRegPlayer(e.getPlayer().getUniqueId());
@@ -331,9 +337,17 @@ public class EvGame implements Listener {
 		} else {
 			if (c.gh_Enalbed()) {
 				if (e.getInventory().getType().equals(InventoryType.WORKBENCH)) {
+
 					if (e.getRawSlot() == 0) {
-						if (e.getCurrentItem().getType().equals(Material.GOLDEN_APPLE) & e.getInventory().getItem(5).getType().equals(Material.SKULL_ITEM)) {
-							e.getCurrentItem().setItemMeta(gm.getSkullOwnerName(e.getCurrentItem(), e.getInventory().getItem(5)));
+						if (e.getInventory().getItem(5) == null) {
+
+							return;
+						}
+
+						if (e.getCurrentItem().getType().equals(Material.GOLDEN_APPLE)
+								& e.getInventory().getItem(5).getType().equals(Material.SKULL_ITEM)) {
+							e.getCurrentItem()
+									.setItemMeta(gm.getSkullOwnerName(e.getCurrentItem(), e.getInventory().getItem(5)));
 							return;
 						}
 					}
@@ -375,9 +389,9 @@ public class EvGame implements Listener {
 	public void itemConsume(PlayerItemConsumeEvent e) {
 		if (c.gh_Enalbed()) {
 			if (e.getItem().getType().equals(Material.GOLDEN_APPLE) & e.getItem().hasItemMeta()) {
-				if (e.getItem().getItemMeta().getDisplayName().equals("§bDefault Head Apple")) {
+				if (e.getItem().getItemMeta().getDisplayName().equals("Â§bDefault Head Apple")) {
 					gm.givePlayerRegenOfGoldenHead(e.getPlayer(), false);
-				} else if (e.getItem().getItemMeta().getDisplayName().equals("§dGolden Head Apple")) {
+				} else if (e.getItem().getItemMeta().getDisplayName().equals("Â§dGolden Head Apple")) {
 					gm.givePlayerRegenOfGoldenHead(e.getPlayer(), true);
 				}
 			}
@@ -574,7 +588,7 @@ public class EvGame implements Listener {
 			if (wbWarn.get(p.getName()) > 4) {
 				p.teleport(new Location(pl.getServer().getWorlds().get(0), 0, 120, 0));
 				p.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 25, 1));
-				p.sendMessage("§9§l>§r§7 You have been teleported back to 0,0");
+				p.sendMessage("Â§9Â§l>Â§rÂ§7 You have been teleported back to 0,0");
 				wbWarn.remove(p.getName());
 				return;
 			}
