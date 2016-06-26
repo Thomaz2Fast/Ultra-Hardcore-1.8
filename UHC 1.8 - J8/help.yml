@@ -1,41 +1,41 @@
-Index:
-  Title: " §lUHC 1.8 - HELP CENTER §8§l[§a§l%1 - %2§8§l]\n \n"
-  Pages:
+I:
+  T: 'UHC 1.8 - HELP CENTER'
+  P:
     "1":
-    - "0|How to enable this plugin?"
-    - "1|How to enable command /Chunkloader?"
-    - "2|How to enable Auto/Select Team commands?"
-    - "3|How to enable Server Mode?"
+    - '0|How to enable this plugin?'
+    - '1|How to enable command /chunkloader?'
+    - '2|How to enable Auto / Select team commands?'
+    - '3|How to enable Server Mode?'
 
-HelpInfo:
+H:
   "0":
-    Title: "How to enable this plugin?"
-    Description:
-    - "Open the config file."
-    - "Find ++Plugin.Enabled++."
-    - "Set the boolean value to ++true++."
-    - "Save the config file and restart your server."
+    T: 'How to enable this plugin?'
+    D:
+    - 'Open the config file.'
+    - 'Find ++Plugin.Enabled++.'
+    - 'Set the boolean value to ++true++.'
+    - 'Save the config file and restart your server.'
   "1":
-    Title: "How to enable command /Chunkloader?"
-    Description:
-    - "Open the config file."
-    - "Find ++Plugin.Enabled++."
-    - "Set the boolean value to ++false++."
-    - "Save the config file and restart your server."
+    T: 'How to enable command /Chunkloader?'
+    D:
+    - 'Open the config file.'
+    - 'Find ++Plugin.Enabled++.'
+    - 'Set the boolean value to ++false++.'
+    - 'Save the config file and restart your server.'
   "2":
-    Title: "How to enable Auto/Select Team commands?"
-    Description:
-    - "Open the config file."
-    - "Make sure the plugin mode is enable."
-    - "Make sure the server mode is disabled."
-    - "Find ++Game.TeamMode++."
-    - "Set the boolean value to ++true++."
-    - "Save the config file and restart your server."
+    T: 'How to enable Auto/Select Team commands?'
+    D:
+    - 'Open the config file.'
+    - 'Make sure the plugin mode is enable.'
+    - 'Make sure the server mode is disabled.'
+    - 'Find ++Game.TeamMode++.'
+    - 'Set the boolean value to ++true++.'
+    - 'Save the config file and restart your server.'
   "3":
-    Title: "How to enable Server Mode?"
-    Description:
-    - "Open the config file."
-    - "Make sure the plugin mode is enable."
-    - "Find ++ServerMode.Enabled++."
-    - "Set the boolean value to ++true++."
-    - "Save the config file and start your server."
+    T: 'How to enable Server Mode?'
+    D:
+    - 'Open the config file.'
+    - 'Make sure the plugin mode is enable.'
+    - 'Find ++ServerMode.Enabled++.'
+    - 'Set the boolean value to ++true++.'
+    - 'Save the config file and start your server.'

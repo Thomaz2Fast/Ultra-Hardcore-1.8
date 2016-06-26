@@ -18,52 +18,95 @@
 
 package com.thomaztwofast.uhc.commands;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.Team;
 
 import com.thomaztwofast.uhc.Main;
-import com.thomaztwofast.uhc.custom.JChat;
-import com.thomaztwofast.uhc.custom.Perm;
-import com.thomaztwofast.uhc.data.PlayerData;
+import com.thomaztwofast.uhc.custom.Jc;
+import com.thomaztwofast.uhc.data.Permission;
+import com.thomaztwofast.uhc.data.UHCPlayer;
 
 public class CmdAutoTeam implements CommandExecutor {
-	private Main pl;
+	private Main cA;
+	private Scoreboard cB;
 
-	public CmdAutoTeam(Main main) {
-		pl = main;
+	public CmdAutoTeam(Main a) {
+		cA = a;
+		cB = a.getServer().getScoreboardManager().getMainScoreboard();
 	}
 
 	/**
-	 * Command              >   AutoTeam
-	 * Enabled Console      >   No
-	 * Default Permission   >   OP
-	 * 
-	 * Description          >   Set all registered players to a random team selection.
+	 * Command - - - - - - - - - - > - AutoTeam
+	 * Enabled Console - - - - - - > - false
+	 * Default Permission  - - - - > - OP
 	 */
 	@Override
-	public boolean onCommand(CommandSender send, Command cmd, String lab, String[] arg) {
-		if (send instanceof Player) {
-			PlayerData p = pl.getRegPlayer(((Player) send).getUniqueId());
-			if (pl.getPlConf().pl_Enabled() & pl.getPlConf().g_teamMode() & !pl.getPlConf().server()) {
-				if (pl.getGame().getStatus().getStat().getLvl() <= 5) {
-					pl.getGame().getTeam().cmdAutoTeam();
-					p.sendMessage("AutoTeam", "Done.");
+	public boolean onCommand(CommandSender a, Command b, String c, String[] d) {
+		if (a instanceof Player) {
+			UHCPlayer e = cA.mB.getPlayer(a.getName());
+			if (cA.mC.cCa && cA.mC.cGa && !cA.mC.cFa) {
+				if (cA.mA.i() <= 5) {
+					a();
+					e.sendCommandMessage("AutoTeam", "Done.");
 					return true;
 				}
 			}
-			JChat ic = new JChat();
-			ic.add("AutoTeam> ", null, 9, null, null);
-			if (pl.getPlFun().hasPermission(p.cp, Perm.UHC)) {
-				ic.add("Disabled!", null, 7, "2|/uhc help page 2", "§6§lHelp Information\n§7Click here to find out how to\n§7enable this command?");
+			Jc f = new Jc();
+			f.add("AutoTeam> ", new int[] { 1 }, 8, null, null);
+			if (e.uB.hasPermission(Permission.UHC.toString())) {
+				f.add("Disabled!", new int[] { 1 }, 7, "2|/uhc help page 2", "\u00A76\u00A7lHelp Information\n\u00A77Click here to find out how to\n\u00A77enable this command?");
 			} else {
-				ic.add("Disabled!", null, 7, null, null);
+				f.add("Disabled!", new int[] { 1 }, 7, null, null);
 			}
-			p.sendRawICMessage(ic.a());
+			e.sendJsonMessage(f.o());
 			return true;
 		}
-		pl.getPlLog().info("Only ingame player can use this command.");
+		cA.log(0, "Command '/AutoTeam' can only execute from ingame player.");
 		return true;
+	}
+
+	// ------:- PRIVATE -:--------------------------------------------------------------------------
+
+	private void a() {
+		List<UHCPlayer> a = new ArrayList<>();
+		List<Team> b = new ArrayList<>();
+		List<Team> c = new ArrayList<>();
+		Random d = new Random();
+		int e = (int) Math.ceil(cA.mB.getAllPlayers().size() / (double) cA.mC.cGb);
+		int f = 0;
+		e = (e == 0 ? 1 : e > 16 ? 16 : e);
+		a.addAll(cA.mB.getAllPlayers());
+		for (String g : cA.mE.gD.uCa) {
+			if (cB.getTeam(g) != null && cB.getTeam(g).getSize() != 0) {
+				for (String h : cB.getTeam(g).getEntries()) {
+					cB.getTeam(g).removeEntry(h);
+				}
+			}
+			b.add(cB.getTeam(g));
+		}
+		for (int g = 0; g < e; g++) {
+			Team h = b.get(d.nextInt(b.size()));
+			c.add(h);
+			b.remove(h);
+		}
+		while (a.size() != 0) {
+			UHCPlayer h = a.get(d.nextInt(a.size()));
+			cA.mE.gD.joinTeam(h, c.get(f).getName(), true);
+			a.remove(h);
+			if (f == (c.size() - 1)) {
+				f = 0;
+			} else {
+				f++;
+			}
+		}
+		cA.mE.gD.updateInv();
 	}
 }

@@ -16,35 +16,22 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.thomaztwofast.uhc.custom;
+package com.thomaztwofast.uhc.data;
 
-import com.thomaztwofast.uhc.Main;
+public enum Permission {
+	ERROR("perm.login"),
+	GLOBAL_COMMAND("perm.global.commands"),
+	SELECTTEAM_ALL("commands.selectteam.admin"),
+	UHC("commands.uhc");
 
-public class Logger {
-	private String px;
+	private String pA;
 
-	public Logger(Main main) {
-		px = "[" + main.getDescription().getName() + "] ";
+	private Permission(String a) {
+		pA = a;
 	}
 
-	/**
-	 * Log > Info
-	 */
-	public void info(String m) {
-		System.out.println(px + m);
-	}
-
-	/**
-	 * Log > Error
-	 */
-	public void warn(String m) {
-		System.err.println("\u001B[31m" + px + m + "\u001B[0m");
-	}
-
-	/**
-	 * Log > Debug
-	 */
-	public void debug(String m) {
-		System.out.println("\u001B[35m" + px + "[DEBUG] " + m + "\u001B[0m");
+	@Override
+	public String toString() {
+		return "com.thomaztwofast.uhc." + pA;
 	}
 }

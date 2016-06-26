@@ -1,5 +1,5 @@
 /*
-F * Ultra Hardcore 1.8, a Minecraft survival game mode.
+ * Ultra Hardcore 1.8, a Minecraft survival game mode.
  * Copyright (C) <2016> Thomaz2Fast
  *
  * This program is free software: you can redistribute it and/or modify
@@ -23,343 +23,330 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.UUID;
-
+import java.util.List;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
-import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
+import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
-import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.Scoreboard;
 
 import com.thomaztwofast.uhc.Main;
-import com.thomaztwofast.uhc.data.GameStatus.Stat;
-import com.thomaztwofast.uhc.data.PlayerData;
+import com.thomaztwofast.uhc.data.GameStatus;
+import com.thomaztwofast.uhc.data.UHCPlayer;
 
-/**
- * Chunkloader
- * @version 1.2.8
- */
-public class ChunkLoader {
-	private Main pl;
-	private Scoreboard sb;
-	private Objective sbObj;
-	private HashMap<Integer, String> sbHis = new HashMap<>();
-	private ArrayList<World> wl = new ArrayList<>();
-	private ArrayList<int[]> cl = new ArrayList<>();
-	private ArrayList<Long> comJob = new ArrayList<>();
-	private DecimalFormat fm = new DecimalFormat("#.##");
-	private BukkitTask clockID;
-	private boolean run = false;
-	private boolean asPlayer = false;
-	private boolean offPlayer = false;
-	private long sT1;
-	private long sT2;
-	private int tkRun = 0;
-	private int tkInW = 0;
-	private int tkCkInW = 0;
-	private int ckPrg = 0;
-	private int ticD;
-	private int ticT;
-	private int mxTk;
-	private int mnTk;
-	private int mxMs;
-	private UUID uuid;
-	private String ply;
+public class ChunkLoader extends Function {
+	private Main cA;
+	private Scoreboard cBa;
+	private Objective cBb;
+	private HashMap<Integer, String> cBc = new HashMap<>();
+	private List<World> cCa = new ArrayList<>();
+	private List<int[]> cCb = new ArrayList<>();
+	private List<Long> cCc = new ArrayList<>();
+	private DecimalFormat cD = new DecimalFormat("#.##");
+	private BukkitTask cE;
+	private boolean cFa = false;
+	private boolean cFb = false;
+	private boolean cFc = false;
+	private long cFd = 0;
+	private long cFe = 0;
+	private int cFf = 8;
+	private int cFg = 20;
+	private int cFh = 0;
+	private int cFi = 0;
+	private int cFj = 0;
+	private int cFk = 0;
+	private int cGa = 0;
+	private int cGb = 0;
+	private int cGc = 0;
+	private String cHa;
 
-	public ChunkLoader(Main main) {
-		pl = main;
-		ticD = main.getPlConf().c_DelayTick();
-		ticT = main.getPlConf().c_Task();
-		mxMs = 160 * ticT / ticD;
-		mxTk = ticT + (ticT / 10);
-		mnTk = (ticT * 2) / 4;
+	public ChunkLoader(Main a) {
+		cA = a;
+		cFf = cA.mC.cDb;
+		cFg = cA.mC.cDc;
+		cGa = 160 * cFg / cFf;
+		cGb = cFg + (cFg / 10);
+		cGc = (cFg * 2) / 4;
 	}
 
-	/**
-	 * Is chunkloader running?
-	 */
 	public boolean isRunning() {
-		return run;
+		return cFa;
 	}
 
-	/**
-	 * Get the player how run the chunkloader.
-	 */
-	public String getPlayerName() {
-		return ply;
+	public String getPlayer() {
+		return cHa;
 	}
 
-	/**
-	 * Get the progress from the chunkloader.
-	 */
 	public String getProgress() {
-		float a = (float) ((float) (ckPrg + .0) / (cl.size() * wl.size()) + .0) * 100;
-		return fm.format(a);
+		return cD.format((float) ((float) (cFj + .0) / (cCb.size() * cCa.size()) + .0) * 100) + "%";
 	}
 
-	/**
-	 * Get the time how long the chunkloader will be completed.
-	 * @return
-	 */
+	public String[] getChunkData() {
+		String[] a = new String[3];
+		String b = "";
+		lD();
+		for (World c : cCa) {
+			if (b.length() == 0) {
+				b = c.getName();
+			} else {
+				b += "|" + c.getName();
+			}
+		}
+		a[0] = b;
+		a[1] = "" + cCb.size();
+		a[2] = getEta();
+		resetSettings();
+		return a;
+	}
+
 	public String getEta() {
-		return pl.getPlFun().asClockFormat(Math.round((((cl.size() * wl.size()) - ckPrg) / ((20.0 / ticD) * ticT))));
+		return asClock(Math.round((((cCb.size() * cCa.size()) - cFj) / ((20.0 / cFf) * cFg))));
 	}
 
-	/**
-	 * Start chunkloader from player
-	 */
-	public void start(CraftPlayer cp) {
-		run = true;
-		asPlayer = true;
-		ply = cp.getName();
-		uuid = cp.getUniqueId();
-		sT1 = (System.currentTimeMillis() + 10000);
-		sT2 = sT1;
-		sb = pl.getServer().getScoreboardManager().getNewScoreboard();
-		loadWorldAndChunks();
-		updateScoreboard(0);
-		startChunkLoader();
-	}
-
-	/**
-	 * Start chunkloader from server
-	 */
-	public void startAsServer() {
-		run = true;
-		sT1 = (System.currentTimeMillis() + 10000);
-		sT2 = sT1;
-		pl.getPlLog().info("[CHUNKLOADER] Preparing to start...");
-		loadWorldAndChunks();
-		pl.getPlLog().info("[CHUNKLOADER] Found " + wl.size() + " world.");
-		if (wl.size() != 0) {
-			pl.getPlLog().info("[CHUNKLOADER] Will completed in " + getEta());
-			pl.getPlLog().info("[CHUNKLOADER] Starting to load chunk in world '" + wl.get(tkInW).getName() + "'.");
-			startChunkLoader();
+	public void start(Player a) {
+		cFa = true;
+		if (a != null) {
+			cFb = true;
+			cHa = a.getName();
+		}
+		cFd = System.currentTimeMillis() + 10000;
+		cFe = cFd;
+		cBa = cA.getServer().getScoreboardManager().getNewScoreboard();
+		log("Preparing to start...", false);
+		lD();
+		log("Found " + cCa.size() + " world.", false);
+		if (cFb) {
+			updateScoreboard();
+		}
+		if (!cFb && cCa.size() == 0) {
+			log("Done.", false);
+			cA.mA = GameStatus.WAITING;
+			return;
 		} else {
-			pl.getPlLog().info("[CHUNKLOADER] Done");
-			pl.getGame().getStatus().setStat(Stat.WAITING);
+			log("Will completed in " + getEta(), false);
+			log("Starting to load chunks in world '" + (cFh + 1) + "'", false);
+		}
+		startChunkloader();
+	}
+
+	public void stop() {
+		if (cFa) {
+			cE.cancel();
+			log("Stopped!", false);
+			if (cFb) {
+				if (cA.mB.getPlayer(cHa) != null) {
+					cA.mB.getPlayer(cHa).uB.setScoreboard(cA.getServer().getScoreboardManager().getMainScoreboard());
+				}
+			}
+			resetSettings();
 		}
 	}
 
-	// :: PRIVATE :: //
+	// ------:- PRIVATE -:--------------------------------------------------------------------------
 
-	/**
-	 * Find all world and Chunk.
-	 */
-	private void loadWorldAndChunks() {
-		for (World w : pl.getServer().getWorlds()) {
-			if (!w.getEnvironment().equals(Environment.THE_END)) {
-				if (!w.getName().equals("uhc_lobby")) {
-					if (!new File(w.getWorldFolder(), "uhc.yml").exists()) {
-						wl.add(w);
+	private void lD() {
+		for (World a : cA.getServer().getWorlds()) {
+			if (!a.getEnvironment().equals(Environment.THE_END)) {
+				if (!a.getName().equals("uhc_lobby")) {
+					if (!new File(a.getWorldFolder(), "uhc.yml").exists()) {
+						if (a.getEnvironment().equals(Environment.NORMAL) || (cA.mC.cDe && a.getEnvironment().equals(Environment.NETHER))) {
+							cCa.add(a);
+						}
 					}
 				}
 			}
 		}
-		if (wl.size() != 0) {
-			int az = (pl.getPlConf().ws_ArenaSize() + pl.getPlConf().c_Border());
-			Location l1 = new Location(wl.get(0), (0 - az), 64, (0 - az));
-			Location l2 = new Location(wl.get(0), (0 + az), 64, (0 + az));
-			for (int i = l1.getChunk().getX(); i <= l2.getChunk().getZ(); i++) {
-				for (int o = l1.getChunk().getX(); o <= l2.getChunk().getZ(); o++) {
-					cl.add(new int[] { i, o });
+		if (cCa.size() != 0) {
+			int a = (cA.mC.cIb + cA.mC.cDa);
+			Location b = new Location(cCa.get(0), -a, 64, -a);
+			Location c = new Location(cCa.get(0), a, 64, a);
+			for (int d = b.getChunk().getX(); d <= c.getChunk().getZ(); d++) {
+				for (int e = b.getChunk().getX(); e <= c.getChunk().getZ(); e++) {
+					cCb.add(new int[] { d, e });
 				}
 			}
 		}
 	}
 
-	/**
-	 * Run chunkloader
-	 */
-	private void startChunkLoader() {
-		clockID = pl.getServer().getScheduler().runTaskTimer(pl, new Runnable() {
+	private void startChunkloader() {
+		cE = cA.getServer().getScheduler().runTaskTimer(cA, new Runnable() {
 			@Override
 			public void run() {
-				Long tt = System.currentTimeMillis();
-				for (int i = 0; i <= ticT; i++) {
-					if (tkCkInW == cl.size()) {
-						if (asPlayer) {
-							if (pl.getRegPlayer(uuid) != null) {
-								PlayerData p = pl.getRegPlayer(uuid);
-								p.sendActionMessage("§1ChunkLoader>§2 Job§6 §l" + (tkInW + 1) + "§2 Completed!");
-								p.playLocalSound(Sound.ORB_PICKUP, 1.7f);
+				long a = System.currentTimeMillis();
+				for (int b = 0; b <= cFg; b++) {
+					if (cFi == cCb.size()) {
+						if (cFb) {
+							if (cA.mB.getPlayer(cHa) != null) {
+								UHCPlayer c = cA.mB.getPlayer(cHa);
+								c.sendActionMessage("\u00A7cChunkLoader>\u00A77 Task\u00A7e " + (cFh + 1) + "\u00A77 completed!");
+								c.playLocalSound(Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1.7f);
 							}
 						}
-						createFile(wl.get(tkInW));
-						pl.getPlLog().info("[CHUNKLOADER] Task " + (tkInW + 1) + "/" + wl.size() + " completed!");
-						comJob.add(System.currentTimeMillis() - sT2);
-						sT2 = System.currentTimeMillis();
-						wl.get(tkInW).save();
-						if ((tkInW + 1) == wl.size()) {
-							pl.getServer().getScheduler().cancelTask(clockID.getTaskId());
-							if (asPlayer) {
-								if (pl.getRegPlayer(uuid) != null) {
-									PlayerData p = pl.getRegPlayer(uuid);
-									if (pl.getPlConf().c_ShowHidden()) {
-										String s = "§8§m--------------------------------------------§r\n";
-										s += " §lCHUNKLOADER§r\n \n";
-										s += " §aChunkloader is now completed!§r\n \n";
-										s += " §6Information§4\n";
-										for (int ii = 0; ii < wl.size(); ii++) {
-											s += "  §6" + (ii + 1) + ":§7 World '§e" + wl.get(ii).getName() + "§7', Completed in '§c" + pl.getPlFun().asClockFormat((comJob.get(ii) / 1000)) + "§7'§r\n";
-										}
-										s += "  §6Total Time:§c " + pl.getPlFun().asClockFormat(((System.currentTimeMillis() - sT1) / 1000)) + "§r\n";
-										s += "§8§m--------------------------------------------§r";
-										p.cp.sendMessage(s);
+						cf(cCa.get(cFh));
+						if ((cFh + 1) == cCa.size()) {
+							cE.cancel();
+							if (cFb) {
+								if (cA.mB.getPlayer(cHa) != null) {
+									UHCPlayer c = cA.mB.getPlayer(cHa);
+									if (cA.mC.cDd) {
+										c.uB.sendMessage(sh());
 									} else {
-										p.sendMessage("ChunkLoader", "Chunkloader is now completed!");
+										c.sendCommandMessage("ChunkLoader", "Done. (" + asClock((System.currentTimeMillis() - cFd) / 1000) + ")");
 									}
-									p.playLocalSound(Sound.LEVEL_UP, 1f);
+									c.playLocalSound(Sound.ENTITY_PLAYER_LEVELUP, 1f);
 								}
 							}
-							pl.getPlLog().info("[CHUNKLOADER] Completed!");
-							pl.getServer().getScheduler().runTaskLater(pl, new Runnable() {
+							log("Completed!", false);
+							cA.getServer().getScheduler().runTaskLater(cA, new Runnable() {
 								@Override
 								public void run() {
-									if (asPlayer) {
-										if (pl.getRegPlayer(uuid) != null) {
-											PlayerData p = pl.getRegPlayer(uuid);
-											p.cp.setScoreboard(pl.getServer().getScoreboardManager().getMainScoreboard());
+									if (cFb) {
+										if (cA.mB.getPlayer(cHa) != null) {
+											UHCPlayer c = cA.mB.getPlayer(cHa);
+											c.uB.setScoreboard(cA.getServer().getScoreboardManager().getMainScoreboard());
 										}
+									} else {
+										cA.mA = GameStatus.WAITING;
 									}
-									wl.clear();
-									cl.clear();
-									tkInW = 0;
-									tkCkInW = 0;
-									ckPrg = 0;
-									ticT = pl.getPlConf().c_Task();
-									tkRun = 0;
-									comJob.clear();
-									ply = null;
-									uuid = null;
-									run = false;
-									sbObj = null;
-									sbHis.clear();
-									offPlayer = false;
-									if (!asPlayer) {
-										pl.getGame().getStatus().setStat(Stat.WAITING);
-									}
-									asPlayer = false;
+									resetSettings();
 								}
-							}, (20 * 5));
-							updateScoreboard(2);
+							}, 100);
+							updateScoreboard();
 							break;
 						}
-						tkInW++;
-						tkCkInW = 0;
-						updateScoreboard(2);
+						cFh++;
+						cFi = 0;
+						updateScoreboard();
 						break;
 					}
-					int[] cid = cl.get(tkCkInW);
-					wl.get(tkInW).loadChunk(cid[0], cid[1], true);
-					tkCkInW++;
-					ckPrg++;
+					int[] d = cCb.get(cFi);
+					cCa.get(cFh).loadChunk(d[0], d[1], true);
+					cFi++;
+					cFj++;
 				}
-				long ms = (System.currentTimeMillis() - tt);
-				if (ms > mxMs) {
-					if (ticT != mnTk) {
-						pl.getPlLog().warn("[CHUNKLOADER] Hard to keep it up. Loaded " + ticT + " chunks in " + ms + "ms");
-						ticT--;
+				a = System.currentTimeMillis() - a;
+				if (a > cGa) {
+					if (cFg != cGc) {
+						cFg--;
 					}
-				} else if (ms < 7) {
-					if (ticT < mxTk) {
-						ticT++;
-					}
-				}
-				if (tkRun % 5 == 0) {
-					updateScoreboard(1);
-				}
-				if (!asPlayer) {
-					if (tkRun % 50 == 0) {
-						pl.getPlLog().info("[CHUNKLOADER] " + getProgress() + "%");
+					log("Hard to keep it up. Loaded " + (cFg + 1) + " chunks in " + a + "ms", true);
+				} else if (a < 7) {
+					if (cFg < cGb) {
+						cFg++;
 					}
 				}
-				tkRun++;
+				if (cFk % 5 == 0) {
+					updateScoreboard();
+				}
+				if (!cFb && cFk % 50 == 0) {
+					log(getProgress(), false);
+				}
+				cFk++;
 			}
-		}, (20 * 10), ticD);
+
+			// Show hidden info.
+			private String sh() {
+				StringBuilder a = new StringBuilder();
+				a.append("\u00A78\u00A7m--------------------------------------------\u00A7r\n");
+				a.append("\u00A7l CHUNKLOADER\n \n");
+				a.append("\u00A7a Chunkloader is now completed!\n \n");
+				a.append("\u00A76 Information\n");
+				for (int b = 0; b < cCa.size(); b++) {
+					a.append("\u00A76  " + (b + 1) + ":\u00A77 World '\u00A7e" + cCa.get(b).getName() + "\u00A77', Completed in '\u00A7c" + asClock(cCc.get(b) / 1000) + "\u00A77'\n");
+				}
+				a.append("\u00A76  Total Time:\u00A7c " + asClock((System.currentTimeMillis() - cFd) / 1000) + "\n");
+				a.append("\u00A78\u00A7m--------------------------------------------");
+				return a.toString();
+			}
+
+			// Save world.
+			private void cf(World a) {
+				try {
+					new File(a.getWorldFolder(), "uhc.yml").createNewFile();
+				} catch (IOException e) {
+					log("ERROR! " + e.getMessage(), true);
+				}
+				log("Task " + (cFh + 1) + " / " + cCa.size() + " completed!", false);
+				cCc.add(System.currentTimeMillis() - cFe);
+				cFe = System.currentTimeMillis();
+				a.save();
+			}
+		}, 200, cFf);
 	}
 
-	/**
-	 * Creating a chunkloader file in the world folder.
-	 */
-	private void createFile(World world) {
-		try {
-			File f = new File(world.getWorldFolder(), "uhc.yml");
-			f.createNewFile();
-		} catch (IOException e) {
-			e.printStackTrace();
+	private void resetSettings() {
+		cBb = null;
+		cBc.clear();
+		cCa.clear();
+		cCb.clear();
+		cCc.clear();
+		cE = null;
+		cFa = false;
+		cFb = false;
+		cFc = false;
+		cFd = 0;
+		cFe = 0;
+		cFf = cA.mC.cDb;
+		cFg = cA.mC.cDc;
+		cFh = 0;
+		cFi = 0;
+		cFj = 0;
+		cFk = 0;
+		cHa = null;
+	}
+
+	private void log(String a, boolean b) {
+		cA.log((b ? 1 : 0), "[CHUNKLOADER] " + a);
+	}
+
+	private void updateScoreboard() {
+		if (cFb) {
+			if (cA.mB.getPlayer(cHa) != null) {
+				UHCPlayer a = cA.mB.getPlayer(cHa);
+				String b = "\u00A77" + (cFh + 1) + "/" + cCa.size();
+				String c = "\u00A77" + getProgress();
+				String d = "\u00A77" + getEta();
+				if (cBb == null) {
+					cBb = cBa.registerNewObjective("c", "dummy");
+					cBb.setDisplayName("\u00A7lCHUNKLOADER\u00A7r");
+					cBb.setDisplaySlot(DisplaySlot.SIDEBAR);
+					setScore(9, " ");
+					setScore(8, "\u00A76\u00A7lTask");
+					setScore(7, b);
+					setScore(6, "  ");
+					setScore(5, "\u00A76\u00A7lProgress");
+					setScore(4, c);
+					a.uB.setScoreboard(cBa);
+					return;
+				}
+				setScore(7, b);
+				setScore(4, c);
+				setScore(3, "   ");
+				setScore(2, "\u00A76\u00A7lETA");
+				setScore(1, d);
+				if (cFc) {
+					cFc = false;
+					a.uB.setScoreboard(cBa);
+				}
+			}
+			if (!cFc) {
+				cFc = true;
+			}
 		}
 	}
 
-	/**
-	 * Update scoreboard.
-	 */
-	private void updateScoreboard(int i) {
-		if (asPlayer) {
-			if (pl.getRegPlayer(uuid) != null) {
-				PlayerData p = pl.getRegPlayer(uuid);
-				String tk = "§7" + (tkInW + 1) + "/" + wl.size();
-				String prg = "§7" + getProgress() + "%";
-				String eta = "§7" + getEta();
-				if (i == 0) {
-					if (sbObj == null) {
-						sbObj = sb.registerNewObjective("c", "dummy");
-						sbObj.setDisplayName("§lCHUNKLOADER§r");
-						sbObj.setDisplaySlot(DisplaySlot.SIDEBAR);
-						Score s = sbObj.getScore(" ");
-						s.setScore(9);
-						s = sbObj.getScore("§6§lTask");
-						s.setScore(8);
-						s = sbObj.getScore(tk);
-						s.setScore(7);
-						sbHis.put(7, tk);
-						s = sbObj.getScore("  ");
-						s.setScore(6);
-						s = sbObj.getScore("§6§lProgress");
-						s.setScore(5);
-						s = sbObj.getScore(prg);
-						s.setScore(4);
-						sbHis.put(4, prg);
-						p.cp.setScoreboard(sb);
-					}
-				} else {
-					sb.resetScores(sbHis.get(4));
-					Score s = sbObj.getScore(prg);
-					s.setScore(4);
-					sbHis.put(4, prg);
-					if (sbHis.get(1) != null) {
-						sb.resetScores(sbHis.get(1));
-					} else {
-						s = sbObj.getScore("   ");
-						s.setScore(3);
-						s = sbObj.getScore("§6§lETA");
-						s.setScore(2);
-					}
-					s = sbObj.getScore(eta);
-					s.setScore(1);
-					sbHis.put(1, eta);
-					if (offPlayer) {
-						offPlayer = false;
-						i = 2;
-						p.cp.setScoreboard(sb);
-					}
-					if (i == 2) {
-						sb.resetScores(sbHis.get(7));
-						s = sbObj.getScore(tk);
-						s.setScore(7);
-						sbHis.put(7, tk);
-					}
-				}
+	private void setScore(int a, String b) {
+		if (cBc.containsKey(a)) {
+			if (cBc.get(a).equals(b)) {
 				return;
 			}
-			if (!offPlayer) {
-				offPlayer = true;
-			}
+			cBb.getScoreboard().resetScores(cBc.get(a));
 		}
+		cBb.getScore(b).setScore(a);
+		cBc.put(a, b);
 	}
 }

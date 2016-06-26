@@ -2,40 +2,61 @@
 #                        ~ Ultra Hardcore 1.8 - Configuration file ~
 #
 # ---
-#> How to activate this plugin?
-#   Go down to 'Plugin.Enabled' and change the boolean value of 'false' => 'true'
-#   after you have done that, save this document and restart your server.
+#> How to activate / enabled this plugin?
+#   Go down to 'Plugin.Enabled' and change the boolean value to 'true' and then 
+#   you save this document and then you start / restart your server.
+#
 #
 # ---
-#> Minecraft Color Code:
-#   &0  &1  &2  &3  &4      |      Black        Dark_Blue  Dark_Green  Dark_Aqua       Dark_Red
-#   &5  &6  &7  &8  &9      |      Dark_Purple  Gold       Gray        Dark_Gray       Blue
-#   &a  &b  &c  &d  &e      |      Green        Aqua       Red         Light_Purple    Yellow
-#   &f  &k  &l  &m  &n      |      White        Magic      Bold        Strikethrough   Underline
-#   &o  &r                  |      Italic       Reset
+#> Webpage Links
+#   Configuration Guide: http://dev.bukkit.org/bukkit-plugins/ultra-hardcore-1-8/pages/config/
+#   Setup: http://dev.bukkit.org/bukkit-plugins/ultra-hardcore-1-8/pages/setup/
+#   Images: http://dev.bukkit.org/bukkit-plugins/ultra-hardcore-1-8/images/
+#   Permission: http://dev.bukkit.org/bukkit-plugins/ultra-hardcore-1-8/pages/permissions-commands/
+#
+#
+# ---
+#> Minecraft Color Code
+#   &0  &1  &2  &3  &4    |    Black        Dark_Blue   Dark_Green    Dark_Aqua       Dark_Red
+#   &5  &6  &7  &8  &9    |    Dark_Purple  Gold        Gray          Dark_Gray       Blue
+#   &a  &b  &c  &d  &e    |    Green        Aqua        Red           Light_Purple    Yellow
+#   &f  &k  &l  &m  &n    |    White        Magic       Bold          Strikethrough   Underline
+#   &o  &r                |    Italic       Reset
+#
 #
 
-# --- Plugin ---
+
+# ---:- CONFIG VERSION -:---
+#
+# If any change in the config you will be notification on the console.
+#
+Config: 1
+
+
+# ---:- PLUGIN -:---
 Plugin:
   Enabled: false
   UpdateNotification: false
 
-# --- ChunkLoader ---
+
+# ---:- CHUNKLOADER -:---
 #
-#    ~ WARNING ~
-# Lower tick rate will maybe crash your server or lag out.
-# Higher task rate will maybe crash your server or lag out.
+#> WARNING
+#   Lower tick rate will maybe crash your server or lag out.
+#   Higher task rate will maybe crash your server or lag out.
+# 
+#> EXEMPLE
+#   Chunkloader will load / generate 20 chunks in every 8 tick delay.
 #
-#    ~ Exemple ~
-# ChunkLoader will load/generate 20 chunk in every 8 tick.
-#
-ChunkLoader:
-  ShowHiddenDetail: false
+Chunkloader:
+  ArenaBorder: 250
   DelayTick: 8
   Task: 20
-  ArenaBorder: 250
+  ShowHiddenDetail: false
+  LoadNether: true
 
-# --- Gamerule ---
+
+# ---:- MINECRAFT GAMERULE -:---
 Gamerules:
   doDaylightCycle: true
   doEntityDrops: true
@@ -47,15 +68,17 @@ Gamerules:
   randomTickSpeed: 3
   reducedDebugInfo: false
   spectatorsGenerateChunks: false
+  spawnRadius: 0
 
-# --- Server Mode ---
+
+# ---:- SERVER MODE -:---
 #
-#    ~ Motd ~
-#  New Line         =>    {N}
-#  Server ID        =>    {0}
-#  Game Status      =>    {1}
-#  Online Player    =>    {2}
-#  InGame Player    =>    {3}
+#> SimpleMotd and AdvancedMotd
+#   New Line        =>   {N}
+#   Server ID       =>   {0}
+#   Game Status     =>   {1}
+#   Online Player   =>   {2}
+#   Ingame Player   =>   {3}
 #
 ServerMode:
   Enabled: false
@@ -65,21 +88,21 @@ ServerMode:
   MinTeamToStart: 4
   Countdown: 30
   SimpleMotd: '{0}|{1}|{2}|{3}'
-  AdvancedMotdStatus:
-    Disabled: '&cUltra Hardcore 1.8&r{N}&7&lStatus:&r &cDisabled'
-    Error: '&cUltra Hardcore 1.8&r{N}&7&lStatus:&r &4&lError'
-    Loading: '&cUltra Hardcore 1.8&r{N}&7&lStatus:&r &7Loading...'
-    Reset: '&cUltra Hardcore 1.8&r{N}&7&lStatus:&r &cRestarting'
-    Waiting: '&cUltra Hardcore 1.8&r{N}&7&lStatus:&r &aWaiting for players...'
-    WaitingStarting: '&cUltra Hardcore 1.8&r{N}&7&lStatus:&r &eStarting soon...'
-    Starting: '&cUltra Hardcore 1.8&r{N}&7&lStatus:&r &7Started'
-    InGame: '&cUltra Hardcore 1.8&r{N}&7&lStatus:&r &7InGame'
-    Finished: '&cUltra Hardcore 1.8&r{N}&7&lStatus:&r &7Finished'
+  AdvencedMotdStatus:
+    Disabled: '&cUltra Hardcore 1.8&r{N}&7&lStatus:&r&c Disabled'
+    Error: '&cUltra Hardcore 1.8&r{N}&7&lStatus:&r&4&l Error'
+    Loading: '&cUltra Hardcore 1.8&r{N}&7&lStatus:&r&7 Loading...'
+    Reset: '&cUltra Hardcore 1.8&r{N}&7&lStatus:&r&c Restarting'
+    Waiting: '&cUltra Hardcore 1.8&r{N}&7&lStatus:&r&a Waiting for players...'
+    WaitingStarting: '&cUltra Hardcore 1.8&r{N}&7&lStatus:&r&e Starting soon...'
+    Starting: '&cUltra Hardcore 1.8&r{N}&7&lStatus:&r&7 Started'
+    InGame: '&cUltra Hardcore 1.8&r{N}&7&lStatus:&r&7 InGame'
+    Finished: '&cUltra Hardcore 1.8&r{N}&7&lStatus:&r&7 Finished'
   KickMessage:
     PlayerJoinError: '&c&lUltra Hardcore 1.8 - Error'
     PlayerJoinLoading: '&c&lUltra Hardcore 1.8 - Loading'
     PlayerJoinGameEnd: '&c&lUltra Hardcore 1.8 - Ending'
-    PlayerKickRestart: '&c&lUltra Hardcore 1.8 - Update/Restart'
+    PlayerKickRestart: '&c&lUltra Hardcore 1.8 - Update / Restart'
     PlayerKickGameEnd: '&c&lUltra Hardcore 1.8&r{N}&cServer Restart&r{N}&aThanks for playing.'
   BungeeCordSupport:
     Enabled: false
@@ -87,10 +110,14 @@ ServerMode:
     Item: 'BARRIER'
     InvSlot: 8
 
-# --- Game Settings ---
+
+# ---:- GAME SETTINGS -:---
 #
-#    ~ NameTagVisibility ~
-# 0: Always, 1: Hide for other teams, 2: Hide for own team, 3: Hide.
+#> NameTagVisibility
+#   0: On, 1: Hide other teams, 2: hide own team, 3: Off
+#
+#> CollisionRule
+#   0: On, 1: Push other teams, 2: Push own team, 3: Off
 #
 Game:
   TeamMode: false
@@ -100,39 +127,40 @@ Game:
     FriendlyFire: true
     SeeFriendlyInvisibles: false
     NameTagVisibility: 0
+    CollisionRule: 0
 
-# --- Player List Header & Footer ---
+
+# ---:- TABLIST HEADER & FOOTER -:---
 TabList:
   Enabled: false
   Header: '&c&lUltra Hardcore 1.8&r'
   Footer: ''
 
-# --- World Settings ---
+
+# ---:- WORLD SETTINGS -:---
 #
-#    ~ Difficulty ~
-# 1: Easy, 2: Normal, 3: Hard
+#> Difficulty
+#   1: Easy, 2: Normal, 3: Hard
 #
 WorldSettings:
   Difficulty: 2
   ArenaSize: 1000
   SunTime: 0
 
-# --- Worldborder ---
-Worldborder:
+
+# ---:- WORLDBORDER -:---
+WorldBorder:
   StartDelay: 0
   StartPos: 1250
   EndPos: 150
   Time: 10800
 
-# --- Custom Book ---
-#
-#  New Line   =>  {N}
-#
+
+# ---:- CUSTOM BOOK -:---
 Book:
   Enabled: false
-  ShowSettings: false
-  InventorySlot: 7
-  Name: '&eUltra Hardcore'
+  InvSlot: 7
+  Name: '&cUltra Hardcore'
   Lord:
   - ''
   - '&6- &7Info'
@@ -141,50 +169,61 @@ Book:
   - 'Welcome to &4&lUHC&0.{N}{N}This game you can only regenerate health by{N} &8- &1Golden Apple.&r{N} &8- &1Potions.&r{N}{N}I wish you &5Good Luck&r{N}and may the best player / team win.'
   - '&l&n    UHC - Rules     &r{N}{N}&11.&r Branch Mining{N}&8 You can not branch{N} mining but if you{N} hear a sound,{N} you can dig to it.&r{N}{N}&12. Staircases&r{N}&8 You can only dig{N} staircases if you{N} want to find a cave.'
 
-#--- Golden Head ---
+
+# ---:- GOLDEN HEAD -:---
 GoldenHead:
   Enabled: false
   ItemsRecipes:
     DefaultApple:
       Enabled: false
-    GoldenHeadApple:
+    GoldenApple:
       Enabled: true
 
-# --- Freeze Ingame Starting Player ---
+
+# ---:- FREEZE INGAME STARTING PLAYERS -:---
 FreezePlayer:
   Enabled: true
   Size: 10
-# --- Marker Options ---
-#
-#  Minutes        =>  {0}
-#  End of Episode =>  {1}
-#  Next Episode   =>  {2}
-#
 
+
+# ---:- MARKER OPTIONS -:---
+#
+#> Message Replacement
+#   Minutes         =>  {0}
+#   End of Episode  =>  {1}
+#   Next Episode    =>  {2}
+#
 Marker:
   Message: '&cUHC&8 |&r YOU ARE NOW IN &a{0}&r MIN IN'
   Delay: 20
 
-# --- Damage Logger ---
+
+# ---:- DAMAGE LOGGER -:---
+#
+# On Craftbukkit / Spigot 1.9 do not work 100%.
+#
 DamagerLogger: false
 
-# --- Offline Kicker for ingame player ---
+
+# ---:- OFFLINE KICKER -:---
 #
-#  Player   =>  {0}
+#> Message Replacement
+#   Player   =>   {0}  
 #
 OfflineKicker:
   Timeout: 5
   Message: '{0} was killed by Offline Timer'
 
-# --- Global Chat Format ---
+
+# ---:- GLOBAL CHAT -:---
 #
-#  Player     =>  {0}
-#  Message    =>  {1}
-#
+#> Message Replacement
+#   Player    =>   {0}
+#   Message   =>   {1}
+
 GlobalChat:
+  Enabled: true
   Default: '<{0}> {1}'
   Spectator: '<&7&o{0}&r> {1}'
-  Teams:
-    Default: '<&o{0}&r> {1}'
-    Team: '<{0}> {1}'
-    PrivateChat: '&7&lTeam&r <{0}> &7{1}'
+  Team: '<{0}> {1}'
+  PrivateTeamChat: '&7Team&r <{0}> &7{1}'

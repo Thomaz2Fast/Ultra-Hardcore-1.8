@@ -18,14 +18,10 @@
 
 package com.thomaztwofast.uhc.commands;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.bukkit.Location;
-import org.bukkit.World;
-import org.bukkit.World.Environment;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -36,153 +32,120 @@ import org.bukkit.util.StringUtil;
 import com.google.common.collect.ImmutableList;
 import com.thomaztwofast.uhc.Main;
 import com.thomaztwofast.uhc.custom.ChunkLoader;
-import com.thomaztwofast.uhc.custom.JChat;
-import com.thomaztwofast.uhc.custom.Perm;
-import com.thomaztwofast.uhc.data.PlayerData;
+import com.thomaztwofast.uhc.custom.Jc;
+import com.thomaztwofast.uhc.data.Permission;
+import com.thomaztwofast.uhc.data.UHCPlayer;
 
 public class CmdChunkLoader implements CommandExecutor, TabCompleter {
-	private List<String> tb = ImmutableList.of("start");
-	private Main pl;
-	private ArrayList<UUID> uid = new ArrayList<>();
-	private ChunkLoader cl;
+	private Main cA;
+	private ChunkLoader cB;
+	private List<UUID> cC = new ArrayList<>();
 
-	public CmdChunkLoader(Main main) {
-		pl = main;
-		cl = new ChunkLoader(pl);
+	public CmdChunkLoader(Main a) {
+		cA = a;
+		cB = new ChunkLoader(a);
 	}
 
 	/**
-	 * Command              >   ChunkLoader
-	 * Enabled Console      >   No
-	 * Default Permission   >   OP
-	 * 
-	 * Description          >   Load/Generate chunk in the UHC arena by specific size.
+	 * Command - - - - - - - - - - > - ChunkLoader
+	 * Enabled Console - - - - - - > - false
+	 * Default Permission  - - - - > - OP
 	 */
 	@Override
-	public boolean onCommand(CommandSender send, Command cmd, String lab, String[] arg) {
-		if (send instanceof Player) {
-			PlayerData p = pl.getRegPlayer(((Player) send).getUniqueId());
-			if (pl.getPlConf().pl_Enabled()) {
-				JChat ic = new JChat();
-				ic.add("ChunkLoader> ", null, 9, null, null);
-				if (pl.getPlFun().hasPermission(p.cp, Perm.UHC)) {
-					ic.add("Disabled!", null, 7, "2|/uhc help page 1", "§6§lHelp Information\n§7Click here to find out how to\n§7enable this command?");
+	public boolean onCommand(CommandSender a, Command b, String c, String[] d) {
+		if (a instanceof Player) {
+			UHCPlayer e = cA.mB.getPlayer(a.getName());
+			if (cA.mC.cCa) {
+				Jc f = new Jc();
+				f.add("ChunkLoader> ", new int[] { 1 }, 8, null, null);
+				if (e.uB.hasPermission(Permission.UHC.toString())) {
+					f.add("Disabled!", new int[] { 1 }, 7, "2|/uhc help page 1", "\u00A76\u00A7lHelp Information\n\u00A77Click here to find out how to\n\u00A77enable this command?");
 				} else {
-					ic.add("Disabled!", null, 7, null, null);
+					f.add("Disabled!", new int[] { 1 }, 7, null, null);
 				}
-				p.sendRawICMessage(ic.a());
-				return true;
-			} else if (cl.isRunning()) {
-				p.sendMessage("ChunkLoader", "In progress from§e " + cl.getPlayerName() + "§7.");
-				p.sendMessage("ChunkLoader", cl.getProgress() + "% Completed.");
-				return true;
-			} else if (arg.length == 0) {
-				p.sendActionMessage("§7Loading...");
-				p.sendRawICMessage(getChunkLoaderDisplay(p.cp.getUniqueId()));
-				p.sendActionMessage("");
-				return true;
-			} else if (uid.contains(p.cp.getUniqueId()) && arg[0].equals("start")) {
-				p.sendMessage("ChunkLoader", "Starting in a few seconds.");
-				cl.start(p.cp);
-				uid.clear();
+				e.sendJsonMessage(f.o());
 				return true;
 			}
-			p.sendActionMessage("§7Loading ChunkLoader...");
-			p.sendRawICMessage(getChunkLoaderDisplay(p.cp.getUniqueId()));
-			p.sendActionMessage("");
+			if (cB.isRunning()) {
+				if (d.length == 1 && d[0].equals("stop")) {
+					cB.stop();
+					e.sendCommandMessage("ChunkLoader", "Stopped!");
+					return true;
+				}
+				e.sendCommandMessage("ChunkLoader", "In progress from \u00A7e\u00A7o" + cB.getPlayer() + "\u00A77\u00A7o.");
+				e.sendCommandMessage("ChunkLoader", cB.getProgress() + " Completed.");
+				return true;
+			} else if (d.length == 1 && cC.contains(e.uB.getUniqueId()) && d[0].equals("start")) {
+				cB.start(e.uB);
+				cC.clear();
+				e.sendCommandMessage("ChunkLoader", "Starting in a few seconds.");
+				return true;
+			}
+			e.sendActionMessage("\u00A77Loading ChunkLoader...");
+			e.sendJsonMessage(getChunkInfo(e.uB.getUniqueId()));
+			e.sendActionMessage("");
 			return true;
 		}
-		pl.getPlLog().info("Only ingame player can use this command.");
+		cA.log(0, "Command '/ChunkLoader' can only execute from ingame player.");
 		return true;
 	}
 
-	/**
-	 * ChunkLoader > Tab Complete
-	 */
 	@Override
-	public List<String> onTabComplete(CommandSender send, Command cmd, String lab, String[] arg) {
-		if (send instanceof Player) {
-			if (!pl.getPlConf().pl_Enabled()) {
-				if (arg.length == 1) {
-					return StringUtil.copyPartialMatches(arg[0], tb, new ArrayList<>(tb.size()));
-				}
+	public List<String> onTabComplete(CommandSender a, Command b, String c, String[] d) {
+		if (a instanceof Player) {
+			if (!cA.mC.cCa && d.length == 1) {
+				return StringUtil.copyPartialMatches(d[0], ImmutableList.of("start", "stop"), new ArrayList<>(2));
 			}
 		}
 		return null;
 	}
 
-	/**
-	 * Get ChunkLoader Display Informations
-	 */
-	private String getChunkLoaderDisplay(UUID u) {
-		ArrayList<World> wl = new ArrayList<>();
-		ArrayList<Integer> cl = new ArrayList<>();
-		int a = pl.getPlConf().ws_ArenaSize();
-		int cb = pl.getPlConf().c_Border();
-		int az = (a + cb);
-		for (World w : pl.getServer().getWorlds()) {
-			if (!w.getEnvironment().equals(Environment.THE_END)) {
-				if (!new File(w.getWorldFolder(), "uhc.yml").exists()) {
-					wl.add(w);
-				}
-			}
-		}
-		if (wl.size() != 0) {
-			Location l1 = new Location(wl.get(0), (0 - az), 64, (0 - az));
-			Location l2 = new Location(wl.get(0), (0 + az), 64, (0 + az));
-			for (int i = l1.getChunk().getX(); i <= l2.getChunk().getZ(); i++) {
-				for (int ii = l1.getChunk().getX(); ii <= l2.getChunk().getZ(); ii++) {
-					cl.add(i);
-				}
-			}
-		}
-		JChat ic = new JChat();
-		ic.add("--------------------------------------------", new int[] { 3 }, 8, null, null);
-		ic.add("\n CHUNKLOADER\n \n", new int[] { 0 }, 15, null, null);
-		if (wl.size() != 0) {
-			ic.add(" Estimate Time: ", null, 10, null, null);
-			ic.add(pl.getPlFun().asClockFormat(Math.round(((cl.size() * wl.size()) / ((20.0 / pl.getPlConf().c_DelayTick()) * pl.getPlConf().c_Task())))) + "\n", null, 12, null, null);
-			ic.add(" \n Size Info\n", null, 6, null, null);
-			ic.add("  Arena Size: ", null, 10, null, null);
-			ic.add(a + "", null, 12, null, null);
-			ic.add(" blocks\n", null, 14, null, null);
-			if (cb != 0) {
-				ic.add("  Border Size: ", null, 10, null, null);
-				ic.add(cb + "", null, 12, null, null);
-				ic.add(" blocks\n", null, 14, null, null);
-			}
-			ic.add("  Total Radius: ", null, 10, null, null);
-			ic.add(az + "", null, 12, null, null);
-			ic.add(" blocks from 0,0\n \n", null, 14, null, null);
-			if (pl.getPlConf().c_ShowHidden()) {
-				ic.add(" Chunk Info\n", null, 6, null, null);
-				int i = 1;
-				for (World w : wl) {
-					if (!w.getEnvironment().equals(Environment.THE_END)) {
-						ic.add("  " + i + ": ", null, 6, null, null);
-						ic.add("World '", null, 7, null, null);
-						ic.add(w.getName(), null, 14, null, null);
-						ic.add("', Chunks '", null, 7, null, null);
-						ic.add(cl.size() + "", null, 14, null, null);
-						ic.add("'\n", null, 7, null, null);
-						i++;
-					}
-				}
-				ic.add("  Total Chunks: ", null, 6, null, null);
-				ic.add((cl.size() * wl.size()) + "\n \n", null, 12, null, null);
-			}
+	// ------:- PRIVATE -:--------------------------------------------------------------------------
 
-			ic.add(" If everything is okay?\n Type the command below to start.\n", null, 7, null, null);
-			ic.add(" /ChunkLoader Start\n", null, 8, "2|/chunkloader start", "§e§l>§r §a/ChunkLoader Start§r");
-			if (!uid.contains(u)) {
-				uid.add(u);
+	private String getChunkInfo(UUID a) {
+		String[] b = cB.getChunkData();
+		String[] c = b[0].split("\\|");
+		Jc d = new Jc();
+		d.add("--------------------------------------------\n", new int[] { 3 }, 8, null, null);
+		d.add(" CHUNKLOADER\n \n", new int[] { 0 }, 15, null, null);
+		d.add("", null, 0, null, null);
+		if (b[0].length() != 0) {
+			d.add(" Estimate Time: ", null, 10, null, null);
+			d.add(b[2] + "\n \n", null, 12, null, null);
+			d.add(" Size Info\n", null, 6, null, null);
+			d.add("  Arena Size: ", null, 10, null, null);
+			d.add("" + cA.mC.cIb, null, 12, null, null);
+			d.add(" blocks\n", null, 14, null, null);
+			if (cA.mC.cDa != 0) {
+				d.add("  Border Size: ", null, 10, null, null);
+				d.add("" + cA.mC.cDa, null, 12, null, null);
+				d.add(" blocks\n", null, 14, null, null);
+			}
+			d.add("  Total Radius: ", null, 10, null, null);
+			d.add("" + (cA.mC.cIb + cA.mC.cDa), null, 12, null, null);
+			d.add(" blocks from 0,0\n \n", null, 14, null, null);
+			if (cA.mC.cDd) {
+				d.add(" Chunk Info\n", null, 6, null, null);
+				for (int e = 0; e < c.length; e++) {
+					d.add("  " + (e + 1) + ": ", null, 6, null, null);
+					d.add("World '", null, 7, null, null);
+					d.add(c[e], null, 14, null, null);
+					d.add("', Chunks '", null, 7, null, null);
+					d.add(b[1], null, 14, null, null);
+					d.add("'\n", null, 7, null, null);
+				}
+				d.add("  Total Chunks: ", null, 6, null, null);
+				d.add((c.length * Integer.parseInt(b[1])) + "\n \n", null, 12, null, null);
+			}
+			d.add(" If everything is okay?\n Type the command below to start.\n", null, 7, null, null);
+			d.add(" /chunkloader start\n", null, 8, "2|/chunkloader start", "\u00A7e\u00A7l>\u00A7r\u00A7a /chunkloader start");
+			if (!cC.contains(a)) {
+				cC.add(a);
 			}
 		} else {
-			ic.add(" Every world has been loaded/generated.", null, 7, null, null);
+			d.add(" Every world has been loaded / generated.\n", null, 7, null, null);
 		}
-		ic.add("--------------------------------------------", new int[] { 3 }, 8, null, null);
-		wl.clear();
-		cl.clear();
-		return ic.a();
+		d.add("--------------------------------------------", new int[] { 3 }, 8, null, null);
+		return d.o();
 	}
 }

@@ -24,54 +24,58 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.thomaztwofast.uhc.Main;
-import com.thomaztwofast.uhc.custom.JChat;
-import com.thomaztwofast.uhc.custom.Perm;
-import com.thomaztwofast.uhc.data.PlayerData;
+import com.thomaztwofast.uhc.custom.Jc;
+import com.thomaztwofast.uhc.data.Permission;
+import com.thomaztwofast.uhc.data.UHCPlayer;
 
 public class CmdSelectTeam implements CommandExecutor {
-	private Main pl;
+	private Main cA;
 
-	public CmdSelectTeam(Main main) {
-		pl = main;
+	public CmdSelectTeam(Main a) {
+		cA = a;
 	}
 
 	/**
-	 * Command              >   SelectTeam
-	 * Enabled Console      >   No
-	 * Default Permission   >   Everyone
-	 * Special Permission   >   OP / Permission node.
-	 *                          [com.thomaztwofast.uhc.commands.selectteam.admin]
-	 * 
-	 * Description          >   All registered players will get a item to the inventories.
+	 * Command - - - - - - - - - - > - SelectTeam
+	 * Enabled Console - - - - - - > - false
+	 * Default Permission  - - - - > - Everyone
+	 * Special Permission  - - - - > - OP | com.thomaztwofast.uhc.commands.selectteam.admin
 	 */
 	@Override
-	public boolean onCommand(CommandSender send, Command cmd, String lab, String[] arg) {
-		if (send instanceof Player) {
-			PlayerData p = pl.getRegPlayer(((Player) send).getUniqueId());
-			if (pl.getPlConf().pl_Enabled() & pl.getPlConf().g_teamMode() & !pl.getPlConf().server()) {
-				if (pl.getGame().getStatus().getStat().getLvl() <= 5) {
-					if (pl.getPlFun().hasPermission(p.cp, Perm.SELECTALL)) {
-						pl.getGame().getTeam().setActive();
-						for (PlayerData pd : pl.getRegPlayerData().values()) {
-							pl.getGame().getTeam().getTeamSelecterToPlayer(pd);
-						}
-						return true;
+	public boolean onCommand(CommandSender a, Command b, String c, String[] d) {
+		if (a instanceof Player) {
+			UHCPlayer e = cA.mB.getPlayer(a.getName());
+			if (cA.mC.cCa && cA.mC.cGa && !cA.mC.cFa && cA.mA.i() <= 5) {
+				if (e.uB.hasPermission(Permission.SELECTTEAM_ALL.toString())) {
+					for (UHCPlayer f : cA.mB.getAllPlayers()) {
+						getTeamSelectorItem(f);
 					}
-					pl.getGame().getTeam().getTeamSelecterToPlayer(p);
+					cA.mE.gD.uCc = true;
 					return true;
 				}
+				getTeamSelectorItem(e);
+				return true;
 			}
-			JChat ic = new JChat();
-			ic.add("SelectTeam> ", null, 9, null, null);
-			if (pl.getPlFun().hasPermission(p.cp, Perm.UHC)) {
-				ic.add("Disabled!", null, 7, "2|/uhc help page 2", "§6§lHelp Information\n§7Click here to find out how to\n§7enable this command?");
+			Jc f = new Jc();
+			f.add("SelectTeam> ", new int[] { 1 }, 8, null, null);
+			if (e.uB.hasPermission(Permission.UHC.toString())) {
+				f.add("Disabled!", new int[] { 1 }, 7, "2|/uhc help page 2", "\u00A76\u00A7lHelp Information\n\u00A77Click here to find out how to\n\u00A77enable this command?");
 			} else {
-				ic.add("Disabled!", null, 7, null, null);
+				f.add("Disabled!", new int[] { 1 }, 7, null, null);
 			}
-			p.sendRawICMessage(ic.a());
+			e.sendJsonMessage(f.o());
 			return true;
 		}
-		pl.getPlLog().info("Only ingame player can use this command.");
+		cA.log(0, "Command '/SelectTeam' can only execute from ingame player.");
 		return true;
+	}
+
+	// ------:- PRIVATE -:--------------------------------------------------------------------------
+
+	private void getTeamSelectorItem(UHCPlayer a) {
+		if (!a.uB.getInventory().contains(cA.mE.gD.uD)) {
+			a.uB.getInventory().setItem(cA.mC.cGc, cA.mE.gD.uD);
+			a.sendCommandMessage("SelectTeam", "Right click on the \u00A7e\u00A7opaper item\u00A77\u00A7o to select team.");
+		}
 	}
 }

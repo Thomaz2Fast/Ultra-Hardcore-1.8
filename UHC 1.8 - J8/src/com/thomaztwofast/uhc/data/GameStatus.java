@@ -18,64 +18,31 @@
 
 package com.thomaztwofast.uhc.data;
 
-public class GameStatus {
-	private Stat st = Stat.DISABLED;
+public enum GameStatus {
+	DISABLED(0, "Disabled"),
+	ERROR(1, "Error"),
+	LOADING(2, "Loading"),
+	RESET(3, "Restarting"),
+	WAITING(4, "Waiting"),
+	WAITING_STARTING(5, "Waiting + Countdown"),
+	STARTING(6, "Starting"),
+	INGAME(7, "InGame"),
+	FINISHED(8, "Finished");
 
-	/**
-	 * Enum > Status
-	 */
-	public enum Stat {
-		DISABLED(0, true, "Disabled"),
-		ERROR(1, true, "Error"),
-		LOADING(2, true, "Loading"),
-		RESET(3, true, "Restarting"),
-		WAITING(4, true, "Waiting"),
-		WAITING_STARTING(5, true, "Waiting + Countdown"),
-		STARTING(6, false, "Starting"),
-		INGAME(7, false, "InGame"),
-		FINISHED(8, true, "Finished");
+	private int a;
+	private String b;
 
-		private boolean sB;
-		private int sI;
-		private String sS;
-
-		Stat(int i, boolean b, String s) {
-			sI = i;
-			sB = b;
-			sS = s;
-		}
-
-		@Override
-		public String toString() {
-			return sS;
-		}
-
-		/**
-		 * Is > Status Active?
-		 */
-		public boolean isActive() {
-			return sB;
-		}
-
-		/**
-		 * Get > Status Level
-		 */
-		public int getLvl() {
-			return sI;
-		}
+	GameStatus(int a1, String b1) {
+		a = a1;
+		b = b1;
 	}
 
-	/**
-	 * Get > Status
-	 */
-	public Stat getStat() {
-		return st;
+	@Override
+	public String toString() {
+		return b;
 	}
 
-	/**
-	 * Set > New Status
-	 */
-	public void setStat(Stat stat) {
-		st = stat;
+	public int i() {
+		return a;
 	}
 }

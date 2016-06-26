@@ -23,46 +23,32 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+
 import com.thomaztwofast.uhc.Main;
-import com.thomaztwofast.uhc.custom.JChat;
-import com.thomaztwofast.uhc.custom.Perm;
-import com.thomaztwofast.uhc.data.PlayerData;
+import com.thomaztwofast.uhc.custom.Jc;
+import com.thomaztwofast.uhc.data.Permission;
+import com.thomaztwofast.uhc.data.UHCPlayer;
 
 public class EvDisabled implements Listener {
-	private Main pl;
+	private Main eA;
 
-	public EvDisabled(Main main) {
-		pl = main;
+	public EvDisabled(Main a) {
+		eA = a;
 	}
 
-	/**
-	 * Event > Player Join
-	 */
 	@EventHandler
-	public void playerJoin(PlayerJoinEvent e) {
-		pl.regPlayer(e.getPlayer());
-		PlayerData p = pl.getRegPlayer(e.getPlayer().getUniqueId());
-		if (pl.getPlFun().hasPermission(p.cp, Perm.UHC)) {
-			pl.getServer().getScheduler().runTaskLater(pl, new Runnable() {
-				@Override
-				public void run() {
-					if (p.cp.isOnline()) {
-						JChat ic = new JChat();
-						ic.add("UHC> ", null, 9, null, null);
-						ic.add("Ultra Hardcore 1.8 is disabled.", null, 7, "2|/uhc help page 0", "§6§lHelp Information\n§7Click here to find out how to\n§7enable this command?");
-						p.sendRawICMessage(ic.a());
-						p.playLocalSound(Sound.NOTE_STICKS, 1.8f);
-					}
-				}
-			}, 10);
+	public void join(PlayerJoinEvent a) {
+		UHCPlayer b = eA.mB.addPlayer(eA, a.getPlayer());
+		if (b.uB.hasPermission(Permission.UHC.toString())) {
+			Jc c = new Jc();
+			c.add("> ", new int[] { 0, 1 }, 8, null, null);
+			c.add("Ultra Hardcore 1.8 is disabled.", new int[] { 1 }, 7, "2|/uhc help page 0", "\u00A76\u00A7lHelp Information\n\u00A77Click here to find out how to\n\u00A77enable this plugin?");
+			b.sendJsonMessageLater(c.o(), Sound.BLOCK_NOTE_HAT, 1.8f, 10);
 		}
 	}
 
-	/**
-	 * Event > Player Quit
-	 */
 	@EventHandler
-	public void playerQuit(PlayerQuitEvent e) {
-		pl.removeRegPlayer(e.getPlayer());
+	public void quit(PlayerQuitEvent a) {
+		eA.mB.removePlayer(a.getPlayer());
 	}
 }

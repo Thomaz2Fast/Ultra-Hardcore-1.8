@@ -18,20 +18,28 @@
 
 package com.thomaztwofast.uhc.custom;
 
-public enum Perm {
-	ERROR("perm.login"),
-	GLOBAL_COMMAND("perm.global.commands"),
-	SELECTALL("commands.selectteam.admin"),
-	UHC("commands.uhc");
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.BookMeta;
 
-	private String perm;
+import com.thomaztwofast.uhc.Main;
 
-	Perm(String id) {
-		perm = id;
+public class UhcBook extends Function {
+	private Main uA;
+	public ItemStack uB;
+
+	public UhcBook(Main a) {
+		uA = a;
 	}
 
-	@Override
-	public String toString() {
-		return "com.thomaztwofast.uhc." + perm;
+	public void load() {
+		uB = nItem(Material.WRITTEN_BOOK, 0, uA.mC.cKc, uA.mC.cKd);
+		BookMeta a = (BookMeta) uB.getItemMeta();
+		a.setAuthor(uA.getDescription().getName());
+		a.setTitle(uA.mC.cKc);
+		if (uA.mC.cKe.length != 0) {
+			a.setPages(uA.mC.cKe);
+		}
+		uB.setItemMeta(a);
 	}
 }

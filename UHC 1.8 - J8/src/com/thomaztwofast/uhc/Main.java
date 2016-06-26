@@ -18,9 +18,6 @@
 
 package com.thomaztwofast.uhc;
 
-import java.util.HashMap;
-import java.util.UUID;
-
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -29,37 +26,32 @@ import com.thomaztwofast.uhc.commands.CmdChunkLoader;
 import com.thomaztwofast.uhc.commands.CmdSelectTeam;
 import com.thomaztwofast.uhc.commands.CmdStart;
 import com.thomaztwofast.uhc.commands.CmdUhc;
-import com.thomaztwofast.uhc.custom.Logger;
-import com.thomaztwofast.uhc.custom.UpdateNotification;
+import com.thomaztwofast.uhc.custom.PluginUpdateChecker;
 import com.thomaztwofast.uhc.data.Config;
-import com.thomaztwofast.uhc.data.PlayerData;
+import com.thomaztwofast.uhc.data.GameStatus;
+import com.thomaztwofast.uhc.data.PlayerList;
 import com.thomaztwofast.uhc.events.EvDisabled;
 
 public class Main extends JavaPlugin {
-	private HashMap<UUID, PlayerData> pd = new HashMap<>();
-	private HashMap<String, UUID> ppd = new HashMap<>();
-	private Logger l = new Logger(this);
-	private Function f = new Function();
-	private UpdateNotification un;
-	private Config c;
-	private GameManager gm;
+	public GameStatus mA = GameStatus.DISABLED;
+	public PlayerList mB = new PlayerList();
+	public Config mC = new Config(this);
+	public PluginUpdateChecker mD = new PluginUpdateChecker(this);
+	public GameManager mE = new GameManager(this);
 
 	@Override
 	public void onDisable() {
-		if (c.pl_Enabled()) {
-			gm.unLoadUHC();
+		if (mC.cCa) {
+			mE.unloadGame();
 		}
-		f.getAllOnlinePlayers(this, false);
 	}
 
 	@Override
 	public void onLoad() {
-		c = new Config(this);
-		gm = new GameManager(this);
-		if (c.pl_updateNotification()) {
-			un = new UpdateNotification(this);
+		mC.loadConfig();
+		if (mC.cCb) {
+			mD.updateCheck();
 		}
-		f.getAllOnlinePlayers(this, true);
 	}
 
 	@Override
@@ -69,85 +61,36 @@ public class Main extends JavaPlugin {
 		getCommand("selectteam").setExecutor(new CmdSelectTeam(this));
 		getCommand("start").setExecutor(new CmdStart(this));
 		getCommand("uhc").setExecutor(new CmdUhc(this));
-		if (c.pl_Enabled()) {
-			gm.loadUHC();
+		getOnlinePlayers();
+		if (mC.cCa) {
+			mE.loadGame();
 			return;
 		}
 		getServer().getPluginManager().registerEvents(new EvDisabled(this), this);
 	}
 
-	// :: PUBLIC :: //
+	// ------:- PUBLIC -:---------------------------------------------------------------------------
 
-	/**
-	 * Get Logger
-	 */
-	public Logger getPlLog() {
-		return l;
+	public void log(int a, String b) {
+		String c = "[" + getDescription().getName() + "] ";
+		switch (a) {
+		case 1:
+			System.err.println("\u001B[31m" + c + b + "\u001B[0m");
+			return;
+		case 2:
+			System.out.println("\u001B[35m" + c + "[DEBUG] " + b + "\u001B[0m");
+			return;
+		default:
+			System.out.println(c + b);
+			return;
+		}
 	}
 
-	/**
-	 * Get Function.
-	 */
-	public Function getPlFun() {
-		return f;
-	}
+	// ------:- PRIVATE -:--------------------------------------------------------------------------
 
-	/**
-	 * Get Config
-	 */
-	public Config getPlConf() {
-		return c;
-	}
-
-	/**
-	 * Get Update Notification.
-	 */
-	public UpdateNotification getPlUpdate() {
-		return un;
-	}
-
-	/**
-	 * Get Game Manager.
-	 */
-	public GameManager getGame() {
-		return gm;
-	}
-
-	/**
-	 * Get registered player data.
-	 */
-	public HashMap<UUID, PlayerData> getRegPlayerData() {
-		return pd;
-	}
-
-	/**
-	 * Get registered player by UUID.
-	 */
-	public PlayerData getRegPlayer(UUID u) {
-		return pd.get(u);
-	}
-
-	/**
-	 * Get registered player by name.
-	 */
-	public PlayerData getRegPlayerByName(String s) {
-		return pd.get(ppd.get(s));
-	}
-
-	/**
-	 * Add Registered player.
-	 */
-	public void regPlayer(Player p) {
-		ppd.put(p.getName(), p.getUniqueId());
-		pd.put(p.getUniqueId(), new PlayerData(this, p));
-	}
-
-	/**
-	 * Remove registered player.
-	 */
-	public void removeRegPlayer(Player p) {
-		pd.get(p.getUniqueId()).saveProfile(true);
-		pd.remove(p.getUniqueId());
-		ppd.remove(p.getName());
+	private void getOnlinePlayers() {
+		for (Player p : getServer().getOnlinePlayers()) {
+			mB.addPlayer(this, p);
+		}
 	}
 }

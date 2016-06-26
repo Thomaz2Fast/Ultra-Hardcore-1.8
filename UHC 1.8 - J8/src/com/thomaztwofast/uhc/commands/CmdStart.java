@@ -19,9 +19,11 @@
 package com.thomaztwofast.uhc.commands;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
+import org.bukkit.GameMode;
 import org.bukkit.Sound;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -29,209 +31,163 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Scoreboard;
-import org.bukkit.scoreboard.Team;
 import org.bukkit.util.StringUtil;
 
-import com.google.common.collect.ImmutableList;
 import com.thomaztwofast.uhc.Main;
-import com.thomaztwofast.uhc.custom.JChat;
-import com.thomaztwofast.uhc.custom.Perm;
-import com.thomaztwofast.uhc.data.PlayerData;
+import com.thomaztwofast.uhc.custom.Jc;
+import com.thomaztwofast.uhc.data.Permission;
+import com.thomaztwofast.uhc.data.UHCPlayer;
 
 public class CmdStart implements CommandExecutor, TabCompleter {
-	private List<String> t = ImmutableList.of("uhc");
-	private ArrayList<UUID> sOp = new ArrayList<>();
-	private Main pl;
+	private Main cA;
+	private List<UUID> cB = new ArrayList<>();
 
-	public CmdStart(Main main) {
-		pl = main;
+	public CmdStart(Main a) {
+		cA = a;
 	}
 
 	/**
-	 * Command              >   Start
-	 * Enabled Console      >   No
-	 * Default Permission   >   OP
-	 * Args                 -   NAME                TAB             CONSOLE
-	 *                          uhc             |   Show        |   No
-	 *                          notify-player   |   Hidden      |   No
-	 * 
-	 * Description          >   Start the Ultra Hardcore game.
+	 * Command - - - - - - - - - - > - Start
+	 * Enabled Console - - - - - - > - false
+	 * Default Permission  - - - - > - OP
+	 * Args  - - - - - - - - - - - > -
+	 *       ID               NAME         		TAB         CONSOLE
+	 *       115760           uhc         		true       false
+	 *      -1166190107       notify-player 	false       false
 	 */
 	@Override
-	public boolean onCommand(CommandSender send, Command cmd, String lab, String[] arg) {
-		if (send instanceof Player) {
-			PlayerData p = pl.getRegPlayer(((Player) send).getUniqueId());
-			if (pl.getPlConf().pl_Enabled()) {
-				if (pl.getGame().getStatus().getStat().getLvl() <= 4) {
-					if (arg.length == 0) {
-						p.sendRawICMessage(getGameReport(p.cp.getUniqueId()));
-						return true;
-					} else {
-						switch (arg[0].toLowerCase()) {
-						case "notify-player":
-							if (arg.length == 2 & pl.getPlConf().g_teamMode()) {
-								try {
-									if (UUID.fromString(arg[1]) != null) {
-										if (pl.getRegPlayer(UUID.fromString(arg[1])) != null) {
-											PlayerData np = pl.getRegPlayer(UUID.fromString(arg[1]));
-											p.sendActionMessage("§7Send notification to §e" + np.cp.getName());
-											np.sendMessage("Notification", "The game is about to start. please select a team if you want to join the UHC or else you will be spectating the game.");
-											float[] f = { 0.8f, 0.8f };
-											int i = 0;
-											for (float fs : f) {
-												pl.getServer().getScheduler().runTaskLater(pl, new Runnable() {
-													@Override
-													public void run() {
-														np.playLocalSound(Sound.ORB_PICKUP, fs);
-													}
-												}, 5 * i);
-												i++;
-											}
+	public boolean onCommand(CommandSender a, Command b, String c, String[] d) {
+		if (a instanceof Player) {
+			UHCPlayer e = cA.mB.getPlayer(a.getName());
+			if (cA.mC.cCa && cA.mA.i() == 4) {
+				if (d.length != 0) {
+					switch (d[0].toLowerCase().hashCode()) {
+					case -1166190107:
+						if (cA.mC.cGa && d.length == 2) {
+							if (UUID.fromString(d[1]) != null && cA.mB.getPlayer(UUID.fromString(d[1])) != null) {
+								UHCPlayer f = cA.mB.getPlayer(UUID.fromString(d[1]));
+								e.sendActionMessage("\u00A77Send notification to \u00A7e" + f.uB.getName());
+								f.sendCommandMessage("Notification", "This game is about to start. please select a team if you want to join the UHC or else you will be spectating the game.");
+								for (int g = 0; g < 2; g++) {
+									cA.getServer().getScheduler().runTaskLater(cA, new Runnable() {
+										@Override
+										public void run() {
+											f.playLocalSound(Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.8f);
 										}
-									}
-								} catch (IllegalArgumentException e) {
-									pl.getPlLog().warn("[Notification Player] invalid UUID '" + arg[1] + "'");
+									}, 5 * g);
 								}
 							}
-							return true;
-						case "uhc":
-							if (sOp.contains(p.cp.getUniqueId())) {
-								if (canStartUhc() > 1) {
-									sOp.remove(p.cp.getUniqueId());
-									if (pl.getPlConf().server()) {
-										pl.getGame().getServer().forceStart(p.cp.getName());
-										return true;
-									}
-									pl.getGame().startUhcGame(canStartUhc());
-									return true;
-								}
-							}
-							p.sendRawICMessage(getGameReport(p.cp.getUniqueId()));
-							return true;
 						}
 						return true;
+					case 115760:
+						if (cB.contains(e.uB.getUniqueId()) && ig() > 1) {
+							cB.clear();
+							if (cA.mC.cFa) {
+								cA.mE.gC.forceStart(e.uB.getName());
+								return true;
+							}
+							cA.mE.gmStart(ig());
+							return true;
+						}
 					}
 				}
+				e.sendJsonMessage(r(e.uB.getUniqueId()));
+				return true;
 			}
-			JChat ic = new JChat();
-			ic.add("Start> ", null, 9, null, null);
-			if (pl.getPlFun().hasPermission(p.cp, Perm.UHC)) {
-				ic.add("Disabled!", null, 7, "2|/uhc help page 0", "§6§lHelp Information\n§7Click here to find out how to\n§7enable this command?");
+			Jc f = new Jc();
+			f.add("Start> ", new int[] { 1 }, 8, null, null);
+			if (e.uB.hasPermission(Permission.UHC.toString())) {
+				f.add("Disabled!", new int[] { 1 }, 7, "2|/uhc help page 0", "\u00A76\u00A7lHelp Information\n\u00A77Click here to find out how to\n\u00A77enable this command?");
 			} else {
-				ic.add("Disabled!", null, 7, null, null);
+				f.add("Disabled!", new int[] { 1 }, 7, null, null);
 			}
-			p.sendRawICMessage(ic.a());
+			e.sendJsonMessage(f.o());
 			return true;
 		}
-		pl.getPlLog().info("Only ingame player can use this command.");
+		cA.log(0, "Command '/Start' can only execute from ingame player.");
 		return true;
 	}
 
-	/**
-	 * Start > Tab Complete
-	 */
 	@Override
-	public List<String> onTabComplete(CommandSender send, Command cmd, String lab, String[] arg) {
-		if (send instanceof Player) {
-			if (pl.getPlConf().pl_Enabled()) {
-				if (arg.length == 1) {
-					return StringUtil.copyPartialMatches(arg[0], t, new ArrayList<>(t.size()));
-				}
-			}
+	public List<String> onTabComplete(CommandSender a, Command b, String c, String[] d) {
+		if (a instanceof Player && cA.mC.cCa && d.length == 1) {
+			return StringUtil.copyPartialMatches(d[0], Arrays.asList("uhc"), new ArrayList<>(1));
 		}
 		return null;
 	}
 
-	// :: PRIVATE :: //
+	// ------:- PRIVATE -:--------------------------------------------------------------------------
 
-	/**
-	 * Game Information
-	 */
-	private String getGameReport(UUID u) {
-		ArrayList<String> data;
-		JChat ic = new JChat();
-		ic.add("--------------------------------------------", new int[] { 3 }, 8, null, null);
-		ic.add("\n ULTRA HARDCORE - " + (pl.getPlConf().g_teamMode() ? "TEAM" : "SOLO") + " MODE\n \n", new int[] { 0 }, 15, null, null);
-		if (pl.getPlConf().g_teamMode()) {
-			data = getTeamsData();
-			ic.add(" Total Teams: ", null, 10, null, null);
-			ic.add(data.get(0) + "\n", null, 7, null, null);
-			if (data.get(1).length() != 0) {
-				ic.add(" \n Warning\n", null, 14, null, null);
-				ic.add(" There " + (data.size() > 3 ? "are " + (data.size() - 2) + " players" : "is 1 player") + ", which is not in the team yet.\n", null, 7, null, null);
-				ic.add(" Player" + (data.size() > 3 ? "s" : "") + ": ", null, 7, null, null);
-				for (int i = 0; i < (data.size() - 2); i++) {
-					if (i != 0) {
-						ic.add(", ", null, 7, null, null);
+	private String r(UUID a) {
+		List<String> b = (cA.mC.cGa ? gTd() : gSd());
+		Jc c = new Jc();
+		c.add("--------------------------------------------", new int[] { 3 }, 8, null, null);
+		c.add("\n ULTRA HARDCORE - " + (cA.mC.cGa ? "TEAM" : "SOLO") + " MODE\n \n", new int[] { 0 }, 15, null, null);
+		c.add(" Total " + (cA.mC.cGa ? "Teams" : "Players") + ": ", null, 10, null, null);
+		c.add(b.get(0) + "\n", null, 7, null, null);
+		if (cA.mC.cGa) {
+			if (b.size() > 1) {
+				c.add(" \n Warning\n", null, 14, null, null);
+				c.add(" There " + ((b.size() - 1) > 1 ? "are " + (b.size() - 1) + " players" : "is 1 player") + " which is not in the team yet.\n", null, 7, null, null);
+				c.add(" Player" + ((b.size() - 1) > 1 ? "s" : "") + ": ", null, 7, null, null);
+				for (int d = 1; d < b.size(); d++) {
+					if (d > 1) {
+						c.add(", ", null, 7, null, null);
 					}
-					String[] us = data.get((i + 2)).split("\\|");
-					ic.add(us[1], null, 14, "2|/start notify-player " + us[0], "§7Send notification?");
+					String[] e = b.get(d).split("\\|");
+					c.add(e[0], null, 14, "2|/start notify-player " + e[1], "\u00A77Send notification?");
 				}
-				ic.add(" \n \n For those who have not in the team yet, will be move to spectator mode.\n", new int[] { 1 }, 8, null, null);
+				c.add(" \n \n For those who have not in the team yet, will be move to spectator mode.\n", new int[] { 1 }, 8, null, null);
 			}
+		}
+		if (Integer.valueOf(b.get(0)) < 2) {
+			c.add(" \n Error \n", null, 12, null, null);
+			c.add(" Not enough " + (cA.mC.cGa ? "teams" : "players") + " to start the game.\n", null, 7, null, null);
+			c.add(" Required: 2 or more " + (cA.mC.cGa ? "teams" : "players") + ".\n", null, 7, null, null);
+			cB.clear();
 		} else {
-			data = getSolosData();
-			ic.add(" Total Players: ", null, 10, null, null);
-			ic.add(data.get(0) + "\n", null, 7, null, null);
-		}
-		if (Integer.parseInt(data.get(0)) <= 1) {
-			ic.add(" \n Error\n", null, 12, null, null);
-			ic.add(" Not enough " + (pl.getPlConf().g_teamMode() ? "teams" : "players") + " to start the game.\n", null, 7, null, null);
-			ic.add(" Required: 2 or more " + (pl.getPlConf().g_teamMode() ? "teams" : "players") + ".\n", null, 7, null, null);
-			sOp.remove(u);
-		} else {
-			ic.add(" \n If everyone is ready to start?\n", null, 7, null, null);
-			ic.add(" Type the command below to start the game.\n", null, 7, null, null);
-			ic.add(" /start uhc\n", null, 8, "2|/start uhc", "§e§l>§r §a/start uhc");
-			if (!sOp.contains(u)) {
-				sOp.add(u);
+			c.add(" \n If everyone is ready to start?\n", null, 7, null, null);
+			c.add(" Type the command below to start the game.\n", null, 7, null, null);
+			c.add(" /start uhc", null, 8, "2|/start uhc", "\u00A7e\u00A7l>\u00A7r\u00A7a /start uhc");
+			if (!cB.contains(a)) {
+				cB.add(a);
 			}
 		}
-		ic.add("--------------------------------------------", new int[] { 3 }, 8, null, null);
-		return ic.a();
+		c.add("--------------------------------------------", new int[] { 3 }, 8, null, null);
+		return c.o();
 	}
 
-	/**
-	 * Get solo data.
-	 */
-	private ArrayList<String> getSolosData() {
-		ArrayList<String> data = new ArrayList<>();
-		data.add(pl.getRegPlayerData().size() + "");
-		return data;
-	}
-
-	/**
-	 * Get team data.
-	 */
-	private ArrayList<String> getTeamsData() {
-		ArrayList<String> data = new ArrayList<>();
-		Scoreboard sb = pl.getServer().getScoreboardManager().getMainScoreboard();
-		int acT = 0;
-		for (Team t : sb.getTeams()) {
-			if (t.getSize() != 0) {
-				acT++;
+	private List<String> gSd() {
+		List<String> a = new ArrayList<>();
+		int b = 0;
+		for (UHCPlayer c : cA.mB.getAllPlayers()) {
+			if (c.uB.getGameMode().equals(GameMode.ADVENTURE)) {
+				b++;
 			}
 		}
-		data.add(acT + "");
-		data.add("");
-		for (PlayerData p : pl.getRegPlayerData().values()) {
-			if (sb.getEntryTeam(p.cp.getName()) == null) {
-				data.add(p.cp.getUniqueId() + "|" + p.cp.getName());
-			}
-		}
-		if (data.size() > 2) {
-			data.set(1, "true");
-		}
-		return data;
+		a.add(b + "");
+		return a;
 	}
 
-	/**
-	 * Check if Ultra Hardcore game can start now
-	 */
-	private int canStartUhc() {
-		if (pl.getPlConf().g_teamMode()) {
-			return Integer.parseInt(getTeamsData().get(0));
+	private List<String> gTd() {
+		List<String> a = new ArrayList<>();
+		Scoreboard b = cA.getServer().getScoreboardManager().getMainScoreboard();
+		int c = 0;
+		for (String d : cA.mE.gD.uCa) {
+			if (b.getTeam(d) != null && b.getTeam(d).getSize() != 0) {
+				c++;
+			}
 		}
-		return Integer.parseInt(getSolosData().get(0));
+		a.add(c + "");
+		for (UHCPlayer d : cA.mB.getAllPlayers()) {
+			if (b.getEntryTeam(d.uB.getName()) == null && d.uB.getGameMode().equals(GameMode.ADVENTURE)) {
+				a.add(d.uB.getName() + "|" + d.uB.getUniqueId());
+			}
+		}
+		return a;
+	}
+
+	private int ig() {
+		return Integer.valueOf((cA.mC.cGa ? gTd().get(0) : gSd().get(0)));
 	}
 }
