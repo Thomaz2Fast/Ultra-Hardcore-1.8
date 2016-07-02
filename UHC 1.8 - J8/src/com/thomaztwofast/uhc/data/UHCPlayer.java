@@ -237,7 +237,16 @@ public class UHCPlayer {
 	private void lC() {
 		String[] a = uA.getServer().getBukkitVersion().split("-");
 		String[] b = a[0].split("\\.");
-		String c = b[0] + "_" + b[1] + "_R" + a[1].charAt(3);
+		String c = b[0] + "_" + b[1] + "_R";
+		for (int d = 1; d < 5; d++) {
+			try {
+				if (Class.forName("net.minecraft.server.v" + c + d + ".Packet") != null) {
+					c += d;
+					break;
+				}
+			} catch (ClassNotFoundException e) {
+			}
+		}
 		try {
 			uFa = Class.forName("org.bukkit.craftbukkit.v" + c + ".entity.CraftPlayer");
 			uFb = Class.forName("net.minecraft.server.v" + c + ".IChatBaseComponent");
@@ -249,7 +258,7 @@ public class UHCPlayer {
 			uFh = Class.forName("net.minecraft.server.v" + c + ".PacketPlayOutWorldBorder");
 			uFi = Class.forName("net.minecraft.server.v" + c + ".WorldBorder");
 		} catch (ClassNotFoundException d) {
-			uA.log(1, "Error, you are using wrong server version. (" + c + ")" + uA.getServer().getBukkitVersion());
+			uA.log(1, "Error, you are using wrong server version.");
 			uA.mA = GameStatus.ERROR;
 		}
 	}

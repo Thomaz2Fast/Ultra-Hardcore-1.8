@@ -1,5 +1,5 @@
 name: UHC-1.8
-version: 1.3.0
+version: 1.3.1
 author: Thomaz2Fast
 
 main: com.thomaztwofast.uhc.Main
@@ -11,7 +11,7 @@ commands:
     permission: com.thomaztwofast.uhc.commands.autoteam
   chunkloader:
     description: Load all the chunk in the arena by spesific size.
-    usage: /chunkloader <start>
+    usage: /chunkloader <start|stop>
     permission: com.thomaztwofast.uhc.commands.chunkloader
   selectteam:
     description: Give player a item to they can select team.
