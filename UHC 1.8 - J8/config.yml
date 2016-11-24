@@ -30,7 +30,7 @@
 #
 # If any change in the config you will be notification on the console.
 #
-Config: 1
+Config: 2
 
 
 # ---:- PLUGIN -:---
@@ -64,6 +64,8 @@ Gamerules:
   doMobLoot: true
   doMobSpawning: true
   doTileDrops: true
+  doWeatherCycle: true
+  maxEntityCramming: 24
   mobGriefing: true
   randomTickSpeed: 3
   reducedDebugInfo: false
@@ -199,9 +201,6 @@ Marker:
 
 
 # ---:- DAMAGE LOGGER -:---
-#
-# On Craftbukkit / Spigot 1.9 do not work 100%.
-#
 DamagerLogger: false
 
 

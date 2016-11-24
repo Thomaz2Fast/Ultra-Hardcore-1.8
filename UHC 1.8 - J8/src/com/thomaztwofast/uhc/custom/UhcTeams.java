@@ -87,7 +87,7 @@ public class UhcTeams extends Function {
 	public void quitTeam(UHCPlayer a) {
 		if (uB.getEntryTeam(a.uB.getName()) != null) {
 			uB.getEntryTeam(a.uB.getName()).removeEntry(a.uB.getName());
-			a.sendCommandMessage("Team", "You are no longer in team.");
+			a.sendCommandMessage("Team", "You are now in spectator mode.");
 			a.playLocalSound(Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f);
 			updateInv();
 			return;
@@ -173,7 +173,7 @@ public class UhcTeams extends Function {
 			ItemStack c = nItem(Material.ENCHANTED_BOOK, 0, "\u00A7" + uCb[a] + "\u00A7l" + uCa[a].replace("_", " "), "0|", "1|\u00A78Max " + uA.mC.cGb + " Player" + (uA.mC.cGb > 1 ? "s" : ""));
 			uE.addItem(c);
 		}
-		uE.setItem(17, nItem(Material.BARRIER, 0, "\u00A7cNo Team", ""));
+		uE.setItem(17, nItem(Material.BARRIER, 0, "\u00A7cSpectator Mode", ""));
 	}
 
 	private OptionStatus tStat(int a) {

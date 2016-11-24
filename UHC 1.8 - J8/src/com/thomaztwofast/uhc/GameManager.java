@@ -133,11 +133,11 @@ public class GameManager extends Function {
 				e.setGameRuleValue("doMobLoot", "" + gA.mC.cEd);
 				e.setGameRuleValue("doMobSpawning", "" + gA.mC.cEe);
 				e.setGameRuleValue("doTileDrops", "" + gA.mC.cEf);
-				e.setGameRuleValue("mobGriefing", "" + gA.mC.cEg);
-				e.setGameRuleValue("randomTickSpeed", "" + gA.mC.cEh);
-				e.setGameRuleValue("reducedDebugInfo", "" + gA.mC.cEi);
-				e.setGameRuleValue("spectatorsGenerateChunks", "" + gA.mC.cEj);
-				e.setGameRuleValue("spawnRadius", "" + gA.mC.cEk);
+				e.setGameRuleValue("mobGriefing", "" + gA.mC.cEi);
+				e.setGameRuleValue("randomTickSpeed", "" + gA.mC.cEj);
+				e.setGameRuleValue("reducedDebugInfo", "" + gA.mC.cEk);
+				e.setGameRuleValue("spectatorsGenerateChunks", "" + gA.mC.cEl);
+				e.setGameRuleValue("spawnRadius", "" + gA.mC.cEm);
 				e.setGameRuleValue("naturalRegeneration", "true");
 				e.setGameRuleValue("keepInventory", "true");
 			}
@@ -216,15 +216,17 @@ public class GameManager extends Function {
 				a.setGameRuleValue("doMobLoot", "" + gA.mC.cEd);
 				a.setGameRuleValue("doMobSpawning", "" + gA.mC.cEe);
 				a.setGameRuleValue("doTileDrops", "" + gA.mC.cEf);
-				a.setGameRuleValue("mobGriefing", "" + gA.mC.cEg);
-				a.setGameRuleValue("randomTickSpeed", "" + gA.mC.cEh);
-				a.setGameRuleValue("reducedDebugInfo", "" + gA.mC.cEi);
-				a.setGameRuleValue("spectatorsGenerateChunks", "" + gA.mC.cEj);
-				a.setGameRuleValue("spawnRadius", "" + gA.mC.cEk);
+				a.setGameRuleValue("doWeatherCycle", "" + gA.mC.cEg);
+				a.setGameRuleValue("maxEntityCramming", "" + gA.mC.cEh);
+				a.setGameRuleValue("mobGriefing", "" + gA.mC.cEi);
+				a.setGameRuleValue("randomTickSpeed", "" + gA.mC.cEj);
+				a.setGameRuleValue("reducedDebugInfo", "" + gA.mC.cEk);
+				a.setGameRuleValue("spectatorsGenerateChunks", "" + gA.mC.cEl);
+				a.setGameRuleValue("spawnRadius", "" + gA.mC.cEm);
 			}
 		}
 		for (UHCPlayer a : gA.mB.getAllPlayers()) {
-			a.updateEntityStatus(gA.mC.cEi);
+			a.updateEntityStatus(gA.mC.cEk);
 		}
 	}
 

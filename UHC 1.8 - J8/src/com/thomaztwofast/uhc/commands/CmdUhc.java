@@ -278,11 +278,13 @@ public class CmdUhc extends Function implements CommandExecutor, TabCompleter {
 			c.addListLn("Mob Loot", stat(cA.mC.cEd));
 			c.addListLn("Mob Spawning", stat(cA.mC.cEe));
 			c.addListLn("Tile Dropse", stat(cA.mC.cEf));
-			c.addListLn("Mob Griefing", stat(cA.mC.cEg));
-			c.addListLn("Random Tick Speed", "" + cA.mC.cEh);
-			c.addListLn("Reduced Debug Info", stat(cA.mC.cEi));
-			c.addListLn("Spectators Generate Chunks", stat(cA.mC.cEj));
-			c.addListLn("Spawn Radius", "" + cA.mC.cEk);
+			c.addListLn("Max Entity Cramming", "" + cA.mC.cEh);
+			c.addListLn("Mob Griefing", stat(cA.mC.cEi));
+			c.addListLn("Random Tick Speed", "" + cA.mC.cEj);
+			c.addListLn("Reduced Debug Info", stat(cA.mC.cEk));
+			c.addListLn("Spectators Generate Chunks", stat(cA.mC.cEl));
+			c.addListLn("Spawn Radius", "" + cA.mC.cEm);
+			c.addListLn("Weather Cycle", "" + cA.mC.cEg);
 			break;
 		default:
 			c.setTitle("ULTRA HARDCORE 1.8 - SETTINGS \u00a78\u00a7l[\u00a7a\u00a7l1 - 5\u00a78\u00a7l]");

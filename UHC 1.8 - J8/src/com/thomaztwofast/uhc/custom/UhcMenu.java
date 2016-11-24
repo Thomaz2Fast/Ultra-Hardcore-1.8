@@ -44,7 +44,7 @@ public class UhcMenu extends Function {
 		uD = nItem(Material.WATCH, 0, "\u00A7cUltra Hardcore 1.8 - Menu", "");
 		cIv("MAIN", "Menu", (uA.mC.cGa ? 18 : 9), -1);
 		cIv("SETTINGS", "Game Settings", 45, 40);
-		cIv("GAMERULE", "Gamerule", 36, 31);
+		cIv("GAMERULE", "Gamerule", 45, 40);
 		if (uA.mC.cGa) {
 			cIv("TEAM", "Team Options", 9, 8);
 		}
@@ -489,44 +489,60 @@ public class UhcMenu extends Function {
 				a.playLocalSound(Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f);
 				return;
 			case 15:
-				uA.mC.cEg = !uA.mC.cEg;
+				uA.mC.cEi = !uA.mC.cEi;
 				upI("GAMERULE", 15);
 				upS("GAMERULE");
 				a.playLocalSound(Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f);
 				return;
 			case 16:
-				if (uA.mC.cEh == 10) {
+				if (uA.mC.cEj == 10) {
 					a.playLocalSound(Sound.BLOCK_NOTE_BASS, 0.5f);
 					return;
 				}
-				uA.mC.cEh++;
+				uA.mC.cEj++;
 				upI("GAMERULE", 16);
 				upS("GAMERULE");
 				a.playLocalSound(Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f);
 				return;
 			case 17:
-				uA.mC.cEi = !uA.mC.cEi;
+				uA.mC.cEk = !uA.mC.cEk;
 				upI("GAMERULE", 17);
 				upS("GAMERULE");
 				a.playLocalSound(Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f);
 				return;
 			case 18:
-				uA.mC.cEj = !uA.mC.cEj;
+				uA.mC.cEl = !uA.mC.cEl;
 				upI("GAMERULE", 18);
 				upS("GAMERULE");
 				a.playLocalSound(Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f);
 				return;
 			case 19:
-				if (uA.mC.cEk == 10) {
+				if (uA.mC.cEm == 10) {
 					a.playLocalSound(Sound.BLOCK_NOTE_BASS, 0.5f);
 					return;
 				}
-				uA.mC.cEk++;
+				uA.mC.cEm++;
 				upI("GAMERULE", 19);
 				upS("GAMERULE");
 				a.playLocalSound(Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f);
 				return;
-			case 31:
+			case 20:
+				uA.mC.cEg = !uA.mC.cEg;
+				upI("GAMERULE", 20);
+				upS("GAMERULE");
+				a.playLocalSound(Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f);
+				return;
+			case 21:
+				if (uA.mC.cEh == 100) {
+					a.playLocalSound(Sound.BLOCK_NOTE_BASS, 0.5f);
+					return;
+				}
+				uA.mC.cEh++;
+				upI("GAMERULE", 21);
+				upS("GAMERULE");
+				a.playLocalSound(Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f);
+				return;
+			case 40:
 				a.uB.openInventory(uB.get("MAIN"));
 				a.setInvKey("MENU", "MAIN");
 				uC.put(a.uB.getUniqueId(), "MAIN");
@@ -536,22 +552,32 @@ public class UhcMenu extends Function {
 		} else if (b.equals(ClickType.RIGHT)) {
 			switch (c) {
 			case 16:
-				if (uA.mC.cEh == 0) {
+				if (uA.mC.cEj == 0) {
 					a.playLocalSound(Sound.BLOCK_NOTE_BASS, 0.5f);
 					return;
 				}
-				uA.mC.cEh--;
+				uA.mC.cEj--;
 				upI("GAMERULE", 16);
 				upS("GAMERULE");
 				a.playLocalSound(Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f);
 				return;
 			case 19:
-				if (uA.mC.cEk == 0) {
+				if (uA.mC.cEm == 0) {
 					a.playLocalSound(Sound.BLOCK_NOTE_BASS, 0.5f);
 					return;
 				}
-				uA.mC.cEk--;
+				uA.mC.cEm--;
 				upI("GAMERULE", 19);
+				upS("GAMERULE");
+				a.playLocalSound(Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f);
+				return;
+			case 21:
+				if (uA.mC.cEh == 0) {
+					a.playLocalSound(Sound.BLOCK_NOTE_BASS, 0.5f);
+					return;
+				}
+				uA.mC.cEh--;
+				upI("GAMERULE", 21);
 				upS("GAMERULE");
 				a.playLocalSound(Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f);
 				return;
@@ -638,7 +664,7 @@ public class UhcMenu extends Function {
 			upI(a, 1, 2, 3, 4, 5, 6, 7, 10, 11, 14, 16, 19, 20, 25, 29);
 			break;
 		case -985626130:
-			upI(a, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19);
+			upI(a, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21);
 			break;
 		case 2570845:
 			upI(a, 1, 2, 3, 4, 6);
@@ -760,19 +786,25 @@ public class UhcMenu extends Function {
 					c.setItem(14, nItem(Material.INK_SACK, (uA.mC.cEf ? 10 : 8), "\u00A76\u00A7lTile Drops", "2|" + statC(uA.mC.cEf)));
 					break;
 				case 15:
-					c.setItem(15, nItem(Material.INK_SACK, (uA.mC.cEg ? 10 : 8), "\u00A76\u00A7lMob Griefing", "2|" + statC(uA.mC.cEg)));
+					c.setItem(15, nItem(Material.INK_SACK, (uA.mC.cEi ? 10 : 8), "\u00A76\u00A7lMob Griefing", "2|" + statC(uA.mC.cEi)));
 					break;
 				case 16:
-					c.setItem(16, nItem(Material.INK_SACK, (uA.mC.cEh != 0 ? 10 : 8), "\u00A76\u00A7lTick Speed", (uA.mC.cEh != 0 ? "3|" + uA.mC.cEh : "2|" + statC(uA.mC.cEh != 0))));
+					c.setItem(16, nItem(Material.INK_SACK, (uA.mC.cEj != 0 ? 10 : 8), "\u00A76\u00A7lTick Speed", (uA.mC.cEj != 0 ? "3|" + uA.mC.cEj : "2|" + statC(uA.mC.cEj != 0))));
 					break;
 				case 17:
-					c.setItem(17, nItem(Material.INK_SACK, (uA.mC.cEi ? 10 : 8), "\u00A76\u00A7lShort Debug Info", "2|" + statC(uA.mC.cEi)));
+					c.setItem(17, nItem(Material.INK_SACK, (uA.mC.cEk ? 10 : 8), "\u00A76\u00A7lShort Debug Info", "2|" + statC(uA.mC.cEk)));
 					break;
 				case 18:
-					c.setItem(18, nItem(Material.INK_SACK, (uA.mC.cEj ? 10 : 8), "\u00A76\u00A7lSpectators Generate Chunks", "2|" + statC(uA.mC.cEj)));
+					c.setItem(18, nItem(Material.INK_SACK, (uA.mC.cEl ? 10 : 8), "\u00A76\u00A7lSpectators Generate Chunks", "2|" + statC(uA.mC.cEl)));
 					break;
 				case 19:
-					c.setItem(19, nItem(Material.INK_SACK, (uA.mC.cEk != 0 ? 10 : 8), "\u00A76\u00A7lSpawn Radius", (uA.mC.cEk != 0 ? "3|" + uA.mC.cEk : "2|" + statC(uA.mC.cEk != 0))));
+					c.setItem(19, nItem(Material.INK_SACK, (uA.mC.cEm != 0 ? 10 : 8), "\u00A76\u00A7lSpawn Radius", (uA.mC.cEm != 0 ? "3|" + uA.mC.cEm : "2|" + statC(uA.mC.cEm != 0))));
+					break;
+				case 20:
+					c.setItem(20, nItem(Material.INK_SACK, (uA.mC.cEg ? 10 : 8), "\u00A76\u00A7lWeather Cycle", "2|" + statC(uA.mC.cEg)));
+					break;
+				case 21:
+					c.setItem(21, nItem(Material.INK_SACK, (uA.mC.cEh != 0 ? 10 : 8), "\u00A76\u00A7lMax Entity Cramming", (uA.mC.cEh != 0 ? "3|" + uA.mC.cEh : "2|" + statC(uA.mC.cEh != 0))));
 					break;
 				}
 			}

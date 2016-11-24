@@ -23,8 +23,8 @@ import com.thomaztwofast.uhc.custom.Function;
 
 public class Config extends Function {
 	private Main cA;
-	private int cBa = 1;
-	private int cBb = 1;
+	private int cBa = 2;
+	private int cBb = 2;
 	public boolean cCa = false;
 	public boolean cCb = false;
 	public int cDa = 250;
@@ -39,10 +39,12 @@ public class Config extends Function {
 	public boolean cEe = true;
 	public boolean cEf = true;
 	public boolean cEg = true;
-	public int cEh = 3;
-	public boolean cEi = false;
-	public boolean cEj = false;
-	public int cEk = 0;
+	public int cEh = 24;
+	public boolean cEi = true;
+	public int cEj = 3;
+	public boolean cEk = false;
+	public boolean cEl = false;
+	public int cEm = 0;
 	public boolean cFa = false;
 	public boolean cFb = false;
 	public int cFc = 1;
@@ -126,11 +128,13 @@ public class Config extends Function {
 		cEd = b(cEd, "Gamerules.doMobLoot");
 		cEe = b(cEe, "Gamerules.doMobSpawning");
 		cEf = b(cEf, "Gamerules.doTileDrops");
-		cEg = b(cEg, "Gamerules.mobGriefing");
-		cEh = i(cEh, "Gamerules.randomTickSpeed", 0, 10);
-		cEi = b(cEi, "Gamerules.reducedDebugInfo");
-		cEj = b(cEj, "Gamerules.spectatorsGenerateChunks");
-		cEk = i(cEk, "Gamerules.spawnRadius", 0, 10);
+		cEg = b(cEg, "Gamerules.doWeatherCycle");
+		cEh = i(cEh, "Gamerules.maxEntityCramming", 0, 100);
+		cEi = b(cEi, "Gamerules.mobGriefing");
+		cEj = i(cEj, "Gamerules.randomTickSpeed", 0, 10);
+		cEk = b(cEk, "Gamerules.reducedDebugInfo");
+		cEl = b(cEl, "Gamerules.spectatorsGenerateChunks");
+		cEm = i(cEm, "Gamerules.spawnRadius", 0, 10);
 		cFa = b(cFa, "ServerMode.Enabled");
 		cFb = b(cFb, "ServerMode.AdvancedMotd");
 		cFc = i(cFc, "ServerMode.ServerID", 1, 9999);

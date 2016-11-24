@@ -85,7 +85,7 @@ public class UHCPlayer {
 		for (ItemStack b : uB.getInventory().getContents()) {
 			uB.getInventory().remove(b);
 		}
-		updateEntityStatus(uA.mC.cEi);
+		updateEntityStatus(uA.mC.cEk);
 		uB.getEquipment().setBoots(null);
 		uB.getEquipment().setChestplate(null);
 		uB.getEquipment().setHelmet(null);
@@ -146,7 +146,7 @@ public class UHCPlayer {
 
 	public void sendTitleMessage(String a, String b, int c, int d, int e) {
 		try {
-			sP(uFg.getConstructor(new Class[] { uFg.getClasses()[0], uFb, Integer.TYPE, Integer.TYPE, Integer.TYPE }).newInstance(uFg.getClasses()[0].getEnumConstants()[2], null, c, d, e));
+			sP(uFg.getConstructor(new Class[] { uFg.getClasses()[0], uFb, Integer.TYPE, Integer.TYPE, Integer.TYPE }).newInstance(uFg.getClasses()[0].getEnumConstants()[3], null, c, d, e));
 			sP(uFg.getConstructor(new Class[] { uFg.getClasses()[0], uFb }).newInstance(uFg.getClasses()[0].getEnumConstants()[1], jT(b, true)));
 			sP(uFg.getConstructor(new Class[] { uFg.getClasses()[0], uFb }).newInstance(uFg.getClasses()[0].getEnumConstants()[0], jT(a, true)));
 		} catch (Exception f) {

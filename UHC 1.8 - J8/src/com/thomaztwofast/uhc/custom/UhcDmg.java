@@ -30,20 +30,19 @@ import org.bukkit.entity.AreaEffectCloud;
 import org.bukkit.entity.Creeper;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Guardian;
+import org.bukkit.entity.Husk;
 import org.bukkit.entity.MagmaCube;
 import org.bukkit.entity.PigZombie;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
-import org.bukkit.entity.Skeleton;
 import org.bukkit.entity.Slime;
 import org.bukkit.entity.Spider;
-import org.bukkit.entity.Skeleton.SkeletonType;
 import org.bukkit.entity.ThrownPotion;
 import org.bukkit.entity.TippedArrow;
+import org.bukkit.entity.Villager;
 import org.bukkit.entity.Wolf;
 import org.bukkit.entity.Zombie;
-import org.bukkit.entity.Villager.Profession;
+import org.bukkit.entity.ZombieVillager;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
@@ -265,6 +264,8 @@ public class UhcDmg extends Function {
 			return "Dragon Fireball";
 		case EGG:
 			return "Egg";
+		case ELDER_GUARDIAN:
+			return "Elder Guardian";
 		case ENDER_CRYSTAL:
 			return "Ender Crystal";
 		case ENDER_DRAGON:
@@ -273,12 +274,22 @@ public class UhcDmg extends Function {
 			return "Enderman";
 		case ENDERMITE:
 			return "Endermite";
+		case EVOKER:
+			return "Evoker";
+		case EVOKER_FANGS:
+			return "Evoker Fang";
 		case FIREBALL:
 			return "Fireball";
+		case LLAMA:
+			return "Lama";
+		case LLAMA_SPIT:
+			return "Spit";
+		case HUSK:
+			return (((Husk) a).isBaby() ? "Baby " : "") + "Husk";
 		case GHAST:
 			return "Ghast";
 		case GUARDIAN:
-			return (((Guardian) a).isElder() ? "Elder " : "") + "Guardian";
+			return "Guardian";
 		case IRON_GOLEM:
 			return "Iron Golem";
 		case MAGMA_CUBE:
@@ -292,8 +303,6 @@ public class UhcDmg extends Function {
 					return "Chicken Jockey (Zombie Pigman)";
 				}
 				return "Baby Zombie Pigman";
-			} else if (c.isVillager()) {
-				return ds(c.getVillagerProfession()) + " Zombie Pigman Villager";
 			}
 			return "Zombie Pigman";
 		case POLAR_BEAR:
@@ -309,12 +318,6 @@ public class UhcDmg extends Function {
 		case SILVERFISH:
 			return "Silverfish";
 		case SKELETON:
-			Skeleton d = (org.bukkit.entity.Skeleton) a;
-			if (d.getSkeletonType().equals(SkeletonType.STRAY)) {
-				return "Stray Skeleton";
-			} else if (d.getSkeletonType().equals(SkeletonType.WITHER)) {
-				return "Wither Skeleton";
-			}
 			return "Skeleton";
 		case SLIME:
 			return gS(((Slime) a).getSize()) + "Slime";
@@ -332,13 +335,21 @@ public class UhcDmg extends Function {
 			return "Spider";
 		case SPECTRAL_ARROW:
 			return "Spectral Arrow";
+		case STRAY:
+			return "Stray Skeleton";
 		case TIPPED_ARROW:
 			TippedArrow f = (TippedArrow) a;
 			return gPD(f.getBasePotionData(), f.getBasePotionData().isUpgraded()) + " Tipped Arrow";
+		case VEX:
+			return "Vex";
+		case VINDICATOR:
+			return "Vindicator";
 		case WITCH:
 			return "Witch";
 		case WITHER:
 			return "Wither Boss";
+		case WITHER_SKELETON:
+			return "Wither Skeleton";
 		case WITHER_SKULL:
 			return "Wither Skull";
 		case WOLF:
@@ -348,16 +359,13 @@ public class UhcDmg extends Function {
 			if (g.isBaby()) {
 				if (g.isInsideVehicle() && g.getVehicle().getType().equals(EntityType.CHICKEN)) {
 					return "Chicken Jockey";
-				} else if (g.isVillager()) {
-					return ds(g.getVillagerProfession()) + " Baby Zombie Villager";
 				}
 				return "Baby Zombie";
-			} else if (g.getVillagerProfession().equals(Profession.HUSK)) {
-				return "Husk Zombie";
-			} else if (g.isVillager()) {
-				return ds(g.getVillagerProfession()) + " Zombie Villager";
 			}
 			return "Zombie";
+		case ZOMBIE_VILLAGER:
+			ZombieVillager h = (ZombieVillager) a;
+			return ds(h.getVillagerProfession()) + (h.isBaby() ? " Baby" : "") + " Zombie Villager";
 		default:
 			return "Unknown 0.4." + a.getType().ordinal() + " {" + a.getType() + "}";
 		}
@@ -491,7 +499,7 @@ public class UhcDmg extends Function {
 		}
 	}
 
-	private String ds(Profession a) {
+	private String ds(Villager.Profession a) {
 		switch (a) {
 		case BLACKSMITH:
 			return "Blacksmith";
@@ -503,6 +511,8 @@ public class UhcDmg extends Function {
 			return "Husk";
 		case LIBRARIAN:
 			return "Librarian";
+		case NITWIT:
+			return "Nitwit";
 		case PRIEST:
 			return "Priest";
 		default:
