@@ -1,6 +1,6 @@
 /*
  * Ultra Hardcore 1.8, a Minecraft survival game mode.
- * Copyright (C) <2016> Thomaz2Fast
+ * Copyright (C) <2018> Thomaz2Fast
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,242 +19,246 @@
 package com.thomaztwofast.uhc.data;
 
 import com.thomaztwofast.uhc.Main;
-import com.thomaztwofast.uhc.custom.Function;
+import com.thomaztwofast.uhc.lib.F;
 
-public class Config extends Function {
-	private Main cA;
-	private int cBa = 2;
-	private int cBb = 2;
-	public boolean cCa = false;
-	public boolean cCb = false;
-	public int cDa = 250;
-	public int cDb = 8;
-	public int cDc = 20;
-	public boolean cDd = false;
-	public boolean cDe = false;
-	public boolean cEa = true;
-	public boolean cEb = true;
-	public boolean cEc = true;
-	public boolean cEd = true;
-	public boolean cEe = true;
-	public boolean cEf = true;
-	public boolean cEg = true;
-	public int cEh = 24;
-	public boolean cEi = true;
-	public int cEj = 3;
-	public boolean cEk = false;
-	public boolean cEl = false;
-	public int cEm = 0;
-	public boolean cFa = false;
-	public boolean cFb = false;
-	public int cFc = 1;
-	public int cFd = 8;
-	public int cFe = 4;
-	public int cFf = 30;
-	public String cFg = "{0}|{1}{2}{3}";
-	public String cFh = "\u00A7cUltra Hardcore 1.8\u00A7r\n\u00A77\u00A7lStatus:\u00A7r\u00A7c Disabled";
-	public String cFi = "\u00A7cUltra Hardcore 1.8\u00A7r\n\u00A77\u00A7lStatus:\u00A7r\u00A74\u00A7l Error";
-	public String cFj = "\u00A7cUltra Hardcore 1.8\u00A7r\n\u00A77\u00A7lStatus:\u00A7r\u00A77 Loading...";
-	public String cFk = "\u00A7cUltra Hardcore 1.8\u00A7r\n\u00A77\u00A7lStatus:\u00A7r\u00A7c Restarting";
-	public String cFl = "\u00A7cUltra Hardcore 1.8\u00A7r\n\u00A77\u00A7lStatus:\u00A7r\u00A7a Waiting for players...";
-	public String cFm = "\u00A7cUltra Hardcore 1.8\u00A7r\n\u00A77\u00A7lStatus:\u00A7r\u00A7e Starting soon...";
-	public String cFn = "\u00A7cUltra Hardcore 1.8\u00A7r\n\u00A77\u00A7lStatus:\u00A7r\u00A77 Started";
-	public String cFo = "\u00A7cUltra Hardcore 1.8\u00A7r\n\u00A77\u00A7lStatus:\u00A7r\u00A77 InGame";
-	public String cFp = "\u00A7cUltra Hardcore 1.8\u00A7r\n\u00A77\u00A7lStatus:\u00A7r\u00A77 Finished";
-	public String cFq = "\u00A7c\u00A7lUltra Hardcore 1.8 - Error";
-	public String cFr = "\u00A7c\u00A7lUltra Hardcore 1.8 - Loading";
-	public String cFs = "\u00A7c\u00A7lUltra Hardcore 1.8 - Ending";
-	public String cFt = "\u00A7c\u00A7lUltra Hardcore 1.8 - Update / Restart";
-	public String cFu = "\u00A7c\u00A7lUltra Hardcore 1.8\u00A7r\n\u00A7cServer Restart\u00A7r\n\u00A7aThanks for playing.";
-	public boolean cFv = false;
-	public String cFw = "hub";
-	public String cFx = "BARRIER";
-	public int cFy = 8;
-	public boolean cGa = false;
-	public int cGb = 3;
-	public int cGc = 1;
-	public boolean cGd = true;
-	public boolean cGe = false;
-	public int cGf = 0;
-	public int cGg = 0;
-	public boolean cHa = false;
-	public String cHb = "\u00A7cUltra Hardcore 1.8\u00A7r";
-	public String cHc = "";
-	public int cIa = 2;
-	public int cIb = 1000;
-	public int cIc = 0;
-	public int cJa = 0;
-	public int cJb = 1250;
-	public int cJc = 150;
-	public int cJd = 10800;
-	public boolean cKa = false;
-	public int cKb = 7;
-	public String cKc = "\u00A7cUltra Hardcore";
-	public String[] cKd = new String[] { "0|", "0|\u00A76- \u00A77Info", "0|\u00A76- \u00A77Rules" };
-	public String[] cKe = new String[] { "Welcome to \u00A74\u00A7lUHC\u00A70.\n\nThis game you can only regenerate health by\n \u00A78- \u00A71Golden Apple.\u00A7r\n \u00A78- \u00A71Potions.\u00A7r\n\nI wish you \u00A75Good Luck\u00A7r\nand may the best player / team win.", "\u00A7l\u00A7n    UHC - Rules     \u00A7r\n\n\u00A711.\u00A7r Branch Mining\n\u00A78 You can not branch\n mining but if you\n hear a sound,\n you can dig to it.\u00A7r\n\n\u00A712. Staircases\u00A7r\n\u00A78 You can only dig\n staircases if you\n want to find a cave." };
-	public boolean cLa = false;
-	public boolean cLb = false;
-	public boolean cLc = true;
-	public boolean cMa = true;
-	public int cMb = 10;
-	public String cNa = "\u00A7cUHC\u00A78 |\u00A7r YOU ARE NOW IN \u00A7a{0}\u00A7r MIN IN";
-	public int cNb = 20;
-	public boolean cOa = false;
-	public int cPa = 5;
-	public String cPb = "{0} was killed by Offline Timer";
-	public boolean cQa = true;
-	public String cQb = "<{0}> {1}";
-	public String cQc = "<\u00A77\u00A7o{0}\u00A7r> {1}";
-	public String cQd = "<{0}> {1}";
-	public String cQe = "\u00A77Team\u00A7r <{0}> \u00A77{1}";
+public class Config {
+	private final String[] PATHS = { "Plugin", "Chunkloader", "Gamerules", "ServerMode", "ServerMode.AdvencedMotdStatus", "ServerMode.KickMessage", "ServerMode.BungeeCordSupport", "Game", "Game.Options", "Tablist", "WorldSettings", "WorldBorder", "Book", "GoldenHead", "FreezePlayer", "Marker", "OfflineKicker", "GlobalChat" };
+	private final String[] STATUS_MSG = { "\u00A7CUltra Hardcore 1.8\u00A7R{N}\u00A77\u00A7LStatus:\u00A7R\u00A7", "\u00A7C\u00A7LUltra Hardcore 1.8" };
+	private final int VERSION = 3;
+	private Main pl;
+	private int configVersion;
+	public boolean pluginEnable;
+	public boolean pluingUpdate;
+	public int chunkBorder;
+	public int chunkDelay;
+	public boolean chunkInNether;
+	public boolean chunkInDetail;
+	public int chunkTask;
+	public boolean grDisabledElytra;
+	public boolean grDaylight;
+	public boolean grEntityDrops;
+	public boolean grFireTick;
+	public boolean grLimitedCrafting;
+	public boolean grMobLoot;
+	public boolean grMobSpawning;
+	public boolean grTileDrops;
+	public boolean grWeather;
+	public int grMaxCramming;
+	public boolean grMobGriefing;
+	public int grRandom;
+	public boolean grDebugInfo;
+	public int grSpawnRadius;
+	public boolean grSpectators;
+	public boolean serverEnable;
+	public boolean serverAdvancedMotd;
+	public int serverID;
+	public int serverMinSolo;
+	public int serverMinTeam;
+	public int serverCountdown;
+	public String serverMotd;
+	public boolean serverActiveChunkloader;
+	public String serverStatusDisabled = STATUS_MSG[0] + "C Disabled";
+	public String serverStatusError = STATUS_MSG[0] + "4\u00A7l Error";
+	public String serverStatusLoading = STATUS_MSG[0] + "7 Loading... %C";
+	public String serverStatusReset = STATUS_MSG[0] + "C Restarting";
+	public String serverStatusWaiting = STATUS_MSG[0] + "A Waiting for players...";
+	public String serverStatusCountdown = STATUS_MSG[0] + "E Starting soon...";
+	public String serverStatusStarting = STATUS_MSG[0] + "7 Started";
+	public String serverStatusInGame = STATUS_MSG[0] + "7 InGame";
+	public String serverStatusFinished = STATUS_MSG[0] + "7 Finished";
+	public String serverKickError = STATUS_MSG[1] + " - Error";
+	public String serverKickLoading = STATUS_MSG[1] + " - Loading";
+	public String serverKickEnding = STATUS_MSG[1] + " - Ending";
+	public String serverKickReset = STATUS_MSG[1] + " - Update / Restart";
+	public String serverKickShutdown = STATUS_MSG[1] + "\u00A7R\n\u00A7CServer Restart\u00A7R\n\u00A7AThanks for playing.";
+	public boolean serverIsBungeeCord;
+	public String serverHub;
+	public String serverMaterial;
+	public int serverInventorySlot;
+	public boolean gameInTeam;
+	public int gameMaxTeam;
+	public int gameSelectTeamInventory;
+	public boolean gameOldCombat;
+	public boolean gamePlayerListHearts;
+	public int gameCollision;
+	public boolean gameIsFriendly;
+	public int gameNameTag;
+	public boolean gameSeeFriendly;
+	public boolean tabEnable;
+	public String tabHeader = "\u00A7CUltra Hardcore 1.8\u00A7R";
+	public String tabFooter;
+	public int worldDifficulty;
+	public int worldSize;
+	public int worldTime;
+	public int borderDelay;
+	public int borderStartSize;
+	public int borderEndSize;
+	public int borderTime;
+	public boolean bookEnable;
+	public int bookInventorySlot;
+	public String boolTitle = "\u00A7CUltra Hardcore";
+	public String[] bookLore = new String[] { "0|", "0|\u00A76- \u00A77Info", "0|\u00A76- \u00A77Rules" };
+	public String[] bookPages = new String[] { "Welcome to \u00A74\u00A7LUHC\u00A70.\n\nThis game you can only regenerate health by\n \u00A78- \u00A71Golden Apple.\u00A7R\n \u00A78- \u00A71Potions.\u00A7R\n\nI wish you \u00A75Good Luck\u00A7R\nand may the best player / team win.", "\u00A7L\u00A7N    UHC - Rules     \u00A7R\n\n\u00A711.\u00A7R Branch Mining\n\u00A78 You can not branch\n mining but if you\n hear a sound,\n you can dig to it.\u00A7R\n\n\u00A712. Staircases\u00A7R\n\u00A78 You can only dig\n staircases if you\n want to find a cave." };
+	public boolean headEnable;
+	public boolean headDefault;
+	public boolean headGolden;
+	public boolean freezeEnable;
+	public int freezeSize;
+	public int markerDelay;
+	public String markerMsg = "\u00A7CUHC\u00A78 |\u00A7R YOU ARE NOW IN \u00A7A%0\u00A7R MIN IN";
+	public boolean dmgEnable;
+	public String kickerMsg;
+	public int kickerDelay;
+	public boolean chatEnable;
+	public String chatDefault = "<%0> %0";
+	public String chatTeamMsg = "\u00A77Team\u00A7R <%0> \u00A77%0";
+	public String chatSpectator = "<\u00A77\u00A7O%0\u00A7R> %0";
+	public String chatTeam = "<%0> %0";
 
-	public Config(Main a) {
-		cA = a;
+	public Config(Main pl) {
+		this.pl = pl;
 	}
 
-	public void loadConfig() {
-		cA.saveDefaultConfig();
-		cBb = i(cBb, "Config", 0, cBb);
-		cCa = b(cCa, "Plugin.Enabled");
-		cCb = b(cCb, "Plugin.UpdateNotification");
-		cDa = i(cDa, "Chunkloader.ArenaBorder", 0, 20000);
-		cDb = i(cDb, "Chunkloader.DelayTick", 0, 20000);
-		cDc = i(cDc, "Chunkloader.Task", 0, 20000);
-		cDd = b(cDd, "Chunkloader.ShowHiddenDetail");
-		cDe = b(cDe, "Chunkloader.LoadNether");
-		cEa = b(cEa, "Gamerules.doDaylightCycle");
-		cEb = b(cEb, "Gamerules.doEntityDrops");
-		cEc = b(cEc, "Gamerules.doFireTick");
-		cEd = b(cEd, "Gamerules.doMobLoot");
-		cEe = b(cEe, "Gamerules.doMobSpawning");
-		cEf = b(cEf, "Gamerules.doTileDrops");
-		cEg = b(cEg, "Gamerules.doWeatherCycle");
-		cEh = i(cEh, "Gamerules.maxEntityCramming", 0, 100);
-		cEi = b(cEi, "Gamerules.mobGriefing");
-		cEj = i(cEj, "Gamerules.randomTickSpeed", 0, 10);
-		cEk = b(cEk, "Gamerules.reducedDebugInfo");
-		cEl = b(cEl, "Gamerules.spectatorsGenerateChunks");
-		cEm = i(cEm, "Gamerules.spawnRadius", 0, 10);
-		cFa = b(cFa, "ServerMode.Enabled");
-		cFb = b(cFb, "ServerMode.AdvancedMotd");
-		cFc = i(cFc, "ServerMode.ServerID", 1, 9999);
-		cFd = i(cFd, "ServerMode.MinPlayerToStart", 2, 100);
-		cFe = i(cFe, "ServerMode.MinTeamToStart", 2, 16);
-		cFf = i(cFf, "ServerMode.Countdown", 10, 20000);
-		cFg = s(cFg, "ServerMode.SimpleMotd", true);
-		cFh = s(cFh, "ServerMode.AdvencedMotdStatus.Disabled", true);
-		cFi = s(cFi, "ServerMode.AdvencedMotdStatus.Error", true);
-		cFj = s(cFj, "ServerMode.AdvencedMotdStatus.Loading", true);
-		cFk = s(cFk, "ServerMode.AdvencedMotdStatus.Reset", true);
-		cFl = s(cFl, "ServerMode.AdvencedMotdStatus.Waiting", true);
-		cFm = s(cFm, "ServerMode.AdvencedMotdStatus.WaitingStarting", true);
-		cFn = s(cFn, "ServerMode.AdvencedMotdStatus.Starting", true);
-		cFo = s(cFo, "ServerMode.AdvencedMotdStatus.InGame", true);
-		cFp = s(cFp, "ServerMode.AdvencedMotdStatus.Finished", true);
-		cFq = s(cFq, "ServerMode.KickMessage.PlayerJoinError", true);
-		cFr = s(cFr, "ServerMode.KickMessage.PlayerJoinLoading", true);
-		cFs = s(cFs, "ServerMode.KickMessage.PlayerJoinGameEnd", true);
-		cFt = s(cFt, "ServerMode.KickMessage.PlayerKickRestart", true);
-		cFu = s(cFu, "ServerMode.KickMessage.PlayerKickGameEnd", true);
-		cFv = b(cFv, "ServerMode.BungeeCordSupport.Enabled");
-		cFw = s(cFw, "ServerMode.BungeeCordSupport.FallbackServer", true);
-		cFx = s(cFx, "ServerMode.BungeeCordSupport.Item", true);
-		cFy = i(cFy, "ServerMode.BungeeCordSupport.InvSlot", 0, 8);
-		cGa = b(cGa, "Game.TeamMode");
-		cGb = i(cGb, "Game.MaxTeamPlayer", 1, 20000);
-		cGc = i(cGc, "Game.SelectTeamInvSlot", 0, 8);
-		cGd = b(cGd, "Game.Options.FriendlyFire");
-		cGe = b(cGe, "Game.Options.SeeFriendlyInvisibles");
-		cGf = i(cGf, "Game.Options.NameTagVisibility", 0, 3);
-		cGg = i(cGg, "Game.Options.CollisionRule", 0, 3);
-		cHa = b(cHa, "TabList.Enabled");
-		cHb = s(cHb, "TabList.Header", false);
-		cHc = s(cHc, "TabList.Footer", false);
-		cIa = i(cIa, "WorldSettings.Difficulty", 1, 3);
-		cIb = i(cIb, "WorldSettings.ArenaSize", 100, 20000);
-		cIc = i(cIc, "WorldSettings.SunTime", 0, 23999);
-		cJa = i(cJa, "WorldBorder.StartDelay", 0, 20000);
-		cJb = i(cJb, "WorldBorder.StartPos", 50, 20000);
-		cJc = i(cJc, "WorldBorder.EndPos", 5, 20000);
-		cJd = i(cJd, "WorldBorder.Time", 0, 100000);
-		cKa = b(cKa, "Book.Enabled");
-		cKb = i(cKb, "Book.InvSlot", 0, 8);
-		cKc = s(cKc, "Book.Name", true);
-		cKd = l(cKd, "Book.Lord");
-		cKe = l(cKe, "Book.Pages");
-		cLa = b(cLa, "GoldenHead.Enabled");
-		cLb = b(cLb, "GoldenHead.ItemsRecipes.DefaultApple.Enabled");
-		cLc = b(cLc, "GoldenHead.ItemsRecipes.GoldenApple.Enabled");
-		cMa = b(cMa, "FreezePlayer.Enabled");
-		cMb = i(cMb, "FreezePlayer.Size", 5, 15);
-		cNa = s(cNa, "Marker.Message", false);
-		cNb = i(cNb, "Marker.Delay", 0, 20000);
-		cOa = b(cOa, "DamagerLogger");
-		cPa = i(cPa, "OfflineKicker.Timeout", 1, 20);
-		cPb = s(cPb, "OfflineKicker.Message", true);
-		cQa = b(cQa, "GlobalChat.Enabled");
-		cQb = s(cQb, "GlobalChat.Default", false);
-		cQc = s(cQc, "GlobalChat.Spectator", false);
-		cQd = s(cQd, "GlobalChat.Team", false);
-		cQe = s(cQe, "GlobalChat.PrivateTeamChat", false);
-		cc();
+	public void load() {
+		pl.saveDefaultConfig();
+		configVersion = getInt(3, "Config", 0, VERSION);
+		pluginEnable = getBoolean(false, PATHS[0] + ".Enabled");
+		pluingUpdate = getBoolean(false, PATHS[0] + ".UpdateNotification");
+		chunkBorder = getInt(250, PATHS[1] + ".ArenaBorder", 0, 20000);
+		chunkDelay = getInt(8, PATHS[1] + ".DelayTick", 0, 20000);
+		chunkInNether = getBoolean(true, PATHS[1] + ".LoadNether");
+		chunkInDetail = getBoolean(false, PATHS[1] + ".ShowHiddenDetail");
+		chunkTask = getInt(20, PATHS[1] + ".Task", 0, 20000);
+		grDisabledElytra = getBoolean(false, PATHS[2] + ".disableElytraMovementCheck");
+		grDaylight = getBoolean(true, PATHS[2] + ".doDaylightCycle");
+		grEntityDrops = getBoolean(true, PATHS[2] + ".doEntityDrops");
+		grFireTick = getBoolean(true, PATHS[2] + ".doFireTick");
+		grLimitedCrafting = getBoolean(true, PATHS[2] + ".doLimitedCrafting");
+		grMobLoot = getBoolean(true, PATHS[2] + ".doMobLoot");
+		grMobSpawning = getBoolean(true, PATHS[2] + ".doMobSpawning");
+		grTileDrops = getBoolean(true, PATHS[2] + ".doTileDrops");
+		grWeather = getBoolean(true, PATHS[2] + ".doWeatherCycle");
+		grMaxCramming = getInt(24, PATHS[2] + ".maxEntityCramming", 0, 100);
+		grMobGriefing = getBoolean(true, PATHS[2] + ".mobGriefing");
+		grRandom = getInt(3, PATHS[2] + ".randomTickSpeed", 0, 10);
+		grDebugInfo = getBoolean(false, PATHS[2] + ".reducedDebugInfo");
+		grSpawnRadius = getInt(0, PATHS[2] + ".spawnRadius", 0, 10);
+		grSpectators = getBoolean(false, PATHS[2] + ".spectatorsGenerateChunks");
+		serverEnable = getBoolean(false, PATHS[3] + ".Enabled");
+		serverAdvancedMotd = getBoolean(false, PATHS[3] + ".AdvancedMotd");
+		serverID = getInt(1, PATHS[3] + ".ServerID", 1, 9999);
+		serverMinSolo = getInt(8, PATHS[3] + ".MinPlayerToStart", 2, 100);
+		serverMinTeam = getInt(4, PATHS[3] + ".MinTeamToStart", 2, 16);
+		serverCountdown = getInt(30, PATHS[3] + ".Countdown", 10, 20000);
+		serverMotd = getString("%0|%1|%2|%3", PATHS[3] + ".SimpleMotd", true);
+		serverActiveChunkloader = getBoolean(false, PATHS[3] + ".DisabledChunkloader");
+		serverStatusDisabled = getString(serverStatusDisabled, PATHS[4] + ".Disabled", true);
+		serverStatusError = getString(serverStatusError, PATHS[4] + ".Error", true);
+		serverStatusLoading = getString(serverStatusLoading, PATHS[4] + ".Loading", true);
+		serverStatusReset = getString(serverStatusReset, PATHS[4] + ".Reset", true);
+		serverStatusWaiting = getString(serverStatusWaiting, PATHS[4] + ".Waiting", true);
+		serverStatusCountdown = getString(serverStatusCountdown, PATHS[4] + ".WaitingStarting", true);
+		serverStatusStarting = getString(serverStatusStarting, PATHS[4] + ".Starting", true);
+		serverStatusInGame = getString(serverStatusInGame, PATHS[4] + ".InGame", true);
+		serverStatusFinished = getString(serverStatusFinished, PATHS[4] + ".Finished", true);
+		serverKickError = getString(serverKickError, PATHS[5] + ".PlayerJoinError", true);
+		serverKickLoading = getString(serverKickLoading, PATHS[5] + ".PlayerJoinLoading", true);
+		serverKickEnding = getString(serverKickEnding, PATHS[5] + ".PlayerJoinGameEnd", true);
+		serverKickReset = getString(serverKickReset, PATHS[5] + ".PlayerKickRestart", true);
+		serverKickShutdown = getString(serverKickShutdown, PATHS[5] + ".PlayerKickGameEnd", true);
+		serverIsBungeeCord = getBoolean(false, PATHS[6] + ".Enabled");
+		serverHub = getString("hub", PATHS[6] + ".FallbackServer", true);
+		serverMaterial = getString("BARRIER", PATHS[6] + ".Item", true);
+		serverInventorySlot = getInt(8, PATHS[6] + ".InvSlot", 0, 8);
+		gameInTeam = getBoolean(false, PATHS[7] + ".TeamMode");
+		gameMaxTeam = getInt(2, PATHS[7] + ".MaxTeamPlayer", 1, 20000);
+		gameSelectTeamInventory = getInt(1, PATHS[7] + ".SelectTeamInvSlot", 0, 8);
+		gameOldCombat = getBoolean(false, PATHS[7] + ".OldCombatMode");
+		gamePlayerListHearts = getBoolean(true, PATHS[7] + ".PlayerListHearts");
+		gameCollision = getInt(0, PATHS[8] + ".CollisionRule", 0, 3);
+		gameIsFriendly = getBoolean(true, PATHS[8] + ".FriendlyFire");
+		gameNameTag = getInt(0, PATHS[8] + ".NameTagVisibility", 0, 3);
+		gameSeeFriendly = getBoolean(false, PATHS[8] + ".SeeFriendlyInvisibles");
+		tabEnable = getBoolean(false, PATHS[9] + ".Enabled");
+		tabHeader = getString(tabHeader, PATHS[9] + ".Header", false);
+		tabFooter = getString("", PATHS[9] + ".Footer", false);
+		worldDifficulty = getInt(2, PATHS[10] + ".Difficulty", 1, 3);
+		worldSize = getInt(1000, PATHS[10] + ".ArenaSize", 100, 20000);
+		worldTime = getInt(0, PATHS[10] + ".SunTime", 0, 23999);
+		borderDelay = getInt(0, PATHS[11] + ".StartDelay", 0, 20000);
+		borderStartSize = getInt(1250, PATHS[11] + ".StartSize", 50, 20000);
+		borderEndSize = getInt(150, PATHS[11] + ".EndSize", 5, 20000);
+		borderTime = getInt(10800, PATHS[11] + ".Time", 0, 100000);
+		bookEnable = getBoolean(false, PATHS[12] + ".Enabled");
+		bookInventorySlot = getInt(7, PATHS[12] + ".InvSlot", 0, 8);
+		boolTitle = getString(boolTitle, PATHS[12] + ".Name", true);
+		bookLore = getList(bookLore, PATHS[12] + ".Lord");
+		bookPages = getList(bookPages, PATHS[12] + ".Pages");
+		headEnable = getBoolean(false, PATHS[13] + ".Enabled");
+		headDefault = getBoolean(false, PATHS[13] + ".DefaultApple");
+		headGolden = getBoolean(false, PATHS[13] + ".GoldenApple");
+		freezeEnable = getBoolean(true, PATHS[14] + ".Enabled");
+		freezeSize = getInt(10, PATHS[14] + ".Size", 5, 15);
+		markerMsg = getString(markerMsg, PATHS[15] + ".Message", false);
+		markerDelay = getInt(20, PATHS[15] + ".Delay", 0, 20000);
+		dmgEnable = getBoolean(false, "DamagerLogger");
+		kickerMsg = getString("%0 was killed by Offline Timer", PATHS[16] + ".Message", true);
+		kickerDelay = getInt(5, PATHS[16] + ".Timeout", 1, 20);
+		chatEnable = getBoolean(true, PATHS[17] + ".Enabled");
+		chatDefault = getString(chatDefault, PATHS[17] + ".Default", false);
+		chatTeamMsg = getString(chatTeamMsg, PATHS[17] + ".PrivateTeamChat", false);
+		chatSpectator = getString(chatSpectator, PATHS[17] + ".Spectator", false);
+		chatTeam = getString(chatTeam, PATHS[17] + ".Team", false);
+		if (configVersion < VERSION)
+			log("Your config file is outdated!");
 	}
 
-	// ------:- PRIVATE -:--------------------------------------------------------------------------
+	// ---------------------------------------------------------------------------
 
-	private boolean b(boolean a, String b) {
-		if (cA.getConfig().isBoolean(b)) {
-			return cA.getConfig().getBoolean(b);
+	private boolean getBoolean(boolean b, String path) {
+		if (pl.getConfig().isBoolean(path))
+			return pl.getConfig().getBoolean(path);
+		log("'" + path + "' was not found!");
+		return b;
+	}
+
+	private int getInt(int value, String path, int min, int max) {
+		if (pl.getConfig().isInt(path)) {
+			int newValue = pl.getConfig().getInt(path);
+			if (newValue >= min && newValue <= max)
+				return newValue;
+			log("'" + path + "' can only be between [" + min + " - " + max + "]");
+			return value;
 		}
-		cA.log(1, "[CONFIG] Path: '" + b + "' was not found!");
-		return a;
+		log("'" + path + "' was not found!");
+		return value;
 	}
 
-	private int i(int a, String b, int c, int d) {
-		if (cA.getConfig().isInt(b)) {
-			int e = cA.getConfig().getInt(b);
-			if (e >= c && e <= d) {
-				return e;
+	private String[] getList(String[] list, String path) {
+		if (pl.getConfig().isList(path)) {
+			String[] newList = new String[pl.getConfig().getStringList(path).size()];
+			for (int i = 0; i < newList.length; i++)
+				newList[i] = (path.equals(PATHS[12] + ".Lord") ? "0|" : "") + F.mcCodeLn(pl.getConfig().getStringList(path).get(i));
+			return newList;
+		}
+		log("'" + path + "' was not found!");
+		return list;
+	}
+
+	private String getString(String str, String path, boolean b) {
+		if (pl.getConfig().isString(path)) {
+			String newStr = pl.getConfig().getString(path);
+			if (b && newStr.length() == 0) {
+				log("'" + path + "' can not be empty!");
+				return str;
 			}
-			cA.log(1, "[CONFIG] Path: '" + b + "' can only be " + c + " - " + d + "");
-			return a;
+			return F.mcCodeLn(newStr);
 		}
-		cA.log(1, "[CONFIG] Path: '" + b + "' was not found!");
-		return a;
+		log("'" + path + "' was not found!");
+		return str;
 	}
 
-	private String[] l(String[] a, String b) {
-		if (cA.getConfig().isList(b)) {
-			String[] c = new String[cA.getConfig().getStringList(b).size()];
-			for (int d = 0; d < c.length; d++) {
-				if (b.equals("Book.Lord")) {
-					c[d] = "0|" + colorLn(cA.getConfig().getStringList(b).get(d));
-				} else {
-					c[d] = colorLn(cA.getConfig().getStringList(b).get(d));
-				}
-			}
-			return c;
-		}
-		cA.log(1, "[CONFIG] Path: '" + b + "' was not found!");
-		return a;
-	}
-
-	private String s(String a, String b, boolean c) {
-		if (cA.getConfig().isString(b)) {
-			String d = cA.getConfig().getString(b);
-			if (c && d.length() == 0) {
-				cA.log(1, "[CONFIG] Path: '" + b + "' can not be empty!");
-				return a;
-			}
-			return colorLn(d);
-		}
-		cA.log(1, "[CONFIG] Path: '" + b + "' was not found!");
-		return a;
-	}
-
-	private void cc() {
-		if (cBb < cBa) {
-			cA.log(1, "Your config file is outdated!");
-		}
+	private void log(String log) {
+		pl.log(1, "[CONFIG] " + log);
 	}
 }

@@ -1,6 +1,6 @@
 /*
  * Ultra Hardcore 1.8, a Minecraft survival game mode.
- * Copyright (C) <2016> Thomaz2Fast
+ * Copyright (C) <2018> Thomaz2Fast
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,20 +18,25 @@
 
 package com.thomaztwofast.uhc.data;
 
-public enum Permission {
-	ERROR("perm.login"),
-	GLOBAL_COMMAND("perm.global.commands"),
-	SELECTTEAM_ALL("commands.selectteam.admin"),
-	UHC("commands.uhc");
+public enum Status {
+	DISABLED("Disabled"),
+	ERROR("Error"),
+	LOADING("Loading"),
+	RESET("Reset"),
+	WAITING("Waiting"),
+	WAITING_STARTING("Waiting + Countdown"),
+	STARTING("Starting"),
+	INGAME("InGame"),
+	FINISHED("Finished");
 
-	private String pA;
+	private final String name;
 
-	private Permission(String a) {
-		pA = a;
+	private Status(String name) {
+		this.name = name;
 	}
 
 	@Override
 	public String toString() {
-		return "com.thomaztwofast.uhc." + pA;
+		return name;
 	}
 }

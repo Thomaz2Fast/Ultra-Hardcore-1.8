@@ -1,6 +1,6 @@
 /*
  * Ultra Hardcore 1.8, a Minecraft survival game mode.
- * Copyright (C) <2016> Thomaz2Fast
+ * Copyright (C) <2018> Thomaz2Fast
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,9 +19,11 @@
 package com.thomaztwofast.uhc.commands;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -30,83 +32,86 @@ import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
 import com.thomaztwofast.uhc.Main;
-import com.thomaztwofast.uhc.custom.Jc;
-import com.thomaztwofast.uhc.data.Permission;
+import com.thomaztwofast.uhc.data.Node;
 import com.thomaztwofast.uhc.data.UHCPlayer;
+import com.thomaztwofast.uhc.lib.F;
+import com.thomaztwofast.uhc.lib.J;
 
 public class CmdAutoTeam implements CommandExecutor {
-	private Main cA;
-	private Scoreboard cB;
+	private Main pl;
+	private Scoreboard scoreboard;
 
-	public CmdAutoTeam(Main a) {
-		cA = a;
-		cB = a.getServer().getScoreboardManager().getMainScoreboard();
+	public CmdAutoTeam(Main pl) {
+		this.pl = pl;
+		scoreboard = pl.getServer().getScoreboardManager().getMainScoreboard();
 	}
 
-	/**
+	/*
 	 * Command - - - - - - - - - - > - AutoTeam
-	 * Enabled Console - - - - - - > - false
+	 * Access  - - - - - - - - - - > - Private Mode
+	 * Who can use it  - - - - - - > - Players
+	 * Arguments - - - - - - - - - > - None
+	 * 
 	 * Default Permission  - - - - > - OP
+	 * Permission Node - - - - - - > - com.thomaztwofast.uhc.commands.autoteam [ See plugin.yml ]
+	 * 
+	 * ----------------------------
+	 * 
+	 * AutoTeam select all players on the server and then put them on a random teams.
+	 * All previous teams players will be removed in the progress. (All fake players
+	 * will be lost)
 	 */
 	@Override
-	public boolean onCommand(CommandSender a, Command b, String c, String[] d) {
-		if (a instanceof Player) {
-			UHCPlayer e = cA.mB.getPlayer(a.getName());
-			if (cA.mC.cCa && cA.mC.cGa && !cA.mC.cFa) {
-				if (cA.mA.i() <= 5) {
-					a();
-					e.sendCommandMessage("AutoTeam", "Done.");
+	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+		if (sender instanceof Player) {
+			UHCPlayer u = pl.getRegisterPlayer(sender.getName());
+			if (pl.config.pluginEnable && pl.config.gameInTeam && !pl.config.serverEnable) {
+				if (pl.status.ordinal() <= 5) {
+					new Thread(new Runnable() {
+						public void run() {
+							List<UHCPlayer> players = new ArrayList<>(pl.PLAYERS.values());
+							List<Team> teams = getSelectedTeams(players.size());
+							Random rand = new Random();
+							int teamPos = 0;
+							while (players.size() != 0) {
+								UHCPlayer t = players.get(rand.nextInt(players.size()));
+								pl.gameManager.teams.join(t, teams.get(teamPos).getName(), true);
+								players.remove(t);
+								teamPos = teamPos == teams.size() - 1 ? 0 : teamPos + 1;
+							}
+							pl.gameManager.teams.updateInv();
+							u.sendCmdMessage("AutoTeam", "Done.");
+						}
+
+						private List<Team> getSelectedTeams(int value) {
+							List<Team> teams = new ArrayList<>();
+							int max = (int) Math.ceil(value / pl.config.gameMaxTeam);
+							max = max == 0 ? 1 : max > 16 ? 16 : max;
+							for (ChatColor color : ChatColor.values()) {
+								if (color.isColor()) {
+									Team team = scoreboard.getTeam(color.name());
+									if (team != null) {
+										team.getEntries().forEach(e -> team.removeEntry(e));
+										teams.add(team);
+									}
+								}
+							}
+							Collections.shuffle(teams);
+							return teams.subList(0, max);
+						}
+					}).start();
 					return true;
 				}
 			}
-			Jc f = new Jc();
-			f.add("AutoTeam> ", new int[] { 1 }, 8, null, null);
-			if (e.uB.hasPermission(Permission.UHC.toString())) {
-				f.add("Disabled!", new int[] { 1 }, 7, "2|/uhc help page 2", "\u00A76\u00A7lHelp Information\n\u00A77Click here to find out how to\n\u00A77enable this command?");
-			} else {
-				f.add("Disabled!", new int[] { 1 }, 7, null, null);
-			}
-			e.sendJsonMessage(f.o());
+			J str = new J("AutoTeam> ", "8", "bi");
+			if (u.hasNode(Node.UHC))
+				str.addTextWithCmd("Disabled!", "7", "i", "/uhc help page 2", F.chatTitle("Help Information", "Click here to find out how to enable this command?"));
+			else
+				str.addText("Disabled!", "7", "i");
+			u.sendJsonMessage(str.print());
 			return true;
 		}
-		cA.log(0, "Command '/AutoTeam' can only execute from ingame player.");
+		pl.log(0, "Command 'AutoTeam' can only execute from player.");
 		return true;
-	}
-
-	// ------:- PRIVATE -:--------------------------------------------------------------------------
-
-	private void a() {
-		List<UHCPlayer> a = new ArrayList<>();
-		List<Team> b = new ArrayList<>();
-		List<Team> c = new ArrayList<>();
-		Random d = new Random();
-		int e = (int) Math.ceil(cA.mB.getAllPlayers().size() / (double) cA.mC.cGb);
-		int f = 0;
-		e = (e == 0 ? 1 : e > 16 ? 16 : e);
-		a.addAll(cA.mB.getAllPlayers());
-		for (String g : cA.mE.gD.uCa) {
-			if (cB.getTeam(g) != null && cB.getTeam(g).getSize() != 0) {
-				for (String h : cB.getTeam(g).getEntries()) {
-					cB.getTeam(g).removeEntry(h);
-				}
-			}
-			b.add(cB.getTeam(g));
-		}
-		for (int g = 0; g < e; g++) {
-			Team h = b.get(d.nextInt(b.size()));
-			c.add(h);
-			b.remove(h);
-		}
-		while (a.size() != 0) {
-			UHCPlayer h = a.get(d.nextInt(a.size()));
-			cA.mE.gD.joinTeam(h, c.get(f).getName(), true);
-			a.remove(h);
-			if (f == (c.size() - 1)) {
-				f = 0;
-			} else {
-				f++;
-			}
-		}
-		cA.mE.gD.updateInv();
 	}
 }

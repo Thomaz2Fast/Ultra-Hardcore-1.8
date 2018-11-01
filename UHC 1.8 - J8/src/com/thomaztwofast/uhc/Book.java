@@ -1,6 +1,6 @@
 /*
  * Ultra Hardcore 1.8, a Minecraft survival game mode.
- * Copyright (C) <2016> Thomaz2Fast
+ * Copyright (C) <2018> Thomaz2Fast
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,30 +16,30 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.thomaztwofast.uhc.custom;
+package com.thomaztwofast.uhc;
 
 import org.bukkit.Material;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 
-import com.thomaztwofast.uhc.Main;
+import com.thomaztwofast.uhc.lib.F;
 
-public class UhcBook extends Function {
-	private Main uA;
-	public ItemStack uB;
+public class Book {
+	private Main pl;
+	public ItemStack itemStack;
 
-	public UhcBook(Main a) {
-		uA = a;
+	public Book(Main pl) {
+		this.pl = pl;
 	}
 
 	public void load() {
-		uB = nItem(Material.WRITTEN_BOOK, 0, uA.mC.cKc, uA.mC.cKd);
-		BookMeta a = (BookMeta) uB.getItemMeta();
-		a.setAuthor(uA.getDescription().getName());
-		a.setTitle(uA.mC.cKc);
-		if (uA.mC.cKe.length != 0) {
-			a.setPages(uA.mC.cKe);
-		}
-		uB.setItemMeta(a);
+		itemStack = F.item(Material.WRITTEN_BOOK, pl.config.boolTitle, pl.config.bookLore);
+		BookMeta meta = (BookMeta) itemStack.getItemMeta();
+		meta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
+		meta.setAuthor(pl.getDescription().getName());
+		meta.setTitle(pl.config.boolTitle);
+		meta.setPages(pl.config.bookPages);
+		itemStack.setItemMeta(meta);
 	}
 }

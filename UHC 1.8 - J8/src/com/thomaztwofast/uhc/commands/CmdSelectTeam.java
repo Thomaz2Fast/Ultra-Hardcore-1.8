@@ -1,6 +1,6 @@
 /*
  * Ultra Hardcore 1.8, a Minecraft survival game mode.
- * Copyright (C) <2016> Thomaz2Fast
+ * Copyright (C) <2018> Thomaz2Fast
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,58 +24,66 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.thomaztwofast.uhc.Main;
-import com.thomaztwofast.uhc.custom.Jc;
-import com.thomaztwofast.uhc.data.Permission;
+import com.thomaztwofast.uhc.data.Node;
 import com.thomaztwofast.uhc.data.UHCPlayer;
+import com.thomaztwofast.uhc.lib.F;
+import com.thomaztwofast.uhc.lib.J;
 
 public class CmdSelectTeam implements CommandExecutor {
-	private Main cA;
+	private Main pl;
 
-	public CmdSelectTeam(Main a) {
-		cA = a;
+	public CmdSelectTeam(Main pl) {
+		this.pl = pl;
 	}
 
-	/**
+	/*
 	 * Command - - - - - - - - - - > - SelectTeam
-	 * Enabled Console - - - - - - > - false
+	 * Access  - - - - - - - - - - > - Private Mode
+	 * Who can use it  - - - - - - > - Players
+	 * Arguments - - - - - - - - - > - None  
+	 * 
 	 * Default Permission  - - - - > - Everyone
-	 * Special Permission  - - - - > - OP | com.thomaztwofast.uhc.commands.selectteam.admin
+	 * Permission Node - - - - - - > - com.thomaztwofast.uhc.commands.selectteam       [ See plugin.yml ]
+	 * Special Permission Node - - > - com.thomaztwofast.uhc.commands.selectteam.admin [ See Node.java @ TEAM ]
+	 * 
+	 * ----------------------------
+	 * 
+	 * This command will give the player a item that player can select a team.
+	 * If special permission player trigger this command all the player will get a item.
+	 * 
+	 * The item will only go to that player don't have the item on they inventory.
 	 */
 	@Override
-	public boolean onCommand(CommandSender a, Command b, String c, String[] d) {
-		if (a instanceof Player) {
-			UHCPlayer e = cA.mB.getPlayer(a.getName());
-			if (cA.mC.cCa && cA.mC.cGa && !cA.mC.cFa && cA.mA.i() <= 5) {
-				if (e.uB.hasPermission(Permission.SELECTTEAM_ALL.toString())) {
-					for (UHCPlayer f : cA.mB.getAllPlayers()) {
-						getTeamSelectorItem(f);
-					}
-					cA.mE.gD.uCc = true;
+	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+		if (sender instanceof Player) {
+			UHCPlayer u = pl.getRegisterPlayer(sender.getName());
+			if (pl.config.pluginEnable && pl.config.gameInTeam && !pl.config.serverEnable && pl.status.ordinal() <= 5) {
+				if (u.hasNode(Node.TEAM)) {
+					pl.PLAYERS.values().forEach(e -> setItem(e));
+					pl.gameManager.teams.isSelectItem = true;
 					return true;
 				}
-				getTeamSelectorItem(e);
+				setItem(u);
 				return true;
 			}
-			Jc f = new Jc();
-			f.add("SelectTeam> ", new int[] { 1 }, 8, null, null);
-			if (e.uB.hasPermission(Permission.UHC.toString())) {
-				f.add("Disabled!", new int[] { 1 }, 7, "2|/uhc help page 2", "\u00A76\u00A7lHelp Information\n\u00A77Click here to find out how to\n\u00A77enable this command?");
-			} else {
-				f.add("Disabled!", new int[] { 1 }, 7, null, null);
-			}
-			e.sendJsonMessage(f.o());
+			J str = new J("SelectTeam> ", "8", "bi");
+			if (u.hasNode(Node.UHC))
+				str.addTextWithCmd("Disabled!", "7", "i", "/uhc help page 2", F.chatTitle("Help Information", "Click here to find out how to enable this command?"));
+			else
+				str.addText("Disabled!", "7", "i");
+			u.sendJsonMessage(str.print());
 			return true;
 		}
-		cA.log(0, "Command '/SelectTeam' can only execute from ingame player.");
+		pl.log(0, "Command 'SelectTeam' can only execute from player.");
 		return true;
 	}
 
-	// ------:- PRIVATE -:--------------------------------------------------------------------------
+	// ---------------------------------------------------------------------------
 
-	private void getTeamSelectorItem(UHCPlayer a) {
-		if (!a.uB.getInventory().contains(cA.mE.gD.uD)) {
-			a.uB.getInventory().setItem(cA.mC.cGc, cA.mE.gD.uD);
-			a.sendCommandMessage("SelectTeam", "Right click on the \u00A7e\u00A7opaper item\u00A77\u00A7o to select team.");
+	private void setItem(UHCPlayer u) {
+		if (!u.player.getInventory().contains(pl.gameManager.teams.selectItem)) {
+			u.player.getInventory().setItem(pl.config.gameSelectTeamInventory, pl.gameManager.teams.selectItem);
+			u.sendCmdMessage("SelectTeam", "Right click on the \u00A7E\u00A7Opaper item\u00A77\u00A7O to select team.");
 		}
 	}
 }

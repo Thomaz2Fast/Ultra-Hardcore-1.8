@@ -1,6 +1,6 @@
 /*
  * Ultra Hardcore 1.8, a Minecraft survival game mode.
- * Copyright (C) <2016> Thomaz2Fast
+ * Copyright (C) <2018> Thomaz2Fast
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,31 +18,15 @@
 
 package com.thomaztwofast.uhc.data;
 
-public enum GameStatus {
-	DISABLED(0, "Disabled"),
-	ERROR(1, "Error"),
-	LOADING(2, "Loading"),
-	RESET(3, "Restarting"),
-	WAITING(4, "Waiting"),
-	WAITING_STARTING(5, "Waiting + Countdown"),
-	STARTING(6, "Starting"),
-	INGAME(7, "InGame"),
-	FINISHED(8, "Finished");
+public class Node {
+	public static final String ERR = "com.thomaztwofast.uhc.perm.login";
+	public static final String GL_CMD = "com.thomaztwofast.uhc.perm.global.commands";
+	public static final String TEAM = "com.thomaztwofast.uhc.commands.selectteam.admin";
+	public static final String UHC = "com.thomaztwofast.uhc.commands.uhc";
 
-	private int a;
-	private String b;
+	public static final String RL = "bukkit.command.reload";
+	public static final String CL = "bukkit.command.stop";
 
-	GameStatus(int a1, String b1) {
-		a = a1;
-		b = b1;
-	}
-
-	@Override
-	public String toString() {
-		return b;
-	}
-
-	public int i() {
-		return a;
+	private Node() {
 	}
 }

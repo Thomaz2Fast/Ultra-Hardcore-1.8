@@ -1,6 +1,6 @@
 /*
  * Ultra Hardcore 1.8, a Minecraft survival game mode.
- * Copyright (C) <2016> Thomaz2Fast
+ * Copyright (C) <2018> Thomaz2Fast
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,6 +26,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -33,8 +34,8 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.inventory.InventoryType.SlotType;
+import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerAchievementAwardedEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -45,352 +46,348 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.event.server.ServerListPingEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.event.player.PlayerLoginEvent.Result;
 import org.bukkit.scoreboard.Team;
+
 import com.thomaztwofast.uhc.Main;
-import com.thomaztwofast.uhc.data.GameStatus;
-import com.thomaztwofast.uhc.data.Permission;
+import com.thomaztwofast.uhc.data.Node;
+import com.thomaztwofast.uhc.data.Status;
 import com.thomaztwofast.uhc.data.UHCPlayer;
+import com.thomaztwofast.uhc.lib.F;
 
 public class EvGame implements Listener {
-	private Main eA;
+	private Main pl;
 
-	public EvGame(Main a) {
-		eA = a;
+	public EvGame(Main pl) {
+		this.pl = pl;
 	}
 
 	@EventHandler
-	public void globalChat(AsyncPlayerChatEvent a) {
-		if (eA.mC.cQa) {
-			UHCPlayer b = eA.mB.getPlayer(a.getPlayer().getName());
-			if (b.uB.getGameMode().equals(GameMode.SPECTATOR)) {
-				if (eA.mC.cQc.length() != 0) {
-					a.setFormat(eA.mC.cQc.replaceFirst("\\{0}", b.uB.getName()).replaceFirst("\\{1}", a.getMessage()));
-					return;
-				}
-				a.setCancelled(true);
-				return;
+	public void chat(AsyncPlayerChatEvent e) {
+		UHCPlayer u = pl.getRegisterPlayer(e.getPlayer().getName());
+		e.setCancelled(true);
+		if (u.player.getGameMode() == GameMode.SPECTATOR) {
+			if (!pl.config.chatSpectator.isEmpty()) {
+				chat(pl.config.chatSpectator, u.player.getName(), e.getMessage());
+			} else {
+				u.sendActionMessage("\u00A78\u00A7LSpectator Chat\u00A7R \u00A7LDisabled!");
 			}
-			if (!a.isCancelled() && eA.mC.cGa) {
-				if (b.uB.getScoreboard().getEntryTeam(b.uB.getName()) != null) {
-					Team c = b.uB.getScoreboard().getEntryTeam(b.uB.getName());
-					if (eA.mC.cQd.length() != 0) {
-						if (eA.mC.cQe.length() != 0 && eA.mA.i() > 5 && a.getMessage().charAt(0) == '@') {
-							for (String d : c.getEntries()) {
-								UHCPlayer e = eA.mB.getPlayer(d);
-								e.uB.sendMessage(eA.mC.cQe.replaceFirst("\\{0}", c.getPrefix() + b.uB.getName() + c.getSuffix()).replaceFirst("\\{1}", a.getMessage().substring(1)));
-								if (b != e) {
-									e.playLocalSound(Sound.BLOCK_NOTE_HARP, 1.7f);
-								}
-							}
-							a.setCancelled(true);
-							return;
-						}
-						a.setFormat(eA.mC.cQd.replaceFirst("\\{0}", c.getPrefix() + b.uB.getName() + c.getSuffix()).replaceFirst("\\{1}", a.getMessage()));
+			return;
+		}
+		if (pl.config.gameInTeam) {
+			Team team = u.player.getScoreboard().getEntryTeam(e.getPlayer().getName());
+			if (team != null) {
+				if (!pl.config.chatTeam.isEmpty()) {
+					if (e.getMessage().charAt(0) == '!' && !pl.config.chatTeamMsg.isEmpty() && pl.status.ordinal() > 5) {
+						team.getEntries().forEach(p -> {
+							pl.getRegisterPlayer(p).player.sendMessage(F.strReplace(pl.config.chatTeamMsg, team.getColor() + u.player.getName() + "\u00A7R", e.getMessage().substring(1)));
+							if (!u.player.getName().equals(p))
+								pl.getRegisterPlayer(p).playSound(Sound.BLOCK_NOTE_BLOCK_HARP, 1.7f);
+						});
 						return;
 					}
-					a.setCancelled(true);
+					chat(pl.config.chatTeam, team.getPrefix() + team.getColor() + u.player.getName() + "\u00A7R", e.getMessage());
+				} else {
+					u.sendActionMessage("\u00A78\u00A7LTeam Chat\u00A7R \u00A7LDisabled!");
 				}
-			}
-			if (!a.isCancelled() && eA.mC.cQb.length() != 0) {
-				a.setFormat(eA.mC.cQb.replaceFirst("\\{0}", b.uB.getName()).replaceFirst("\\{1}", a.getMessage()));
 				return;
 			}
-			b.sendCommandMessage("Chat", "Disabled!");
-			a.setCancelled(true);
+		}
+		if (!pl.config.chatDefault.isEmpty()) {
+			chat(pl.config.chatDefault, u.player.getName(), e.getMessage());
+			return;
+		}
+		u.sendActionMessage("\u00A78\u00A7LChat\u00A7R \u00A7LDisabled!");
+	}
+
+	@EventHandler
+	public void craftingItem(PrepareItemCraftEvent e) {
+		if (pl.config.headEnable && e.getInventory().getType().equals(InventoryType.WORKBENCH)) {
+			ItemStack[] items = e.getInventory().getContents();
+			if (items[5].getType().equals(Material.PLAYER_HEAD) && items[0].getType().equals(Material.GOLDEN_APPLE))
+				items[0].setItemMeta(pl.gameManager.setGoldenHeadLore(items[0], items[5]));
 		}
 	}
 
 	@EventHandler
-	public void login(PlayerLoginEvent a) {
-		if (eA.mC.cFa) {
-			if (eA.mA.equals(GameStatus.ERROR)) {
-				if (!a.getPlayer().hasPermission(Permission.ERROR.toString())) {
-					a.disallow(Result.KICK_OTHER, eA.mC.cFq);
-				}
+	public void damager(EntityDamageEvent e) {
+		if (pl.config.serverEnable && pl.status.ordinal() > 3 && pl.status.ordinal() < 7 && e.getEntity() instanceof Player) {
+			if (pl.status.ordinal() != 6 && e.getCause().equals(DamageCause.VOID)) {
+				e.getEntity().teleport(e.getEntity().getWorld().getSpawnLocation().add(0.5, 1, 0.5), TeleportCause.PLUGIN);
+				e.getEntity().setFallDistance(0f);
+			}
+			e.setCancelled(true);
+			return;
+		}
+		if (pl.config.gameOldCombat && pl.status.ordinal() == 7 && e.getEventName().hashCode() == -438677650 && ((EntityDamageByEntityEvent) e).getDamager() instanceof Player) {
+			switch (((Player) ((EntityDamageByEntityEvent) e).getDamager()).getInventory().getItemInMainHand().getType()) {
+			case WOODEN_AXE:
+			case GOLDEN_AXE:
+				e.setDamage(e.getDamage() - 4d);
+				break;
+			case STONE_AXE:
+				e.setDamage(e.getDamage() - 5d);
+				break;
+			case IRON_AXE:
+				e.setDamage(e.getDamage() - 4d);
+				break;
+			case DIAMOND_AXE:
+				e.setDamage(e.getDamage() - 3d);
+				break;
+			default:
+				break;
+			}
+			e.setDamage(e.getDamage() < 0 ? 0d : e.getDamage());
+		}
+		if (pl.config.dmgEnable && pl.status.ordinal() == 7 && e.getEntity() instanceof Player) {
+			UHCPlayer u = pl.getRegisterPlayer(e.getEntity().getName());
+			if (pl.gameManager.inGamePlayers.contains(u.player.getName()))
+				u.dmgStorage(pl.gameManager.timestamp, e.getDamage(), pl.gameManager.damagerLogger.getDamager(e));
+		}
+	}
+
+	@EventHandler
+	public void playerCommand(PlayerCommandPreprocessEvent e) {
+		String str = e.getMessage().split(" ", 0)[0].substring(1).toLowerCase();
+		UHCPlayer u = pl.getRegisterPlayer(e.getPlayer().getName());
+		if (pl.status.ordinal() > 5 && pl.status.ordinal() < 8 && u.hasNode(Node.GL_CMD))
+			return;
+		else if ((pl.status.ordinal() < 6 || pl.status.ordinal() > 7) && ((pl.getCommand(str) != null && u.player.hasPermission(pl.getCommand(str).getPermission())) || u.hasNode(Node.GL_CMD)))
+			return;
+		u.sendCmdMessage("Command", "Disabled!");
+		e.setCancelled(true);
+	}
+
+	@EventHandler
+	public void playerLogin(PlayerLoginEvent e) {
+		if (pl.config.serverEnable) {
+			switch (pl.status) {
+			case ERROR:
+				if (!e.getPlayer().hasPermission(Node.ERR))
+					e.disallow(Result.KICK_OTHER, pl.config.serverKickError);
 				return;
-			} else if (eA.mA.equals(GameStatus.DISABLED) || eA.mA.equals(GameStatus.LOADING)) {
-				a.disallow(Result.KICK_OTHER, eA.mC.cFr);
-			} else if (eA.mA.equals(GameStatus.FINISHED)) {
-				a.disallow(Result.KICK_OTHER, eA.mC.cFs);
+			case DISABLED:
+			case LOADING:
+				e.disallow(Result.KICK_OTHER, pl.config.serverKickLoading + pl.gameManager.server.getChunkloaderProgress());
+				return;
+			case FINISHED:
+				e.disallow(Result.KICK_OTHER, pl.config.serverKickEnding);
+				return;
+			default:
+				return;
 			}
 		}
 	}
 
 	@EventHandler
-	public void join(PlayerJoinEvent a) {
-		UHCPlayer b = eA.mB.addPlayer(eA, a.getPlayer());
-		if (eA.mA.i() > 5) {
-			if (eA.mA.equals(GameStatus.FINISHED) && eA.mE.getIngamePlayers().contains(b.uB.getName())) {
+	public void playerJoin(PlayerJoinEvent e) {
+		UHCPlayer u = pl.registerPlayer(e.getPlayer());
+		if (pl.status.ordinal() > 5) {
+			if (pl.status.equals(Status.FINISHED) && pl.gameManager.inGamePlayers.contains(u.player.getName()))
 				return;
-			} else if (eA.mE.isOffline(b.uB.getName())) {
-				eA.mE.gmOfflineEndTimer(b.uB.getName());
+			else if (pl.gameManager.offlineTasks.containsKey(u.player.getName())) {
+				pl.gameManager.removeOfflineTimer(u);
 				return;
 			}
-			b.resetPlayer(false);
-			if (!eA.mA.equals(GameStatus.FINISHED)) {
-				b.sendCommandMessage("UHC", "This game are in progress.");
-			} else {
-				b.sendCommandMessage("UHC", "This game is finished.");
-			}
-			b.sendCommandMessage("UHC", "You are now in spectator mode.");
-			if (eA.mC.cFa) {
-				if (b.uB.getWorld().equals(eA.mE.gC.uB)) {
-					b.uB.teleport(eA.getServer().getWorlds().get(0).getSpawnLocation());
-				}
-				if (eA.mC.cFv) {
-					b.uB.getInventory().setItem(eA.mC.cFy, eA.mE.gC.uG);
-				}
+			u.resetPlayer(false);
+			u.sendCmdMessage("UHC", pl.status.equals(Status.FINISHED) ? "This game is finished." : "This game are in progress.");
+			u.sendCmdMessage("UHC", "You are now in spectator mode.");
+			if (pl.config.serverEnable) {
+				if (u.player.getWorld().equals(pl.gameManager.server.lobby))
+					u.player.teleport(pl.getServer().getWorlds().get(0).getSpawnLocation());
+				if (pl.config.serverIsBungeeCord)
+					u.player.getInventory().setItem(pl.config.serverInventorySlot, pl.gameManager.server.itemStack);
 			}
 			return;
 		}
-		if (eA.mC.cFa) {
-			eA.mE.gC.newPlayer(b);
+		if (pl.config.serverEnable)
+			pl.gameManager.server.join(u);
+		else {
+			u.resetPlayer(true);
+			u.getHubItems();
+		}
+	}
+
+	@EventHandler
+	public void playerQuit(PlayerQuitEvent e) {
+		UHCPlayer u = pl.getRegisterPlayer(e.getPlayer().getName());
+		if (pl.status.ordinal() > 5 && pl.status.ordinal() < 8 && pl.gameManager.inGamePlayers.contains(u.player.getName()))
+			pl.gameManager.addOfflineTimer(u.player.getName());
+		else if (pl.config.serverEnable && pl.status.ordinal() > 3 && pl.status.ordinal() < 6)
+			pl.gameManager.server.quit(u);
+		pl.unRegisterPlayer(u.player);
+	}
+
+	@EventHandler
+	public void playerDie(PlayerDeathEvent e) {
+		if (pl.status.equals(Status.INGAME)) {
+			UHCPlayer u = pl.getRegisterPlayer(e.getEntity().getName());
+			if (pl.gameManager.inGamePlayers.contains(u.player.getName())) {
+				pl.gameManager.removeInGamePlayer(u);
+				if (pl.config.headEnable)
+					e.getDrops().add(pl.gameManager.setGoldenHeadName(u.player.getUniqueId()));
+			}
 			return;
 		}
-		b.resetPlayer(true);
-		b.hubItems();
+		e.setDeathMessage(null);
+		e.setDroppedExp(0);
+		e.getDrops().clear();
 	}
 
 	@EventHandler
-	public void quit(PlayerQuitEvent a) {
-		UHCPlayer b = eA.mB.getPlayer(a.getPlayer().getName());
-		if (eA.mA.i() > 5 && eA.mA.i() < 8 && eA.mE.getIngamePlayers().contains(b.uB.getName())) {
-			eA.mE.gmOfflineNewTimer(b.uB.getName());
-		} else if (eA.mC.cFa && eA.mA.i() > 3 && eA.mA.i() < 6) {
-			eA.mE.gC.removePlayer(b);
+	public void playerRespawn(PlayerRespawnEvent e) {
+		UHCPlayer u = pl.getRegisterPlayer(e.getPlayer().getName());
+		if (pl.status.ordinal() > 5) {
+			if (pl.gameManager.inGamePlayers.contains(u.player.getName()))
+				e.setRespawnLocation(pl.gameManager.getEntryLocation(u));
+			else {
+				if (pl.config.dmgEnable)
+					pl.gameManager.damagerLogger.giveItem(u.player.getName());
+				if (pl.config.serverEnable && pl.config.serverIsBungeeCord)
+					u.player.getInventory().setItem(pl.config.serverInventorySlot, pl.gameManager.server.itemStack);
+				e.setRespawnLocation(new Location(pl.getServer().getWorlds().get(0), 0, 100, 0));
+			}
 		}
-		eA.mB.removePlayer(b.uB);
 	}
 
 	@EventHandler
-	public void death(PlayerDeathEvent a) {
-		if (eA.mA.equals(GameStatus.INGAME)) {
-			UHCPlayer b = eA.mB.getPlayer(a.getEntity().getName());
-			if (eA.mE.getIngamePlayers().contains(b.uB.getName())) {
-				eA.mE.gmRemoveIgPlayer(b);
-				if (eA.mC.cLa) {
-					a.getDrops().add(eA.mE.getPlayerHead(b.uB.getName()));
+	public void playerInteract(PlayerInteractEvent e) {
+		if (pl.status.ordinal() < 6) {
+			if ((e.getAction().equals(Action.RIGHT_CLICK_AIR) || e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) && e.hasItem()) {
+				if (e.getItem().equals(pl.gameManager.menu.itemStack)) {
+					pl.gameManager.menu.openInv(pl.getRegisterPlayer(e.getPlayer().getName()));
+					e.setCancelled(true);
+					return;
 				}
+				if (pl.config.gameInTeam && e.getItem().equals(pl.gameManager.teams.selectItem)) {
+					pl.gameManager.teams.openInventory(pl.getRegisterPlayer(e.getPlayer().getName()));
+					e.setCancelled(true);
+					return;
+				}
+				if (pl.config.serverEnable && pl.config.serverIsBungeeCord && e.getItem().equals(pl.gameManager.server.itemStack)) {
+					pl.getRegisterPlayer(e.getPlayer().getName()).fallbackServer(e.getMaterial());
+					e.setCancelled(true);
+					return;
+				}
+			}
+		} else if (pl.status.equals(Status.FINISHED) && (e.getAction().equals(Action.RIGHT_CLICK_AIR) || e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) && e.hasItem()) {
+			if (pl.config.dmgEnable && e.getItem().getType().equals(Material.NETHER_STAR) && e.getItem().hasItemMeta()) {
+				pl.gameManager.damagerLogger.openInv(pl.getRegisterPlayer(e.getPlayer().getName()));
+				e.setCancelled(true);
 				return;
 			}
-		}
-		a.setDeathMessage(null);
-		a.setDroppedExp(0);
-		a.getDrops().clear();
-	}
-
-	@EventHandler
-	public void respawn(PlayerRespawnEvent a) {
-		UHCPlayer b = eA.mB.getPlayer(a.getPlayer().getName());
-		if (eA.mA.i() > 5) {
-			if (eA.mE.getIngamePlayers().contains(b.uB.getName())) {
-				a.setRespawnLocation(eA.mE.getSpawnLoc(b.uB));
-			} else {
-				if (eA.mC.cOa) {
-					eA.mE.gF.givePlayerItem(b.uB.getName());
-				}
-				if (eA.mC.cFa && eA.mC.cFv) {
-					b.uB.getInventory().setItem(eA.mC.cFy, eA.mE.gC.uG);
-				}
-				a.setRespawnLocation(new Location(eA.getServer().getWorlds().get(0), 0, 100, 0));
-			}
-		}
-	}
-
-	@EventHandler
-	public void interact(PlayerInteractEvent a) {
-		if (eA.mA.i() < 6) {
-			if ((a.getAction().equals(Action.RIGHT_CLICK_AIR) || a.getAction().equals(Action.RIGHT_CLICK_BLOCK)) && a.hasItem()) {
-				if (a.getItem().equals(eA.mE.gB.uD)) {
-					eA.mE.gB.openMenu(eA.mB.getPlayer(a.getPlayer().getName()));
-					a.setCancelled(true);
-					return;
-				}
-				if (eA.mC.cGa && a.getItem().equals(eA.mE.gD.uD)) {
-					eA.mE.gD.openTeam(eA.mB.getPlayer(a.getPlayer().getName()));
-					a.setCancelled(true);
-					return;
-				}
-				if (eA.mC.cFa && eA.mC.cFv && a.getItem().equals(eA.mE.gC.uG)) {
-					eA.mB.getPlayer(a.getPlayer().getName()).tpFallbackServer();
-					a.setCancelled(true);
-					return;
-				}
-			}
-		} else if (eA.mA.equals(GameStatus.FINISHED) && (a.getAction().equals(Action.RIGHT_CLICK_AIR) || a.getAction().equals(Action.RIGHT_CLICK_BLOCK)) && a.hasItem()) {
-			if (eA.mC.cOa && a.getItem().getType().equals(Material.NETHER_STAR) && a.getItem().hasItemMeta()) {
-				eA.mE.gF.openDmgIv(a.getPlayer().getName());
-				a.setCancelled(true);
-				return;
-			}
-			if (eA.mC.cFa && eA.mC.cFv && eA.mE.getIngamePlayers().contains(a.getPlayer().getName()) && a.getItem().equals(eA.mE.gC.uG)) {
-				eA.mB.getPlayer(a.getPlayer().getName()).tpFallbackServer();
-				a.setCancelled(true);
+			if (pl.config.serverEnable && pl.config.serverIsBungeeCord && pl.gameManager.inGamePlayers.contains(e.getPlayer().getName()) && e.getItem().equals(pl.gameManager.server.itemStack)) {
+				pl.getRegisterPlayer(e.getPlayer().getName()).fallbackServer(e.getMaterial());
+				e.setCancelled(true);
 				return;
 			}
 		}
 	}
 
 	@EventHandler
-	public void invClick(InventoryClickEvent a) {
-		if (eA.mA.i() < 6) {
-			UHCPlayer b = eA.mB.getPlayer(a.getWhoClicked().getName());
-			if (b.uC) {
-				a.setCancelled(true);
-				if (a.getRawSlot() >= 0 && a.getRawSlot() < a.getInventory().getSize()) {
-					switch (b.uD[0].hashCode()) {
-					case 2362719:
-						eA.mE.gB.clickEvent(b, a.getClick(), a.getRawSlot());
+	public void inventoryClick(InventoryClickEvent e) {
+		if (pl.status.ordinal() < 6) {
+			UHCPlayer u = pl.getRegisterPlayer(e.getWhoClicked().getName());
+			if (u.isInvLock) {
+				e.setCancelled(true);
+				if (e.getRawSlot() >= 0 && e.getRawSlot() < e.getInventory().getSize()) {
+					switch (u.invHistory[0]) {
+					case 0:
+						pl.gameManager.menu.click(u, e.getClick(), e.getRawSlot());
 						return;
-					case 2570845:
-						eA.mE.gD.clickEvent(b, a.getClick(), a.getRawSlot());
+					case 1:
+						pl.gameManager.teams.click(u, e.getClick(), e.getRawSlot());
 						return;
 					}
 				}
 			}
 		} else {
-			if (eA.mC.cOa) {
-				UHCPlayer b = eA.mB.getPlayer(a.getWhoClicked().getName());
-				if (b.uC) {
-					a.setCancelled(true);
-					if (a.getRawSlot() >= 0 && a.getRawSlot() < a.getInventory().getSize()) {
-						if (b.uD[0].equals("DMG")) {
-							eA.mE.gF.clickEvent(b, a.getClick(), a.getRawSlot(), a.getCurrentItem().getType().equals(Material.STAINED_GLASS_PANE));
+			if (pl.config.dmgEnable) {
+				UHCPlayer u = pl.getRegisterPlayer(e.getWhoClicked().getName());
+				if (u.isInvLock) {
+					e.setCancelled(true);
+					if (e.getRawSlot() >= 0 && e.getRawSlot() < e.getInventory().getSize()) {
+						if (u.invHistory[0] == 2) {
+							pl.gameManager.damagerLogger.click(u, e.getClick(), e.getRawSlot(), e.getCurrentItem().getType().equals(Material.GREEN_STAINED_GLASS_PANE) || e.getCurrentItem().getType().equals(Material.RED_STAINED_GLASS_PANE));
 							return;
 						}
 					}
 				}
-				if (!eA.mE.getIngamePlayers().contains(b.uB.getName()) && a.getRawSlot() == 40 && a.getInventory().getType().equals(InventoryType.CRAFTING)) {
-					eA.mE.gF.openDmgIv(b.uB.getName());
+				if (!pl.gameManager.inGamePlayers.contains(u.player.getName()) && e.getRawSlot() == 40 && e.getInventory().getType().equals(InventoryType.CRAFTING)) {
+					pl.gameManager.damagerLogger.openInv(u);
 					return;
 				}
 			}
-			if (eA.mC.cLa && a.getInventory().getType().equals(InventoryType.WORKBENCH) && a.getRawSlot() == 0 && a.getCurrentItem().getType().equals(Material.GOLDEN_APPLE)) {
-				if (a.getInventory().getItem(5) != null && a.getInventory().getItem(5).getType().equals(Material.SKULL_ITEM)) {
-					a.getCurrentItem().setItemMeta(eA.mE.setSkullOwner(a.getCurrentItem(), a.getInventory().getItem(5)));
-					return;
-				}
-			}
-			if (eA.mC.cFa && eA.mC.cFv && !eA.mE.getIngamePlayers().contains(a.getWhoClicked().getName()) && a.getInventory().getType().equals(InventoryType.CRAFTING) && a.getSlotType().equals(SlotType.QUICKBAR)) {
-				if (a.getSlot() == eA.mC.cFy) {
-					eA.mB.getPlayer(a.getWhoClicked().getName()).tpFallbackServer();
-				}
-			}
+			if (pl.config.serverEnable && pl.config.serverIsBungeeCord && !pl.gameManager.inGamePlayers.contains(e.getWhoClicked().getName()) && e.getInventory().getType().equals(InventoryType.CRAFTING) && e.getSlotType().equals(SlotType.QUICKBAR))
+				if (e.getSlot() == pl.config.serverInventorySlot)
+					pl.getRegisterPlayer(e.getWhoClicked().getName()).fallbackServer(e.getCurrentItem().getType());
 		}
 	}
 
 	@EventHandler
-	public void invClose(InventoryCloseEvent a) {
-		if (eA.mA.i() < 6) {
-			eA.mB.getPlayer(a.getPlayer().getName()).uC = false;
-		}
+	public void inventoryClose(InventoryCloseEvent e) {
+		if (pl.status.ordinal() < 6)
+			pl.getRegisterPlayer(e.getPlayer().getName()).isInvLock = false;
 	}
 
 	@EventHandler
-	public void itemConsume(PlayerItemConsumeEvent a) {
-		if (eA.mC.cCa && a.getItem().getType().equals(Material.GOLDEN_APPLE) && a.getItem().hasItemMeta()) {
-			switch (a.getItem().getItemMeta().getDisplayName().hashCode()) {
-			case 853026900:
-				eA.mE.goldenAppleRegen(eA.mB.getPlayer(a.getPlayer().getName()), false);
+	public void playerConsume(PlayerItemConsumeEvent e) {
+		if (pl.config.pluginEnable && e.getItem().getType().equals(Material.GOLDEN_APPLE) && e.getItem().hasItemMeta())
+			pl.gameManager.setGoldenHeadRegen(pl.getRegisterPlayer(e.getPlayer().getName()), e.getItem().getItemMeta().getDisplayName().hashCode() == 853026900 ? false : true);
+	}
+
+	@EventHandler
+	public void playerDrop(PlayerDropItemEvent e) {
+		if (pl.status.ordinal() < 6)
+			e.setCancelled(true);
+	}
+
+	@EventHandler
+	public void serverPing(ServerListPingEvent e) {
+		if (!pl.config.serverEnable)
+			return;
+		String str = "";
+		if (pl.config.serverAdvancedMotd) {
+			switch (pl.status) {
+			case ERROR:
+				str = pl.config.serverStatusError;
 				break;
-			case -1130703500:
-				eA.mE.goldenAppleRegen(eA.mB.getPlayer(a.getPlayer().getName()), true);
+			case RESET:
+				str = pl.config.serverStatusReset;
+				break;
+			case LOADING:
+				str = pl.config.serverStatusLoading.replace("%C", pl.gameManager.server.getChunkloaderProgress());
+
+				break;
+			case WAITING:
+				str = pl.config.serverStatusWaiting;
+				break;
+			case WAITING_STARTING:
+				str = pl.config.serverStatusCountdown;
+				break;
+			case STARTING:
+				str = pl.config.serverStatusStarting;
+				break;
+			case INGAME:
+				str = pl.config.serverStatusInGame;
+				break;
+			case FINISHED:
+				str = pl.config.serverStatusFinished;
+				break;
+			default:
+				str = pl.config.serverStatusDisabled;
 				break;
 			}
-
-		}
+		} else
+			str = pl.config.serverMotd;
+		str = F.strReplaceMatch(str, "%0|" + pl.config.serverID, "%1|" + pl.status, "%2|" + pl.PLAYERS.size(), "%3|" + pl.gameManager.inGamePlayers.size());
+		e.setMotd(str.replace("{N}", "\n"));
 	}
 
-	@EventHandler
-	public void achievementAwarded(PlayerAchievementAwardedEvent a) {
-		if (eA.mA.i() > 5 && eA.mA.i() < 8 && eA.mE.getIngamePlayers().contains(a.getPlayer().getName())) {
-			return;
-		}
-		a.setCancelled(true);
-	}
+	// ---------------------------------------------------------------------------
 
-	@EventHandler
-	public void itemDrop(PlayerDropItemEvent a) {
-		if (eA.mA.i() < 6) {
-			a.setCancelled(true);
-		}
-	}
-
-	@EventHandler
-	public void damager(EntityDamageEvent a) {
-		if (eA.mC.cFa && eA.mA.i() > 3 && eA.mA.i() < 7 && a.getEntity() instanceof Player) {
-			if (eA.mA.i() != 6 && a.getCause().equals(DamageCause.VOID)) {
-				a.getEntity().teleport(a.getEntity().getWorld().getSpawnLocation().add(0.5, 1, 0.5), TeleportCause.PLUGIN);
-				a.getEntity().setFallDistance(0f);
-			}
-			a.setCancelled(true);
-			return;
-		}
-		if (eA.mC.cOa && eA.mA.i() == 7 && a.getEntity() instanceof Player) {
-			UHCPlayer b = eA.mB.getPlayer(a.getEntity().getName());
-			if (eA.mE.getIngamePlayers().contains(b.uB.getName())) {
-				b.dmgStorage(eA.mE.gL, a.getDamage(), eA.mE.gF.source(a));
-			}
-		}
-	}
-
-	@EventHandler
-	public void command(PlayerCommandPreprocessEvent a) {
-		String b = a.getMessage().split(" ", 0)[0].substring(1).toLowerCase();
-		UHCPlayer c = eA.mB.getPlayer(a.getPlayer().getName());
-		if (eA.mA.i() > 5 && eA.mA.i() < 8 && c.uB.hasPermission(Permission.GLOBAL_COMMAND.toString())) {
-			return;
-		} else if ((eA.mA.i() < 6 || eA.mA.i() > 7) && ((eA.getCommand(b) != null && c.uB.hasPermission(eA.getCommand(b).getPermission())) || c.uB.hasPermission(Permission.GLOBAL_COMMAND.toString()))) {
-			return;
-		}
-		c.sendCommandMessage("Command", "Disabled!");
-		a.setCancelled(true);
-	}
-
-	@EventHandler
-	public void listPing(ServerListPingEvent a) {
-		if (eA.mC.cFa) {
-			String b = "";
-			if (eA.mC.cFb) {
-				switch (eA.mA) {
-				case ERROR:
-					b = eA.mC.cFi;
-					break;
-				case FINISHED:
-					b = eA.mC.cFp;
-					break;
-				case INGAME:
-					b = eA.mC.cFo;
-					break;
-				case LOADING:
-					b = eA.mC.cFj;
-					break;
-				case RESET:
-					b = eA.mC.cFk;
-					break;
-				case STARTING:
-					b = eA.mC.cFn;
-					break;
-				case WAITING:
-					b = eA.mC.cFl;
-					break;
-				case WAITING_STARTING:
-					b = eA.mC.cFm;
-					break;
-				default:
-					b = eA.mC.cFh;
-					break;
-				}
-			} else if (eA.mC.cFg.length() != 0) {
-				b = eA.mC.cFg;
-			}
-			b = b.replaceFirst("\\{0}", "" + eA.mC.cFc);
-			b = b.replaceFirst("\\{1}", eA.mA.toString());
-			b = b.replaceFirst("\\{2}", "" + eA.mB.getAllPlayers().size());
-			b = b.replaceFirst("\\{3}", "" + eA.mE.getIngamePlayers().size());
-			b = b.replace("\\{N}", "\n");
-			a.setMotd(b);
-		}
+	private void chat(String f, String p, String msg) {
+		pl.PLAYERS.values().forEach(e -> e.player.sendMessage(F.strReplace(f, p, msg)));
 	}
 }

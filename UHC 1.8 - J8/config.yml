@@ -1,5 +1,5 @@
 ##########################################################################################
-#                        ~ Ultra Hardcore 1.8 - Configuration file ~
+#                      ~ Ultra Hardcore 1.8 (1.13) - Configuration file ~
 #
 # ---
 #> How to activate / enabled this plugin?
@@ -9,10 +9,55 @@
 #
 # ---
 #> Webpage Links
-#   Configuration Guide: http://dev.bukkit.org/bukkit-plugins/ultra-hardcore-1-8/pages/config/
-#   Setup: http://dev.bukkit.org/bukkit-plugins/ultra-hardcore-1-8/pages/setup/
-#   Images: http://dev.bukkit.org/bukkit-plugins/ultra-hardcore-1-8/images/
-#   Permission: http://dev.bukkit.org/bukkit-plugins/ultra-hardcore-1-8/pages/permissions-commands/
+#   Configuration Guide: https://dev.bukkit.org/projects/ultra-hardcore-1-8/pages/config
+#   Setup: https://dev.bukkit.org/projects/ultra-hardcore-1-8/pages/setup
+#   Images: https://dev.bukkit.org/projects/ultra-hardcore-1-8/images
+#   Permission: https://dev.bukkit.org/projects/ultra-hardcore-1-8/pages/permissions-commands
+#
+#
+# ---
+#> Permission Node
+#   Here is a list of all permissions for this plugin.
+#
+#   Requirement you have a permission plugin install on the server to use this / other 
+#   way to set the permission to selected / all players.
+#   
+#   Custom Permission Node:
+#   
+#     Permission Node: "com.thomaztwofast.uhc.perm.login"
+#     Usage: Allow the player to sign in when this plugin having some erros.
+#
+#     Permission Node: "com.thomaztwofast.uhc.perm.global.commands"
+#     Usage: Allow the player to use commands from others plugins. (Only for server mode)
+#
+#
+#   Commands Permission Node:
+#
+#     /autoteam
+#      Enabled Console: No
+#      Default Permission: OP
+#      Permission Node: "com.thomaztwofast.uhc.commands.autoteam"
+#
+#     /chunkloader <start|stop>
+#      Enabled Console: No
+#      Default Permission: OP
+#      Permission Node: "com.thomaztwofast.uhc.commands.chunkloader"
+#
+#     /selectteam
+#      Enabled Console: No
+#      Default Permission: Everyone
+#      Permission Node: "com.thomaztwofast.uhc.commands.selectteam"
+#      Permission Node: "com.thomaztwofast.uhc.commands.selectteam.admin"
+#
+#     /start <uhc>
+#      Enabled Console: No
+#      Default Permission: OP
+#      Permission Node: "com.thomaztwofast.uhc.commands.start"
+#
+#     /uhc <help | menu | settings | status>
+#      Enabled Console: Yes
+#      Default Permission: OP
+#      Permission Node: "com.thomaztwofast.uhc.commands.uhc"
 #
 #
 # ---
@@ -26,41 +71,47 @@
 #
 
 
-# ---:- CONFIG VERSION -:---
+#> CONFIG VERSION
+#    If there any change in the config file, you will be notificationon
+#    the console.
 #
-# If any change in the config you will be notification on the console.
+Config: 3
+
+#> PLUGIN
+#    Here do you enabled this plugin.
 #
-Config: 2
-
-
-# ---:- PLUGIN -:---
 Plugin:
   Enabled: false
   UpdateNotification: false
 
-
-# ---:- CHUNKLOADER -:---
+#> CHUNKLOADER
+#    Here do you set the settings for the chunkloader commands.
 #
-#> WARNING
-#   Lower tick rate will maybe crash your server or lag out.
-#   Higher task rate will maybe crash your server or lag out.
-# 
-#> EXEMPLE
-#   Chunkloader will load / generate 20 chunks in every 8 tick delay.
+#    - - - - WARNING - - - -
+#    Lower / higher tick rate will maybe crash your server or lag out.
+#
+#
+#    - - - - EXAMPLE - - - -
+#    Task: 20
+#    DelayTick: 8
+#
+#    Chunkloader will load / generated ca 20 chunks in every 8 ticks.
 #
 Chunkloader:
   ArenaBorder: 250
   DelayTick: 8
-  Task: 20
-  ShowHiddenDetail: false
   LoadNether: true
+  ShowHiddenDetail: false
+  Task: 20
 
-
-# ---:- MINECRAFT GAMERULE -:---
+#> MINECRAFT GAMERULES
+#
 Gamerules:
+  disableElytraMovementCheck: false
   doDaylightCycle: true
   doEntityDrops: true
   doFireTick: true
+  doLimitedCrafting: false
   doMobLoot: true
   doMobSpawning: true
   doTileDrops: true
@@ -69,31 +120,35 @@ Gamerules:
   mobGriefing: true
   randomTickSpeed: 3
   reducedDebugInfo: false
-  spectatorsGenerateChunks: false
   spawnRadius: 0
+  spectatorsGenerateChunks: false
 
-
-# ---:- SERVER MODE -:---
+#> SERVER MODE      (optional)
+#    Countdown value are in seconds.
 #
-#> SimpleMotd and AdvancedMotd
-#   New Line        =>   {N}
-#   Server ID       =>   {0}
-#   Game Status     =>   {1}
-#   Online Player   =>   {2}
-#   Ingame Player   =>   {3}
+#    SimpleMotd & AdvancedMotd (Text Replacement)
+#      {N}  =>  New Line
+#      %0   =>  Server ID
+#      %1   =>  Game Status
+#      %2   =>  Online Players
+#      %3   =>  InGames Players
 #
-ServerMode:
+#    AdvancedMotd.Loading (Text Replacement)
+#      %C  =>  Chunkloader progress
+#
+ServerMode: 
   Enabled: false
   AdvancedMotd: false
   ServerID: 1
   MinPlayerToStart: 8
   MinTeamToStart: 4
   Countdown: 30
-  SimpleMotd: '{0}|{1}|{2}|{3}'
+  SimpleMotd: '%0|%1|%2|%3'
+  DisabledChunkloader: false
   AdvencedMotdStatus:
     Disabled: '&cUltra Hardcore 1.8&r{N}&7&lStatus:&r&c Disabled'
     Error: '&cUltra Hardcore 1.8&r{N}&7&lStatus:&r&4&l Error'
-    Loading: '&cUltra Hardcore 1.8&r{N}&7&lStatus:&r&7 Loading...'
+    Loading: '&cUltra Hardcore 1.8&r{N}&7&lStatus:&r&c Loading... %C'
     Reset: '&cUltra Hardcore 1.8&r{N}&7&lStatus:&r&c Restarting'
     Waiting: '&cUltra Hardcore 1.8&r{N}&7&lStatus:&r&a Waiting for players...'
     WaitingStarting: '&cUltra Hardcore 1.8&r{N}&7&lStatus:&r&e Starting soon...'
@@ -112,117 +167,149 @@ ServerMode:
     Item: 'BARRIER'
     InvSlot: 8
 
-
-# ---:- GAME SETTINGS -:---
+#> GAME SETTINGS
+#    Here do you set if you want team mode or solo mode.
+#    Want to have the old Minecraft cobat mode?
+#    
+#    CollisionRule (Settings)
+#      0  =>  On
+#      1  =>  Off
+#      2  =>  Push other teams
+#      3  =>  Push own team
 #
-#> NameTagVisibility
-#   0: On, 1: Hide other teams, 2: hide own team, 3: Off
-#
-#> CollisionRule
-#   0: On, 1: Push other teams, 2: Push own team, 3: Off
+#    NameTagVisibility (Settings)
+#      0  =>  On
+#      1  =>  Off
+#      2  =>  Hide other teams
+#      3  =>  Hide own team
 #
 Game:
   TeamMode: false
-  MaxTeamPlayer: 3
+  MaxTeamPlayer: 2
   SelectTeamInvSlot: 1
+  OldCombatMode: false
+  PlayerListHearts: true
   Options:
-    FriendlyFire: true
-    SeeFriendlyInvisibles: false
-    NameTagVisibility: 0
     CollisionRule: 0
+    FriendlyFire: true
+    NameTagVisibility: 0
+    SeeFriendlyInvisibles: false
+    
 
-
-# ---:- TABLIST HEADER & FOOTER -:---
-TabList:
+#> TABLIST, HEADER & FOOTER      (optional)
+#
+Tablist:
   Enabled: false
   Header: '&c&lUltra Hardcore 1.8&r'
   Footer: ''
 
-
-# ---:- WORLD SETTINGS -:---
+#> WORLD SETTINGS
 #
-#> Difficulty
-#   1: Easy, 2: Normal, 3: Hard
+#    Difficulty (Settings) (Monster Damage)
+#      1  =>  Easy
+#      2  =>  Normal
+#      3  =>  Hard
 #
 WorldSettings:
   Difficulty: 2
   ArenaSize: 1000
   SunTime: 0
 
-
-# ---:- WORLDBORDER -:---
+#> WORLD BORDER
+#    Here do you set the world border size and time.
+#
+#    Time value are in secounds.
+#
 WorldBorder:
   StartDelay: 0
-  StartPos: 1250
-  EndPos: 150
+  StartSize: 1250
+  EndSize: 150
   Time: 10800
 
-
-# ---:- CUSTOM BOOK -:---
+#> BOOK      (optional)
+#    Here do you set a custom book, it wil give the player when they join a game.
+#
+#    Pages (Text Replacement)
+#      {N}  =>  New line
+#
 Book:
   Enabled: false
   InvSlot: 7
   Name: '&cUltra Hardcore'
   Lord:
-  - ''
   - '&6- &7Info'
   - '&6- &7Rules'
   Pages:
   - 'Welcome to &4&lUHC&0.{N}{N}This game you can only regenerate health by{N} &8- &1Golden Apple.&r{N} &8- &1Potions.&r{N}{N}I wish you &5Good Luck&r{N}and may the best player / team win.'
   - '&l&n    UHC - Rules     &r{N}{N}&11.&r Branch Mining{N}&8 You can not branch{N} mining but if you{N} hear a sound,{N} you can dig to it.&r{N}{N}&12. Staircases&r{N}&8 You can only dig{N} staircases if you{N} want to find a cave.'
 
-
-# ---:- GOLDEN HEAD -:---
+#> GOLDEN HEAD      (optional)
+#    Here do you set if you want golden head to spawn in when the player die.
+#
+#    Default Apple (Give)
+#      2 Absorption hearts
+#      3 Regeneration normal hearts
+#
+#    Golden Apple (Give)
+#      2 Absorption hearts
+#      5 Regeneration normal hearts
+#
 GoldenHead:
   Enabled: false
-  ItemsRecipes:
-    DefaultApple:
-      Enabled: false
-    GoldenApple:
-      Enabled: true
+  DefaultApple: false
+  GoldenApple: true
 
-
-# ---:- FREEZE INGAME STARTING PLAYERS -:---
+#> FREEZE STARTING PLAYERS      (optional)
+#    Here do you set if player should be freeze when the game is starting, or 
+#    they can move befor the game is starting.
+#
 FreezePlayer:
   Enabled: true
   Size: 10
 
-
-# ---:- MARKER OPTIONS -:---
+#> MARKER SETTINGS      (optional)
+#    Here do you set the marke text.
 #
-#> Message Replacement
-#   Minutes         =>  {0}
-#   End of Episode  =>  {1}
-#   Next Episode    =>  {2}
+#    Delay value are in minutes.
+#
+#    Message (Text Replacement)
+#      %0   =>  Minutes
+#      %1   =>  End of Episode
+#      %2   =>  Next Episode
 #
 Marker:
-  Message: '&cUHC&8 |&r YOU ARE NOW IN &a{0}&r MIN IN'
   Delay: 20
+  Message: '&cUHC&8 |&r YOU ARE NOW IN &a%0&r MIN IN'
 
-
-# ---:- DAMAGE LOGGER -:---
+#> DAMAGER LOGGER      (optional)
+#    Logg every damager player get and when that player die, that player will
+#    get a list of damager that player have been given from that game.
+#
 DamagerLogger: false
 
-
-# ---:- OFFLINE KICKER -:---
+#> OFFLINE PLAYER KICKER
+#    Here do you set the message and timeout for player that never come back
+#    to the game.
 #
-#> Message Replacement
-#   Player   =>   {0}  
+#    Timeout value are in minutes.
+#
+#    Message (Text Replacement)
+#      %0   =>  Player name
 #
 OfflineKicker:
+  Message: '%0 was killed by Offline Timer'
   Timeout: 5
-  Message: '{0} was killed by Offline Timer'
 
-
-# ---:- GLOBAL CHAT -:---
+#> GLOBAL CHAT      (optional)
+#    Here do you set if you want to use this plugin chat system.
 #
-#> Message Replacement
-#   Player    =>   {0}
-#   Message   =>   {1}
-
+#    Message (Text Replacement)
+#       %0   =>  Player name   (First %0)
+#       %0   =>  Message       (Second %0)
+#
 GlobalChat:
   Enabled: true
-  Default: '<{0}> {1}'
-  Spectator: '<&7&o{0}&r> {1}'
-  Team: '<{0}> {1}'
-  PrivateTeamChat: '&7Team&r <{0}> &7{1}'
+  Default: '<%0> %0'
+  PrivateTeamChat: '&7Team&r <%0> &7%0'
+  Spectator: '<&7&o%0&r> %0'
+  Team: '<%0> %0'
