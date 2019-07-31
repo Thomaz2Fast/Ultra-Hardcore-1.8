@@ -1,6 +1,6 @@
 /*
  * Ultra Hardcore 1.8, a Minecraft survival game mode.
- * Copyright (C) <2018> Thomaz2Fast
+ * Copyright (C) <2019> Thomaz2Fast
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,7 +21,6 @@ package com.thomaztwofast.uhc.commands;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Sound;
 import org.bukkit.command.Command;
@@ -30,6 +29,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.Team;
 import org.bukkit.util.StringUtil;
 
 import com.thomaztwofast.uhc.Main;
@@ -92,7 +92,7 @@ public class CmdStart implements CommandExecutor, TabCompleter {
 					}
 				}
 				List<String> entries = pl.config.gameInTeam ? getTeams() : getSolo();
-				J str = new J("--------------------------------------------\n", "8", "s");
+				J str = new J("                                                                   \n", "8", "s");
 				str.addText(" ULTRA HARDCORE 1.8 - " + (pl.config.gameInTeam ? "TEAM" : "SOLO") + " MODE\n\n", "f", "b");
 				str.addText(" Total " + (pl.config.gameInTeam ? "Teams" : "Players") + ": ", "a", "");
 				str.addText(entries.get(0) + "\n", "7", "");
@@ -122,7 +122,7 @@ public class CmdStart implements CommandExecutor, TabCompleter {
 					if (!names.contains(sender.getName()))
 						names.add(sender.getName());
 				}
-				str.addText("--------------------------------------------", "8", "s");
+				str.addText("                                                                   ", "8", "s");
 				u.sendJsonMessage(str.print());
 				return true;
 			}
@@ -165,9 +165,11 @@ public class CmdStart implements CommandExecutor, TabCompleter {
 		List<String> arr = new ArrayList<>();
 		Scoreboard scoreboard = pl.getServer().getScoreboardManager().getMainScoreboard();
 		int i = 0;
-		for (ChatColor color : ChatColor.values())
-			if (color.isColor() && scoreboard.getTeam(color.name()) != null && scoreboard.getTeam(color.name()).getSize() != 0)
+		for (String tm : pl.config.gameTeamNames) {
+			Team team = scoreboard.getTeam(tm.split("\\|")[0].replace(" ", "_"));
+			if (team != null && team.getSize() != 0)
 				i++;
+		}
 		arr.add(i + "");
 		pl.PLAYERS.values().forEach(e -> {
 			if (scoreboard.getEntryTeam(e.player.getName()) == null && e.player.getGameMode() == GameMode.ADVENTURE)

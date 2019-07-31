@@ -1,6 +1,6 @@
 /*
  * Ultra Hardcore 1.8, a Minecraft survival game mode.
- * Copyright (C) <2018> Thomaz2Fast
+ * Copyright (C) <2019> Thomaz2Fast
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -136,7 +136,7 @@ public class CmdUhc implements CommandExecutor, TabCompleter {
 	private String help(String[] args) {
 		if (args.length < 3)
 			args = new String[] { "help", "index", "1" };
-		J str = new J("--------------------------------------------\n", "8", "s");
+		J str = new J("                                                                   \n", "8", "s");
 		switch (args[1].toLowerCase().hashCode()) {
 		case 3433103:
 			if (helpYaml.isConfigurationSection("h." + args[2])) {
@@ -177,7 +177,7 @@ public class CmdUhc implements CommandExecutor, TabCompleter {
 			str.addText("' for help.", "7", "");
 			break;
 		}
-		str.addText("--------------------------------------------", "8", "s");
+		str.addText("                                                                   ", "8", "s");
 		return str.print();
 	}
 
@@ -199,7 +199,7 @@ public class CmdUhc implements CommandExecutor, TabCompleter {
 			str.addText("Author", pl.getDescription().getAuthors().get(0));
 			return str.print();
 		}
-		J str = new J("--------------------------------------------\n", "8", "s");
+		J str = new J("                                                                   \n", "8", "s");
 		str.addText(" ULTRA HARDCORE 1.8\n\n", "f", "b");
 		str.addText(" Commands\n", "6", "");
 		str.addTextWithCmd(" /UHC Help:", "a", "", "/uhc help", F.chatCmd("uhc help"));
@@ -220,7 +220,7 @@ public class CmdUhc implements CommandExecutor, TabCompleter {
 		}
 		str.addText("\n Plugin\n", "6", "");
 		str.addText(" Version: ", "a", "");
-		str.addTextWithHoverText(pl.getDescription().getVersion(), "e", "", "\u00A78\u00A7OMC V1.13.X");
+		str.addTextWithHoverText(pl.getDescription().getVersion(), "e", "", "\u00A78\u00A7OMC V1.13.2");
 		if (pl.config.pluingUpdate && pl.update.isNew()) {
 			String[] data = pl.update.getInformation();
 			str.addText(" | ", "8", "");
@@ -231,7 +231,7 @@ public class CmdUhc implements CommandExecutor, TabCompleter {
 		}
 		str.addText("\n Author: ", "a", "");
 		str.addTextWithHoverText("Thomaz2Fast\n", "e", "", "\u00A78\u00A7OPN7913.P6WP9M");
-		str.addText("--------------------------------------------", "8", "s");
+		str.addText("                                                                   ", "8", "s");
 		return str.print();
 	}
 

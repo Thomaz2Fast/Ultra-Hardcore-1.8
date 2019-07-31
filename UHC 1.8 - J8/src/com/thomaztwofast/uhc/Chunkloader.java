@@ -1,6 +1,6 @@
 /*
  * Ultra Hardcore 1.8, a Minecraft survival game mode.
- * Copyright (C) <2018> Thomaz2Fast
+ * Copyright (C) <2019> Thomaz2Fast
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -223,9 +223,7 @@ public class Chunkloader {
 						break;
 					}
 					int[] chunk = chunkList.get(chunkPos);
-					if (!worldList.get(worldPos).isChunkGenerated(chunk[0], chunk[1])) {
-						worldList.get(worldPos).loadChunk(chunk[0], chunk[1], true);
-					}
+					worldList.get(worldPos).loadChunk(chunk[0], chunk[1], true);
 					chunkPos++;
 					chunkTotalPos++;
 				}

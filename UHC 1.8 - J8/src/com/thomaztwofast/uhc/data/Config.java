@@ -1,6 +1,6 @@
 /*
  * Ultra Hardcore 1.8, a Minecraft survival game mode.
- * Copyright (C) <2018> Thomaz2Fast
+ * Copyright (C) <2019> Thomaz2Fast
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,13 +18,18 @@
 
 package com.thomaztwofast.uhc.data;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.bukkit.ChatColor;
+
 import com.thomaztwofast.uhc.Main;
 import com.thomaztwofast.uhc.lib.F;
 
 public class Config {
 	private final String[] PATHS = { "Plugin", "Chunkloader", "Gamerules", "ServerMode", "ServerMode.AdvencedMotdStatus", "ServerMode.KickMessage", "ServerMode.BungeeCordSupport", "Game", "Game.Options", "Tablist", "WorldSettings", "WorldBorder", "Book", "GoldenHead", "FreezePlayer", "Marker", "OfflineKicker", "GlobalChat" };
 	private final String[] STATUS_MSG = { "\u00A7CUltra Hardcore 1.8\u00A7R{N}\u00A77\u00A7LStatus:\u00A7R\u00A7", "\u00A7C\u00A7LUltra Hardcore 1.8" };
-	private final int VERSION = 3;
+	private final int VERSION = 4;
 	private Main pl;
 	private int configVersion;
 	public boolean pluginEnable;
@@ -84,6 +89,7 @@ public class Config {
 	public boolean gameIsFriendly;
 	public int gameNameTag;
 	public boolean gameSeeFriendly;
+	public List<String> gameTeamNames;
 	public boolean tabEnable;
 	public String tabHeader = "\u00A7CUltra Hardcore 1.8\u00A7R";
 	public String tabFooter;
@@ -97,8 +103,8 @@ public class Config {
 	public boolean bookEnable;
 	public int bookInventorySlot;
 	public String boolTitle = "\u00A7CUltra Hardcore";
-	public String[] bookLore = new String[] { "0|", "0|\u00A76- \u00A77Info", "0|\u00A76- \u00A77Rules" };
-	public String[] bookPages = new String[] { "Welcome to \u00A74\u00A7LUHC\u00A70.\n\nThis game you can only regenerate health by\n \u00A78- \u00A71Golden Apple.\u00A7R\n \u00A78- \u00A71Potions.\u00A7R\n\nI wish you \u00A75Good Luck\u00A7R\nand may the best player / team win.", "\u00A7L\u00A7N    UHC - Rules     \u00A7R\n\n\u00A711.\u00A7R Branch Mining\n\u00A78 You can not branch\n mining but if you\n hear a sound,\n you can dig to it.\u00A7R\n\n\u00A712. Staircases\u00A7R\n\u00A78 You can only dig\n staircases if you\n want to find a cave." };
+	public String[] bookLore = { "0|", "0|\u00A76- \u00A77Info", "0|\u00A76- \u00A77Rules" };
+	public String[] bookPages = { "Welcome to \u00A74\u00A7LUHC\u00A70.\n\nThis game you can only regenerate health by\n \u00A78- \u00A71Golden Apple.\u00A7R\n \u00A78- \u00A71Potions.\u00A7R\n\nI wish you \u00A75Good Luck\u00A7R\nand may the best player / team win.", "\u00A7L\u00A7N    UHC - Rules     \u00A7R\n\n\u00A711.\u00A7R Branch Mining\n\u00A78 You can not branch\n mining but if you\n hear a sound,\n you can dig to it.\u00A7R\n\n\u00A712. Staircases\u00A7R\n\u00A78 You can only dig\n staircases if you\n want to find a cave." };
 	public boolean headEnable;
 	public boolean headDefault;
 	public boolean headGolden;
@@ -148,7 +154,7 @@ public class Config {
 		serverAdvancedMotd = getBoolean(false, PATHS[3] + ".AdvancedMotd");
 		serverID = getInt(1, PATHS[3] + ".ServerID", 1, 9999);
 		serverMinSolo = getInt(8, PATHS[3] + ".MinPlayerToStart", 2, 100);
-		serverMinTeam = getInt(4, PATHS[3] + ".MinTeamToStart", 2, 16);
+		serverMinTeam = getInt(4, PATHS[3] + ".MinTeamToStart", 2, 53);
 		serverCountdown = getInt(30, PATHS[3] + ".Countdown", 10, 20000);
 		serverMotd = getString("%0|%1|%2|%3", PATHS[3] + ".SimpleMotd", true);
 		serverActiveChunkloader = getBoolean(false, PATHS[3] + ".DisabledChunkloader");
@@ -179,6 +185,7 @@ public class Config {
 		gameIsFriendly = getBoolean(true, PATHS[8] + ".FriendlyFire");
 		gameNameTag = getInt(0, PATHS[8] + ".NameTagVisibility", 0, 3);
 		gameSeeFriendly = getBoolean(false, PATHS[8] + ".SeeFriendlyInvisibles");
+		gameTeamNames = getListTeam(gameTeamNames, PATHS[7] + ".TeamNames");
 		tabEnable = getBoolean(false, PATHS[9] + ".Enabled");
 		tabHeader = getString(tabHeader, PATHS[9] + ".Header", false);
 		tabFooter = getString("", PATHS[9] + ".Footer", false);
@@ -239,6 +246,31 @@ public class Config {
 			String[] newList = new String[pl.getConfig().getStringList(path).size()];
 			for (int i = 0; i < newList.length; i++)
 				newList[i] = (path.equals(PATHS[12] + ".Lord") ? "0|" : "") + F.mcCodeLn(pl.getConfig().getStringList(path).get(i));
+			return newList;
+		}
+		log("'" + path + "' was not found!");
+		return list;
+	}
+
+	private List<String> getListTeam(List<String> list, String path) {
+		if (pl.getConfig().isList(path)) {
+			List<String> newList = new ArrayList<>();
+			List<String> newList2 = new ArrayList<>();
+			for (int i = 0; i < pl.getConfig().getList(path).size(); i++) {
+				String[] tm = pl.getConfig().getStringList(path).get(i).split("\\|");
+				if (!newList2.contains(tm[0]) && tm[0].toLowerCase().matches("^[a-z0-9 ]+")) {
+					if (ChatColor.getByChar(tm[1]) != null && tm[1].toLowerCase().matches("[a-f0-9]")) {
+						newList.add(pl.getConfig().getStringList(path).get(i));
+						newList2.add(tm[0]);
+						if(newList2.size() == 53) {
+							pl.log(2, "[CONFIG] Maximum teams has been reached! (53 Teams)");
+							return newList;
+						}
+					} else
+						pl.log(1, "[CONFIG] Team '" + tm[0] + " | " + tm[1] + "' has wrong color code!");
+				} else
+					pl.log(1, "[CONFIG] Team '" + tm[0] + " | " + tm[1] + "' " + (newList2.contains(tm[0]) ? "already created!" : "has unwanted characters!"));
+			}
 			return newList;
 		}
 		log("'" + path + "' was not found!");

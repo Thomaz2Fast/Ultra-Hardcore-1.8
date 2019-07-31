@@ -1,6 +1,6 @@
 /*
  * Ultra Hardcore 1.8, a Minecraft survival game mode.
- * Copyright (C) <2018> Thomaz2Fast
+ * Copyright (C) <2019> Thomaz2Fast
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -100,7 +100,7 @@ public class CmdChunkLoader implements CommandExecutor, TabCompleter {
 				private String getDisplayInfo() {
 					String[] data = chunkloader.getPreData();
 					String[] arr = data[0].split("\\|");
-					J str = new J("--------------------------------------------\n", "8", "s");
+					J str = new J("                                                                   \n", "8", "s");
 					str.addText(" CHUNKLOADER\n\n", "f", "b");
 					if (arr[0].length() != 0) {
 						str.addText(" Estimate Time: ", "a", "");
@@ -136,7 +136,7 @@ public class CmdChunkLoader implements CommandExecutor, TabCompleter {
 							names.add(sender.getName());
 					} else
 						str.addText(" Every world has been loaded / generated.\n", "7", "");
-					str.addText("--------------------------------------------", "8", "s");
+					str.addText("                                                                   ", "8", "s");
 					return str.print();
 				}
 			}).start();

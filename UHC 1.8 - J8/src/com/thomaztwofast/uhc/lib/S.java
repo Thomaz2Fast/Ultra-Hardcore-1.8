@@ -1,6 +1,6 @@
 /*
  * Ultra Hardcore 1.8, a Minecraft survival game mode.
- * Copyright (C) <2018> Thomaz2Fast
+ * Copyright (C) <2019> Thomaz2Fast
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,7 +19,8 @@
 package com.thomaztwofast.uhc.lib;
 
 public class S {
-	private final String LINE = "\u00A78\u00A7M--------------------------------------------\u00A7R";
+	private final String LINE = "\u00A78\u00A7M                                                                   \u00A7R";
+	private final String CLINE = "\u00A78\u00A7M--------------------------------------------\u00A7R";
 	private boolean bool = false;
 	private StringBuilder sb = new StringBuilder();
 	private String title;
@@ -41,10 +42,10 @@ public class S {
 	}
 
 	public void setTitle(String title) {
-		this.title = (bool ? "\n" : "") + LINE + "\n\u00A7L " + title + "\n";
+		this.title = (bool ? "\n" + CLINE : LINE) + "\n\u00A7L " + title + "\n";
 	}
 
 	public String print() {
-		return title + sb + LINE;
+		return title + sb + (bool ? CLINE : LINE);
 	}
 }

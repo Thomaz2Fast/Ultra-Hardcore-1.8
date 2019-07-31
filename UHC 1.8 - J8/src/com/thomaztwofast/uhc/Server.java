@@ -1,6 +1,6 @@
 /*
  * Ultra Hardcore 1.8, a Minecraft survival game mode.
- * Copyright (C) <2018> Thomaz2Fast
+ * Copyright (C) <2019> Thomaz2Fast
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
 import org.bukkit.GameRule;
@@ -168,8 +167,8 @@ public class Server {
 	private int getParticipants() {
 		int i = 0;
 		if (pl.config.gameInTeam) {
-			for (ChatColor color : ChatColor.values())
-				if (color.isColor() && scoreboard.getTeam(color.name()).getSize() != 0)
+			for (String tm : pl.config.gameTeamNames)
+				if (scoreboard.getTeam(tm.split("\\|")[0].replace(" ", "_")).getSize() != 0)
 					i++;
 			return i;
 		}

@@ -1,6 +1,6 @@
 /*
  * Ultra Hardcore 1.8, a Minecraft survival game mode.
- * Copyright (C) <2018> Thomaz2Fast
+ * Copyright (C) <2019> Thomaz2Fast
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -49,10 +49,10 @@ public class Teams {
 
 	public void click(UHCPlayer u, ClickType click, int slot) {
 		if (click.equals(ClickType.LEFT))
-			if (slot < 16 && inventory.getItem(slot).hasItemMeta()) {
+			if (slot < inventory.getSize() - 1 && inventory.getItem(slot) != null && inventory.getItem(slot).hasItemMeta()) {
 				if (u.player.getCooldown(Material.ENCHANTED_BOOK) == 0)
 					join(u, inventory.getItem(slot).getItemMeta().getDisplayName(), false);
-			} else if (slot == 17)
+			} else if (slot == inventory.getSize() - 1)
 				quit(u);
 	}
 
@@ -76,22 +76,20 @@ public class Teams {
 	public void load() {
 		scoreboard = pl.getServer().getScoreboardManager().getMainScoreboard();
 		selectItem = F.item(Material.PAPER, "&eSelect Team");
-		inventory = pl.getServer().createInventory(null, 18, "          - Select Team -");
-		for (ChatColor color : ChatColor.values()) {
-			if (color.isColor()) {
-				unRegistryTeam(color.name());
-				Team team = scoreboard.registerNewTeam(color.name());
-				team.setDisplayName("\u00A7l" + color.name().replace("_", " ") + "\u00A7r");
-				team.setColor(color);
-				team.setOption(Option.COLLISION_RULE, OptionStatus.values()[pl.config.gameCollision == 3 ? 2 : pl.config.gameCollision == 2 ? 3 : pl.config.gameCollision]);
-				team.setAllowFriendlyFire(pl.config.gameIsFriendly);
-				team.setOption(Option.NAME_TAG_VISIBILITY, OptionStatus.values()[pl.config.gameNameTag]);
-				team.setCanSeeFriendlyInvisibles(pl.config.gameSeeFriendly);
-				ItemStack c = F.item(Material.ENCHANTED_BOOK, color + team.getDisplayName(), "0|", "0|&8Max " + pl.config.gameMaxTeam + " player" + (pl.config.gameMaxTeam != 1 ? "s" : ""));
-				inventory.addItem(c);
-			}
+		inventory = pl.getServer().createInventory(null, (int) Math.ceil(((pl.config.gameTeamNames.size() + 1) / 9.0)) * 9, "          - Select Team -");
+		for(String tm : pl.config.gameTeamNames) {
+			String[] l = tm.split("\\|");
+			Team team = scoreboard.registerNewTeam(l[0].replace(" ", "_"));
+			team.setDisplayName("\u00A7l" + l[0]);
+			team.setColor(ChatColor.getByChar(l[1]));
+			team.setOption(Option.COLLISION_RULE, OptionStatus.values()[pl.config.gameCollision == 3 ? 2 : pl.config.gameCollision == 2 ? 3 : pl.config.gameCollision]);
+			team.setAllowFriendlyFire(pl.config.gameIsFriendly);
+			team.setOption(Option.NAME_TAG_VISIBILITY, OptionStatus.values()[pl.config.gameNameTag]);
+			team.setCanSeeFriendlyInvisibles(pl.config.gameSeeFriendly);
+			ItemStack c = F.item(Material.ENCHANTED_BOOK, team.getColor() + team.getDisplayName(), "0|", "0|&8Max " + pl.config.gameMaxTeam + " player" + (pl.config.gameMaxTeam != 1 ? "s" : ""));
+			inventory.addItem(c);
 		}
-		inventory.setItem(17, F.item(Material.BARRIER, "&cSpectator Mode"));
+		inventory.setItem(inventory.getSize() - 1, F.item(Material.BARRIER, "&cSpectator Mode"));
 	}
 
 	public void openInventory(UHCPlayer u) {
@@ -111,9 +109,8 @@ public class Teams {
 	}
 
 	public void unload() {
-		for (ChatColor color : ChatColor.values())
-			if (color.isColor())
-				unRegistryTeam(color.name());
+		for(String tm : pl.config.gameTeamNames)
+			unRegistryTeam(tm.split("\\|")[0].replace(" ", "_"));
 	}
 
 	public void updateInv() {
@@ -145,15 +142,13 @@ public class Teams {
 
 	public void updateOptions(boolean b) {
 		if (b) {
-			for (ChatColor color : ChatColor.values()) {
-				if (color.isColor()) {
-					Team team = scoreboard.getTeam(color.name());
-					if (team != null) {
-						team.setOption(Option.COLLISION_RULE, OptionStatus.values()[pl.config.gameCollision == 3 ? 2 : pl.config.gameCollision == 2 ? 3 : pl.config.gameCollision]);
-						team.setAllowFriendlyFire(pl.config.gameIsFriendly);
-						team.setOption(Option.NAME_TAG_VISIBILITY, OptionStatus.values()[pl.config.gameNameTag]);
-						team.setCanSeeFriendlyInvisibles(pl.config.gameSeeFriendly);
-					}
+			for(String tm : pl.config.gameTeamNames) {
+				Team team = scoreboard.getTeam(tm.split("\\|")[0].replace(" ", "_"));
+				if(team != null) {
+					team.setOption(Option.COLLISION_RULE, OptionStatus.values()[pl.config.gameCollision == 3 ? 2 : pl.config.gameCollision == 2 ? 3 : pl.config.gameCollision]);
+					team.setAllowFriendlyFire(pl.config.gameIsFriendly);
+					team.setOption(Option.NAME_TAG_VISIBILITY, OptionStatus.values()[pl.config.gameNameTag]);
+					team.setCanSeeFriendlyInvisibles(pl.config.gameSeeFriendly);
 				}
 			}
 		}

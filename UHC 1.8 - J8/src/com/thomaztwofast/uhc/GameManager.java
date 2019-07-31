@@ -1,6 +1,6 @@
 /*
  * Ultra Hardcore 1.8, a Minecraft survival game mode.
- * Copyright (C) <2018> Thomaz2Fast
+ * Copyright (C) <2019> Thomaz2Fast
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 import org.apache.commons.io.FileUtils;
-import org.bukkit.ChatColor;
 import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
 import org.bukkit.GameRule;
@@ -47,6 +46,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scoreboard.DisplaySlot;
+import org.bukkit.scoreboard.RenderType;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 import org.bukkit.util.Vector;
@@ -121,7 +121,7 @@ public class GameManager {
 			if (scoreboard.getObjective("hp") == null)
 				scoreboard.registerNewObjective("hp", "health", "hp").setDisplaySlot(DisplaySlot.PLAYER_LIST);
 			if (pl.config.gamePlayerListHearts)
-				activeListHeath();
+				scoreboard.getObjective("hp").setRenderType(pl.config.gamePlayerListHearts ? RenderType.HEARTS : RenderType.INTEGER);
 			if (pl.config.gameInTeam)
 				teams.load();
 			if (pl.config.bookEnable)
@@ -253,20 +253,18 @@ public class GameManager {
 		if (pl.config.gameInTeam) {
 			Scoreboard scoreboard = pl.getServer().getScoreboardManager().getMainScoreboard();
 			List<Team> team = new ArrayList<>();
-			for (ChatColor color : ChatColor.values()) {
-				if (scoreboard.getTeam(color.name()) != null && scoreboard.getTeam(color.name()).getSize() != 0) {
-					if (color.isColor()) {
-						team.add(scoreboard.getTeam(color.name()));
-						locations.put(color.name(), localtions.get(i));
-						for (String e : scoreboard.getTeam(color.name()).getEntries()) {
-							inGamePlayers.add(e);
-							teleportPlayerToArena(e);
-						}
-						countdownData[0] += 60;
-						i++;
-					} else
-						scoreboard.getTeam(color.name()).unregister();
-				}
+			for (String tm : pl.config.gameTeamNames) {
+				if (scoreboard.getTeam(tm.split("\\|")[0].replace(" ", "_")) != null && scoreboard.getTeam(tm.split("\\|")[0].replace(" ", "_")).getSize() != 0) {
+					team.add(scoreboard.getTeam(tm.split("//|")[0].replace(" ", "_")));
+					locations.put(tm.split("\\|")[0].replace(" ", "_"), localtions.get(i));
+					for (String e : scoreboard.getTeam(tm.split("\\|")[0].replace(" ", "_")).getEntries()) {
+						inGamePlayers.add(e);
+						teleportPlayerToArena(e);
+					}
+					countdownData[0] += 60;
+					i++;
+				} else
+					scoreboard.getTeam(tm.split("\\|")[0].replace(" ", "_")).unregister();
 			}
 		}
 		S str = new S(false);
@@ -333,19 +331,6 @@ public class GameManager {
 	}
 
 	// ---------------------------------------------------------------------------
-
-	// TODO Check if Spigot is going to implement this method / function on the objective class.
-	private void activeListHeath() {
-		try {
-			Class<?> craftBoard = Class.forName("org.bukkit.craftbukkit." + pl.NMS_VER + ".scoreboard.CraftScoreboard");
-			Class<?> craftHealt = Class.forName("net.minecraft.server." + pl.NMS_VER + ".IScoreboardCriteria");
-			Object handle = craftBoard.getDeclaredMethod("getHandle", new Class[0]).invoke(craftBoard.cast(pl.getServer().getScoreboardManager().getMainScoreboard()), new Object[0]);
-			handle = handle.getClass().getMethod("c", new Class[] { String.class }).invoke(handle, "hp");
-			handle.getClass().getDeclaredMethod("a", new Class[] { craftHealt.getClasses()[0] }).invoke(handle, craftHealt.getClasses()[0].getEnumConstants()[1]);
-		} catch (Exception e) {
-			pl.log(1, "Could not update player list heaths settings.");
-		}
-	}
 
 	private void broadcastMessage(String input) {
 		pl.PLAYERS.values().forEach(e -> e.player.sendMessage(input));

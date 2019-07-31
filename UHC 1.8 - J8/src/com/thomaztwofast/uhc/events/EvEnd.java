@@ -1,6 +1,6 @@
 /*
  * Ultra Hardcore 1.8, a Minecraft survival game mode.
- * Copyright (C) <2018> Thomaz2Fast
+ * Copyright (C) <2019> Thomaz2Fast
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -54,7 +54,7 @@ public class EvEnd implements Listener {
 		pl.getServer().getScheduler().runTaskLaterAsynchronously(pl, new Runnable() {
 			public void run() {
 				if (pl.config.gameInTeam) {
-					Team team = scoreboard.getTeam(F.mcColorRm(winner).replace("Team ", "").replace(" ", "_"));
+					Team team = scoreboard.getTeam(F.mcColorRm(winner).substring(5).replace(" ", "_").replace(" ", "_"));
 					team.setPrefix(prefix);
 				} else {
 					if (scoreboard.getTeam("uhc_winner") != null)

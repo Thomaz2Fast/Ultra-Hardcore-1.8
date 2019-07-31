@@ -1,6 +1,6 @@
 /*
  * Ultra Hardcore 1.8, a Minecraft survival game mode.
- * Copyright (C) <2018> Thomaz2Fast
+ * Copyright (C) <2019> Thomaz2Fast
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,7 +23,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -86,14 +85,12 @@ public class CmdAutoTeam implements CommandExecutor {
 						private List<Team> getSelectedTeams(int value) {
 							List<Team> teams = new ArrayList<>();
 							int max = (int) Math.ceil(value / pl.config.gameMaxTeam);
-							max = max == 0 ? 1 : max > 16 ? 16 : max;
-							for (ChatColor color : ChatColor.values()) {
-								if (color.isColor()) {
-									Team team = scoreboard.getTeam(color.name());
-									if (team != null) {
-										team.getEntries().forEach(e -> team.removeEntry(e));
-										teams.add(team);
-									}
+							max = max == 0 ? 1 : max > pl.config.gameTeamNames.size() ? pl.config.gameTeamNames.size() : max;
+							for (String tm : pl.config.gameTeamNames) {
+								Team team = scoreboard.getTeam(tm.split("\\|")[0].replace(" ", "_"));
+								if (team != null) {
+									team.getEntries().forEach(e -> team.removeEntry(e));
+									teams.add(team);
 								}
 							}
 							Collections.shuffle(teams);
